@@ -2,10 +2,10 @@
 
 std::vector<ST> calcSymmetry(const RCP<MAT> &A) {
 	TimeMonitor LocalTimer (*timeSymmetry);
-	Tpetra::RowMatrixTransposer<ST, LO, GO, NT> transposer(A);	
+	Tpetra::RowMatrixTransposer<ST, LO, GO, NT> transposer(A);
 	RCP<MAT> B = transposer.createTranspose();
 
-	GO rows = A->getGlobalNumRows(); 
+	GO rows = A->getGlobalNumRows();
 	ST result = 0.0;
 	GO match = 0, noMatch = 0, dne = 0;
 	GO totalMatch, totalNoMatch, totalDne;
@@ -19,7 +19,7 @@ std::vector<ST> calcSymmetry(const RCP<MAT> &A) {
 			size_t colsB = B->getNumEntriesInGlobalRow(row);
 			Array<ST> valuesA(colsA), valuesB(colsB);
 			Array<GO> indicesA(colsA), indicesB(colsB);
-			A->getGlobalRowCopy(row, indicesA(), valuesA(), colsA); 
+			A->getGlobalRowCopy(row, indicesA(), valuesA(), colsA);
 			B->getGlobalRowCopy(row, indicesB(), valuesB(), colsB);
 
 			//  Make maps for each row, ignoring diagonal
@@ -35,8 +35,6 @@ std::vector<ST> calcSymmetry(const RCP<MAT> &A) {
 			//  Compare the maps
 			std::map<GO, ST>::iterator iterA;
 			for (iterA = mapA.begin(); iterA != mapA.end(); iterA++) {
-				//*fos << row << ": A[" << iterA->first << "]:" << iterA->second << std::endl;
-				//*fos << row << ": B[" << iterA->first << "]:" << mapB[iterA->first] << std::endl;
 				//  Matching indices found
 				if (mapB.count (iterA->first) ) {
 					//  Check if values for those indices match
@@ -60,6 +58,6 @@ std::vector<ST> calcSymmetry(const RCP<MAT> &A) {
 	results.push_back( (double)totalDne/(double)offDiagNonzeros );
 	*fos << (double)totalMatch/(double)offDiagNonzeros << ", ";
 	*fos << (double)totalNoMatch/(double)offDiagNonzeros << ", ";
-	*fos << (double)totalDne/(double)offDiagNonzeros << ", "; 
+	*fos << (double)totalDne/(double)offDiagNonzeros << ", ";
 	return results;
 }

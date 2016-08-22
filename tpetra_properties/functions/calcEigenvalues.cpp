@@ -33,7 +33,7 @@ void calcEigenValues(const RCP<MAT> &A, std::string eigenType) {
   //MyPL.set("Relative Locking Tolerance", false);      // Don't scale residuals by eigenvalues (when checking whether to lock a vector)
   MyPL.set("Num Blocks", numBlocks);                   // Maximum number of blocks in the subspace
 
-  //  Default to largest magnitude 
+  //  Default to largest magnitude
   if (eigenType.compare("SR") == 0) {
     MyPL.set("Which", "SR");
     timeEigenValuesSR->start();
@@ -53,18 +53,18 @@ void calcEigenValues(const RCP<MAT> &A, std::string eigenType) {
   MVT::MvRandom(*ivec);
 
   //  Create eigenproblem
-  RCP<Anasazi::BasicEigenproblem<ST, MV, OP> > MyProblem = 
+  RCP<Anasazi::BasicEigenproblem<ST, MV, OP> > MyProblem =
     rcp(new Anasazi::BasicEigenproblem<ST, MV, OP>(A, ivec));
   MyProblem->setNEV(nev);
 
   //  Taken from https://github.com/qsnake/trilinos/blob/master/packages/tpetra/example/HybridPlatform/build_eigproblem.hpp
   //  Create preconditioner
-	typedef Ifpack2::Preconditioner<ST,LO,GO,NT> prec_type;	
+	typedef Ifpack2::Preconditioner<ST,LO,GO,NT> prec_type;
 	Ifpack2::Factory factory;
 	const std::string precName = "KRYLOV";
 	RCP<prec_type> prec = factory.create(precName, (RCP<const MAT>)A);
 	Teuchos::ParameterList factoryParams;
-	prec->setParameters(factoryParams);  
+	prec->setParameters(factoryParams);
   prec->initialize();
   prec->compute();
 
@@ -80,7 +80,7 @@ void calcEigenValues(const RCP<MAT> &A, std::string eigenType) {
   if (returnCode != Anasazi::Converged) {
     *fos << "unconverged" << ", ";
     return;
-  } 
+  }
 
   //  Get the results
   Anasazi::Eigensolution<ST, MV> sol = MyProblem->getSolution();

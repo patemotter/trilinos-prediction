@@ -12,12 +12,12 @@ size_t calcLowerBandwidth(const RCP<MAT> &A) {
 			if (cols > 0 && cols <= A->getGlobalNumRows()) {
 				Array<ST> values(cols);
 				Array<GO> indices(cols);
-				A->getGlobalRowCopy(row, indices(), values(), cols); 
+				A->getGlobalRowCopy(row, indices(), values(), cols);
 				minIndex = indices[0];
 				for (size_t col = 1; col < cols; col++) {
 					if (indices[col] < minIndex) {
 						minIndex = indices[col];
-					}	
+					}
 				}
 				localLB = row - minIndex;
 				if (row < minIndex) {
@@ -30,7 +30,6 @@ size_t calcLowerBandwidth(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MAX, 1, &localMaxLB, &totalLB);
-	//*fos << "lb:" << totalLB << std::endl;
 	return totalLB;
 }
 
@@ -46,12 +45,12 @@ size_t calcUpperBandwidth(const RCP<MAT> &A) {
 			if (cols > 0 && cols <= A->getGlobalNumRows()) {
 				Array<ST> values(cols);
 				Array<GO> indices(cols);
-				A->getGlobalRowCopy(row, indices(), values(), cols); 
+				A->getGlobalRowCopy(row, indices(), values(), cols);
 				maxIndex = indices[0];
 				for (size_t col = 1; col < cols; col++) {
 					if (indices[col] > maxIndex) {
 						maxIndex = indices[col];
-					}	
+					}
 				}
 				localUB = maxIndex - row;
 				if (row > maxIndex) {
@@ -64,6 +63,5 @@ size_t calcUpperBandwidth(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MAX, 1, &localMaxUB, &totalUB);
-	//*fos << "ub:" << totalUB << std::endl;
 	return totalUB;
 }

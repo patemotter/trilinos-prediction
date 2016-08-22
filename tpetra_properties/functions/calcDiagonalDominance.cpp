@@ -4,7 +4,7 @@
 // a_ii >= sum(a_ij) for all i,js i!=j
 int calcRowDiagonalDominance(const RCP<MAT> &A) {
 	TimeMonitor LocalTimer (*timeRowDiagonalDominance);
-	GO rows = A->getGlobalNumRows(); 
+	GO rows = A->getGlobalNumRows();
 	ST result = 0.0;
 	GO totalMatch, match = 0;
 	GO locEntries = 0;
@@ -17,7 +17,7 @@ int calcRowDiagonalDominance(const RCP<MAT> &A) {
 			size_t cols = A->getNumEntriesInGlobalRow(row);
 			Array<ST> values(cols);
 			Array<GO> indices(cols);
-			A->getGlobalRowCopy(row, indices(), values(), cols); 
+			A->getGlobalRowCopy(row, indices(), values(), cols);
 			if (cols < A->getGlobalNumRows()) {
 				totalDiagSum = totalRowSum = 0.0;
 				for (size_t col = 0; col < cols; col++) {
@@ -28,7 +28,6 @@ int calcRowDiagonalDominance(const RCP<MAT> &A) {
 					}
 				}
 				if (locDiagSum < locRowSum) {
-					//*fos << "row diagonal dominance:0" << std::endl;
 					return 0;
 				} else if (locDiagSum == locRowSum) {
 					strict = 0;
@@ -38,20 +37,18 @@ int calcRowDiagonalDominance(const RCP<MAT> &A) {
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MAX, 1, &strict, &totalStrict);
 	if (totalStrict == 1) {
-		//*fos << "row diagonal dominance:2" << std::endl;
 		return 2;
 	} else {
-		//*fos << "row diagonal dominance:1" << std::endl;
 		return 1;
 	}
 }
 
 int calcColDiagonalDominance(const RCP<MAT> &A) {
 	TimeMonitor LocalTimer (*timeColDiagonalDominance);
-	Tpetra::RowMatrixTransposer<ST, LO, GO, NT> transposer(A);	
+	Tpetra::RowMatrixTransposer<ST, LO, GO, NT> transposer(A);
 	RCP<MAT> B = transposer.createTranspose();
 
-	GO rows = B->getGlobalNumRows(); 
+	GO rows = B->getGlobalNumRows();
 	ST result = 0.0;
 	GO totalMatch, match = 0;
 	GO locEntries = 0;
@@ -64,7 +61,7 @@ int calcColDiagonalDominance(const RCP<MAT> &A) {
 			size_t cols = B->getNumEntriesInGlobalRow(row);
 			Array<ST> values(cols);
 			Array<GO> indices(cols);
-			B->getGlobalRowCopy(row, indices(), values(), cols); 
+			B->getGlobalRowCopy(row, indices(), values(), cols);
 			if (cols < B->getGlobalNumRows()) {
 				totalDiagSum = totalRowSum = 0.0;
 				for (size_t col = 0; col < cols; col++) {
@@ -75,7 +72,6 @@ int calcColDiagonalDominance(const RCP<MAT> &A) {
 					}
 				}
 				if (locDiagSum < locRowSum) {
-					//*fos << "col diagonal dominance:0" << std::endl;
 					return 0;
 				} else if (locDiagSum == locRowSum) {
 					strict = 0;
@@ -85,10 +81,8 @@ int calcColDiagonalDominance(const RCP<MAT> &A) {
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MAX, 1, &strict, &totalStrict);
 	if (totalStrict == 1) {
-		//*fos << "col diagonal dominance:2" << std::endl;
 		return 2;
 	} else {
-		//*fos << "col diagonal dominance:1" << std::endl;
 		return 1;
-	}	
+	}
 }

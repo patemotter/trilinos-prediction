@@ -3,7 +3,7 @@
 size_t calcMinNonzerosPerRow(const RCP<MAT> &A) {
 	TimeMonitor LocalTimer (*timeMinNonzerosPerRow);
 	size_t rows = A->getGlobalNumRows();
-	size_t locNonzeros = rows, locMinNonzeros = rows, result = 0;	
+	size_t locNonzeros = rows, locMinNonzeros = rows, result = 0;
 
 	for (size_t row = 0; row < rows; row++) {
 		if (A->getRowMap()->isNodeGlobalElement(row)) {
@@ -16,7 +16,6 @@ size_t calcMinNonzerosPerRow(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MIN, 1, &locMinNonzeros, &result);
-	//*fos << "min nonzeros per row:" << result << std::endl;
 	return result;
 }
 
@@ -29,7 +28,7 @@ ST calcAvgNonzerosPerRow(const RCP<MAT> &A) {
 	for (GO row = 0; row < rows; row++) {
 		if (A->getRowMap()->isNodeGlobalElement(row)) {
 			if (A->getNumEntriesInGlobalRow(row) >= 0) {
-				locNonzeros += A->getNumEntriesInGlobalRow(row);	
+				locNonzeros += A->getNumEntriesInGlobalRow(row);
 			}
 		}
 	}

@@ -12,13 +12,12 @@ ST calcDiagonalMean(const RCP<MAT> &A) {
       A->getGlobalRowCopy(row, indices(), values(), cols);
       for (size_t col = 0; col < cols; col++) {
         if (indices[col] == row) {
-          locMean += values[col]; 
+          locMean += values[col];
         }
       }
     }
   }
   Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &locMean, &mean);
   mean /= A->getGlobalNumRows();
-  //*fos << "diag mean" << mean << ", " << std::endl;
   return mean;
 }

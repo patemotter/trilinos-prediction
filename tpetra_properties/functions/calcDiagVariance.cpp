@@ -3,20 +3,20 @@
 //  The variance of the diagonal (real)
 ST calcDiagVariance(const RCP<MAT> &A) {
 	TimeMonitor LocalTimer (*timeDiagVariance);
-	GO rows = A->getGlobalNumRows(); 
-	ST locMean = 0.0; 
+	GO rows = A->getGlobalNumRows();
+	ST locMean = 0.0;
 	ST mean = 0.0, locVariance = 0.0, result = 0.0;
 
 	//  Go through each row on the current process
 	for (GO row = 0; row < rows; row++) {
 		if (A->getRowMap()->isNodeGlobalElement(row)) {
-	 		size_t cols = A->getNumEntriesInGlobalRow(row);  
+	 		size_t cols = A->getNumEntriesInGlobalRow(row);
 			Array<ST> values(cols);
 			Array<GO> indices(cols);
 			A->getGlobalRowCopy(row, indices(), values(), cols);
 			for (size_t col = 0; col < cols; col++) {
 				if (indices[col] == row) {
-					locMean += values[col]; 
+					locMean += values[col];
 				}
 			}
 		}
@@ -44,25 +44,24 @@ ST calcDiagVariance(const RCP<MAT> &A) {
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &locVariance, &result);
 	result /= A->getGlobalNumRows();
 	return result;
-	//*fos << "diag variance:" << result << std::endl;
 }
 
 ST calcDiagVariance(const RCP<MATC> &A) {
 	TimeMonitor LocalTimer (*timeDiagVariance);
-	GO rows = A->getGlobalNumRows(); 
-	ST locMean = 0.0; 
+	GO rows = A->getGlobalNumRows();
+	ST locMean = 0.0;
 	ST mean = 0.0, locVariance = 0.0, result = 0.0;
 
 	//  Go through each row on the current process
 	for (GO row = 0; row < rows; row++) {
 		if (A->getRowMap()->isNodeGlobalElement(row)) {
-	 		size_t cols = A->getNumEntriesInGlobalRow(row);  
+	 		size_t cols = A->getNumEntriesInGlobalRow(row);
 			Array<STC> values(cols);
 			Array<GO> indices(cols);
 			A->getGlobalRowCopy(row, indices(), values(), cols);
 			for (size_t col = 0; col < cols; col++) {
 				if (indices[col] == row) {
-					locMean += std::real(values[col]); 
+					locMean += std::real(values[col]);
 				}
 			}
 		}
@@ -90,5 +89,4 @@ ST calcDiagVariance(const RCP<MATC> &A) {
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &locVariance, &result);
 	result /= A->getGlobalNumRows();
 	return result;
-	//*fos << "diag variance:" << result << std::endl;
 }
