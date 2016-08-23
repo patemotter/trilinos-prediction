@@ -3,7 +3,6 @@
 //  Return the maximum row locVariance for the matrix
 //  The average of the squared differences from the Mean.
 ST calcRowVariance(const RCP<MAT> &A) {
-	TimeMonitor LocalTimer (*timeRowVariance);
 	GO rows = A->getGlobalNumRows();
 	ST mean, locVariance, locMaxVariance, result = 0.0;
 
@@ -38,7 +37,6 @@ ST calcRowVariance(const RCP<MAT> &A) {
 	return result;
 }
 ST calcRowVariance(const RCP<MATC> &A) {
-	TimeMonitor LocalTimer (*timeRowVariance);
 	GO rows = A->getGlobalNumRows();
 	ST mean, locVariance, locMaxVariance, result = 0.0;
 

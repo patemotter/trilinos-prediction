@@ -1,7 +1,6 @@
 #include "tpetra_properties_crsmatrix.h"
 
 size_t calcLowerBandwidth(const RCP<MAT> &A) {
-	TimeMonitor LocalTimer (*timeLowerBandwidth);
 	size_t rows = A->getGlobalNumRows();
 	size_t localMaxLB = 0, localLB = 0, totalLB;
 	size_t minIndex;
@@ -34,7 +33,6 @@ size_t calcLowerBandwidth(const RCP<MAT> &A) {
 }
 
 size_t calcUpperBandwidth(const RCP<MAT> &A) {
-	TimeMonitor LocalTimer (*timeUpperBandwidth);
 	size_t rows = A->getGlobalNumRows();
 	size_t localMaxUB = 0, localUB = 0, totalUB;
 	size_t maxIndex;

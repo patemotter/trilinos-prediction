@@ -1,7 +1,6 @@
 #include "tpetra_properties_crsmatrix.h"
 
 size_t calcDummyRows(const RCP<MAT> &A) {
-	TimeMonitor LocalTimer (*timeDummyRows);
 	size_t rows = A->getGlobalNumRows();
 	size_t locDummy = 0, result = 0;
 

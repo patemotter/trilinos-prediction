@@ -82,13 +82,13 @@ set(SOURCES
     ./functions/calcDiagonalSign.cpp
     ./functions/calcDiagVariance.cpp
     ./functions/calcDummyRows.cpp
-    ./functions/calcEigenvalues.cpp
     ./functions/calcInfNorm.cpp
     ./functions/calcNonzerosPerRow.cpp
     ./functions/calcOneNorm.cpp
     ./functions/calcRowVariance.cpp
     ./functions/calcSymmetry.cpp
     ./functions/calcTrace.cpp
+    ./functions/calcSum.cpp
 	  tpetra_properties_crsmatrix.cpp
   )
 

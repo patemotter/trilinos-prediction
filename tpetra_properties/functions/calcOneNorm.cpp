@@ -2,7 +2,6 @@
 
 //  Max absolute column sum
 ST calcOneNorm(const RCP<MAT> &A) {
-	TimeMonitor LocalTimer (*timeOneNorm);
 	Tpetra::RowMatrixTransposer<ST, LO, GO, NT> transposer(A);
 	RCP<MAT> B = transposer.createTranspose();
 

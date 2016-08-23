@@ -1,7 +1,6 @@
 #include "tpetra_properties_crsmatrix.h"
 
 std::vector<ST> calcSymmetry(const RCP<MAT> &A) {
-	TimeMonitor LocalTimer (*timeSymmetry);
 	Tpetra::RowMatrixTransposer<ST, LO, GO, NT> transposer(A);
 	RCP<MAT> B = transposer.createTranspose();
 

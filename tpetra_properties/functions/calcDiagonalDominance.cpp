@@ -3,7 +3,6 @@
 // 0 not, 1 weak, 2 strict
 // a_ii >= sum(a_ij) for all i,js i!=j
 int calcRowDiagonalDominance(const RCP<MAT> &A) {
-	TimeMonitor LocalTimer (*timeRowDiagonalDominance);
 	GO rows = A->getGlobalNumRows();
 	ST result = 0.0;
 	GO totalMatch, match = 0;
@@ -44,7 +43,6 @@ int calcRowDiagonalDominance(const RCP<MAT> &A) {
 }
 
 int calcColDiagonalDominance(const RCP<MAT> &A) {
-	TimeMonitor LocalTimer (*timeColDiagonalDominance);
 	Tpetra::RowMatrixTransposer<ST, LO, GO, NT> transposer(A);
 	RCP<MAT> B = transposer.createTranspose();
 

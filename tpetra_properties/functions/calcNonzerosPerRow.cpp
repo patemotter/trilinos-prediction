@@ -1,7 +1,6 @@
 #include "tpetra_properties_crsmatrix.h"
 
 size_t calcMinNonzerosPerRow(const RCP<MAT> &A) {
-	TimeMonitor LocalTimer (*timeMinNonzerosPerRow);
 	size_t rows = A->getGlobalNumRows();
 	size_t locNonzeros = rows, locMinNonzeros = rows, result = 0;
 
@@ -20,7 +19,6 @@ size_t calcMinNonzerosPerRow(const RCP<MAT> &A) {
 }
 
 ST calcAvgNonzerosPerRow(const RCP<MAT> &A) {
-	TimeMonitor LocalTimer (*timeAvgNonzerosPerRow);
 	GO rows = A->getGlobalNumRows();
 	GO locNonzeros = 0, result = 0;
 

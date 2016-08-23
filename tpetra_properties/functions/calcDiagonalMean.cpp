@@ -1,7 +1,6 @@
 #include "tpetra_properties_crsmatrix.h"
 
 ST calcDiagonalMean(const RCP<MAT> &A) {
-	TimeMonitor LocalTimer (*timeDiagonalMean);
 	ST locMean, mean = 0.0;
   GO rows = A->getGlobalNumRows();
   for (GO row = 0; row < rows; row++) {

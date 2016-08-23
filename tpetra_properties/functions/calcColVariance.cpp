@@ -2,7 +2,6 @@
 
 //  Transpose the matrix, get row locVariance
 ST calcColVariance(const RCP<MAT> &A) {
-	TimeMonitor LocalTimer (*timeColVariance);
 	Tpetra::RowMatrixTransposer<ST, LO, GO, NT> transposer(A);
 	RCP<MAT> B = transposer.createTranspose();
 
@@ -39,7 +38,6 @@ ST calcColVariance(const RCP<MAT> &A) {
 }
 
 ST calcColVariance(const RCP<MATC> &A) {
-	TimeMonitor LocalTimer (*timeColVariance);
 	Tpetra::RowMatrixTransposer<STC, LO, GO, NT> transposer(A);
 	RCP<MATC> B = transposer.createTranspose();
 

@@ -4,7 +4,6 @@
 // -2 all negative, -1 nonpositive, 0 all zero, 1 nonnegative, 2 all positive,
 // 3 some negative,some or no zero,some positive
 int calcDiagonalSign(const RCP<MAT> &A) {
-	TimeMonitor LocalTimer (*timeDiagonalSign);
 	long locPos = 0, locNeg = 0, locZero = 0;
 	long totalPos, totalNeg, totalZero;
 	GO rows = A->getGlobalNumRows();

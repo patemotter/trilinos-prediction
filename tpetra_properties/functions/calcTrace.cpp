@@ -1,7 +1,6 @@
 #include "tpetra_properties_crsmatrix.h"
 
 ST calcTrace(const RCP<MAT> &A) {
-	TimeMonitor LocalTimer (*timeTrace);
 	GO rows = A->getGlobalNumRows();
 	ST trace = 0.0, result = 0.0;
 
@@ -24,7 +23,6 @@ ST calcTrace(const RCP<MAT> &A) {
 }
 
 ST calcAbsTrace(const RCP<MAT> &A) {
-	TimeMonitor LocalTimer (*timeAbsTrace);
 	GO rows = A->getGlobalNumRows();
 	ST trace = 0.0, result = 0.0;
 

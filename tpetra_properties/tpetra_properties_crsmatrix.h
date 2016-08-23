@@ -21,14 +21,6 @@
 #include <Tpetra_RowMatrixTransposer.hpp>
 #include <MatrixMarket_Tpetra.hpp>
 
-//  Epetra
-#include <Epetra_CrsMatrix.h>
-#include <Epetra_LinearProblem.h>
-#include <Epetra_InvOperator.h>
-#include <Epetra_MpiComm.h>
-#include <Epetra_Map.h>
-#include <EpetraExt_CrsMatrixIn.h>
-#include "ModeLaplace2DQ2.h"
 
 //  Teuchos
 #include <Teuchos_ScalarTraits.hpp>
@@ -55,17 +47,6 @@
 #include <AnasaziEpetraAdapter.hpp>
 #include <AnasaziBlockDavidsonSolMgr.hpp>
 
-//  Belos
-#include <BelosEpetraOperator.h>
-#include <BelosEpetraAdapter.hpp>
-
-//  Ifpack
-#include <Ifpack.h>
-#include <Ifpack_Preconditioner.h>
-#include <Ifpack2_ILUT_decl.hpp> 
-#include <Ifpack2_ILUT_def.hpp>
-#include <Ifpack2_ILUT.hpp>
-#include <Ifpack2_Factory.hpp>
 
 //  C++ Typedefs
 typedef double ST;
@@ -110,38 +91,6 @@ extern RCP<const Teuchos::Comm<int> > comm;
 extern RCP<Teuchos::FancyOStream> fos;
 extern int myRank, numNodes;
 
-//  Timers
-extern TIMER timeRowVariance;
-extern TIMER timeColVariance;
-extern TIMER timeDiagVariance;
-extern TIMER timeNonzeros;
-extern TIMER timeDim;
-extern TIMER timeFrobeniusNorm;
-extern TIMER timeSymmetricFrobeniusNorm;
-extern TIMER timeAntisymmetricFrobeniusNorm;
-extern TIMER timeOneNorm;
-extern TIMER timeInfNorm;
-extern TIMER timeSymmetricInfNorm;
-extern TIMER timeAntisymmetricInfNorm;
-extern TIMER timeMaxNonzerosPerRow;
-extern TIMER timeMinNonzerosPerRow;
-extern TIMER timeAvgNonzerosPerRow;
-extern TIMER timeTrace;
-extern TIMER timeAbsTrace;
-extern TIMER timeDummyRows;
-extern TIMER timeSymmetry;
-extern TIMER timeRowDiagonalDominance;
-extern TIMER timeColDiagonalDominance;
-extern TIMER timeLowerBandwidth;
-extern TIMER timeUpperBandwidth;
-extern TIMER timeDiagonalMean;
-extern TIMER timeDiagonalSign;
-extern TIMER timeDiagonalNonzeros;
-extern TIMER timeEigenValuesLM;
-extern TIMER timeEigenValuesSM;
-extern TIMER timeEigenValuesLR;
-extern TIMER timeEigenValuesSR; 
-
 //  Functions
 void runGauntlet(const RCP<MAT> &A);
 ST calcRowVariance(const RCP<MAT> &A);
@@ -170,10 +119,11 @@ int calcDiagonalSign(const RCP<MAT> &A);
 size_t calcDiagonalNonzeros(const RCP<MAT> &A);
 size_t calcLowerBandwidth(const RCP<MAT> &A);
 size_t calcUpperBandwidth(const RCP<MAT> &A);
-void calcEigenValues(const RCP<MAT> &A, std::string eigenType);
+//void calcEigenValues(const RCP<MAT> &A, std::string eigenType);
 void calcNonzeroPatternSymmetryPercentage(const RCP<MAT> &A);
-void calcSmallestEigenvalues(const RCP<MAT> &A, std::string filename);
+//void calcSmallestEigenvalues(const RCP<MAT> &A, std::string filename);
 void calcInverseMethod(const RCP<MAT> &A);
+ST calcAbsNonzeroSum(const RCP<MAT> &A);
 
 //  Complex versions
 void runGauntlet(const RCP<MATC> &A);
@@ -183,7 +133,5 @@ ST calcDiagVariance(const RCP<MATC> &A);
 size_t calcNonzeros(const RCP<MATC> &A);
 size_t calcDim(const RCP<MATC> &A);
 ST calcFrobeniusNorm(const RCP<MATC> &A);
-
-void initTimers();
 
 #endif

@@ -2,7 +2,6 @@
 
 //  The variance of the diagonal (real)
 ST calcDiagVariance(const RCP<MAT> &A) {
-	TimeMonitor LocalTimer (*timeDiagVariance);
 	GO rows = A->getGlobalNumRows();
 	ST locMean = 0.0;
 	ST mean = 0.0, locVariance = 0.0, result = 0.0;
@@ -47,7 +46,6 @@ ST calcDiagVariance(const RCP<MAT> &A) {
 }
 
 ST calcDiagVariance(const RCP<MATC> &A) {
-	TimeMonitor LocalTimer (*timeDiagVariance);
 	GO rows = A->getGlobalNumRows();
 	ST locMean = 0.0;
 	ST mean = 0.0, locVariance = 0.0, result = 0.0;
