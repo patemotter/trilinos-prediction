@@ -27,6 +27,7 @@
 *.exe
 *.out
 *.app
+*/*tpetra_properties_crsmatrix*
 
 *.cmake
 CMake*
