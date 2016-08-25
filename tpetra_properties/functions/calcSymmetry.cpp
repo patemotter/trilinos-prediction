@@ -1,6 +1,13 @@
 #include "tpetra_properties_crsmatrix.h"
 
+/*
+*	Determines the symmetry of a square matrix based on non-diagonal nonzeros
+*	- 'match' counts exact numeric matches between two nonzero entries
+*	- 'noMatch' counts numeric disagreements between two nonzero entries
+*	- 'dne' counts nonzero entries which match to a zero entry
+*/
 std::vector<ST> calcSymmetry(const RCP<MAT> &A) {
+	//  A is the original matrix, B is its transpose
 	Tpetra::RowMatrixTransposer<ST, LO, GO, NT> transposer(A);
 	RCP<MAT> B = transposer.createTranspose();
 
@@ -13,6 +20,7 @@ std::vector<ST> calcSymmetry(const RCP<MAT> &A) {
 	GO diagNonzeros = A->getGlobalNumDiags();
 	GO offDiagNonzeros = A->getGlobalNumEntries() - diagNonzeros;
 	for (GO row = 0; row < rows; row++) {
+		//  Limit the work to whichever node hosts the data
 		if (A->getRowMap()->isNodeGlobalElement(row)) {
 			size_t colsA = A->getNumEntriesInGlobalRow(row);
 			size_t colsB = B->getNumEntriesInGlobalRow(row);
@@ -31,7 +39,7 @@ std::vector<ST> calcSymmetry(const RCP<MAT> &A) {
 				if (row != indicesB[colB])
 					mapB.insert( std::pair<GO,ST>(indicesB[colB], valuesB[colB]) );
 			}
-			//  Compare the maps
+			//  Compare the ma
 			std::map<GO, ST>::iterator iterA;
 			for (iterA = mapA.begin(); iterA != mapA.end(); iterA++) {
 				//  Matching indices found
@@ -48,6 +56,7 @@ std::vector<ST> calcSymmetry(const RCP<MAT> &A) {
 			}
 		}
 	}
+	//  Gather all results and compute percentages
 	std::vector<ST> results;
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &match, &totalMatch);
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &noMatch, &totalNoMatch);
