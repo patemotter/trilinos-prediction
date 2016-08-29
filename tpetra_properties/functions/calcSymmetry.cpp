@@ -2,11 +2,11 @@
 
 /*
 *	Determines the symmetry of a square matrix based on non-diagonal nonzeros
-*	- 'match' counts exact numeric matches between two nonzero entries
-*	- 'noMatch' counts numeric disagreements between two nonzero entries
-*	- 'dne' counts nonzero entries which match to a zero entry
+*	- 'match' exact numeric matches between two nonzero entries
+*	- 'noMatch' numeric disagreements between two nonzero entries
+*	- 'dne' nonzero entries which match to a zero entry
 */
-std::vector<ST> calcSymmetry(const RCP<MAT> &A) {
+void calcSymmetry(const RCP<MAT> &A) {
 	//  A is the original matrix, B is its transpose
 	Tpetra::RowMatrixTransposer<ST, LO, GO, NT> transposer(A);
 	RCP<MAT> B = transposer.createTranspose();
@@ -57,15 +57,13 @@ std::vector<ST> calcSymmetry(const RCP<MAT> &A) {
 		}
 	}
 	//  Gather all results and compute percentages
-	std::vector<ST> results;
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &match, &totalMatch);
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &noMatch, &totalNoMatch);
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &dne, &totalDne);
-	results.push_back( (double)totalMatch/(double)offDiagNonzeros );
-	results.push_back( (double)totalNoMatch/(double)offDiagNonzeros );
-	results.push_back( (double)totalDne/(double)offDiagNonzeros );
 	*fos << (double)totalMatch/(double)offDiagNonzeros << ", ";
 	*fos << (double)totalNoMatch/(double)offDiagNonzeros << ", ";
 	*fos << (double)totalDne/(double)offDiagNonzeros << ", ";
-	return results;
+	totalMatch == offDiagNonzeros ? *fos << "1, " : *fos << "0, ";
+	totalNoMatch == offDiagNonzeros ? *fos << "1, " : *fos << "0, ";
+	totalDne == offDiagNonzeros ? *fos << "1, " : *fos << "0, ";
 }
