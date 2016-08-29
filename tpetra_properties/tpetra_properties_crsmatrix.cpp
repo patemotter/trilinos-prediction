@@ -107,7 +107,7 @@ void runGauntlet(const RCP<MAT> &A) {
   //Values(A, "LM");
   //calcEigenValues(A, "LR");
   //calcEigenValues(A, "SM");
-  //calcEigenValues(A, "SR");
+  //calcEigenValues(A, "SR");gT
 }
 void runGauntlet(const RCP<MATC> &A) {
 	// Test squareness
@@ -151,4 +151,3 @@ void runGauntlet(const RCP<MATC> &A) {
   */
   *fos << std::endl;
 }
-

@@ -111,7 +111,7 @@ ST calcAvgNonzerosPerRow(const RCP<MAT> &A);
 ST calcTrace(const RCP<MAT> &A);
 ST calcAbsTrace(const RCP<MAT> &A);
 size_t calcDummyRows(const RCP<MAT> &A);
-std::vector<ST> calcSymmetry(const RCP<MAT> &A);
+void calcSymmetry(const RCP<MAT> &A);
 int calcRowDiagonalDominance(const RCP<MAT> &A);
 int calcColDiagonalDominance(const RCP<MAT> &A);
 ST calcDiagonalMean(const RCP<MAT> &A);
