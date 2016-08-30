@@ -1,6 +1,6 @@
 #include "tpetra_properties_crsmatrix.h"
 
-size_t calcLowerBandwidth(const RCP<MAT> &A) {
+void calcLowerBandwidth(const RCP<MAT> &A) {
 	size_t rows = A->getGlobalNumRows();
 	size_t localMaxLB = 0, localLB = 0, totalLB;
 	size_t minIndex;
@@ -29,10 +29,10 @@ size_t calcLowerBandwidth(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MAX, 1, &localMaxLB, &totalLB);
-	return totalLB;
+	*fos << totalLB << SPACE;
 }
 
-size_t calcUpperBandwidth(const RCP<MAT> &A) {
+void calcUpperBandwidth(const RCP<MAT> &A) {
 	size_t rows = A->getGlobalNumRows();
 	size_t localMaxUB = 0, localUB = 0, totalUB;
 	size_t maxIndex;
@@ -61,5 +61,5 @@ size_t calcUpperBandwidth(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MAX, 1, &localMaxUB, &totalUB);
-	return totalUB;
+	*fos << totalUB << SPACE;
 }

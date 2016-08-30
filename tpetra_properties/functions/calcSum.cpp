@@ -1,6 +1,6 @@
 #include "tpetra_properties_crsmatrix.h"
 
-ST calcAbsNonzeroSum(const RCP<MAT> &A) {
+void calcAbsNonzeroSum(const RCP<MAT> &A) {
 	GO rows = A->getGlobalNumRows();
 	ST sum = 0.0, result = 0.0;
 
@@ -17,5 +17,5 @@ ST calcAbsNonzeroSum(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &sum, &result);
-	return result;
+	*fos << result << SPACE;
 }

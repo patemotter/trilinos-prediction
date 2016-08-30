@@ -1,6 +1,6 @@
 #include "tpetra_properties_crsmatrix.h"
 
-size_t calcDummyRows(const RCP<MAT> &A) {
+void calcDummyRows(const RCP<MAT> &A) {
 	size_t rows = A->getGlobalNumRows();
 	size_t locDummy = 0, result = 0;
 
@@ -13,5 +13,5 @@ size_t calcDummyRows(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &locDummy, &result);
-	return result;
+	*fos << result << SPACE;
 }

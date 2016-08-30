@@ -1,7 +1,7 @@
 #include "tpetra_properties_crsmatrix.h"
 
 //  Max absolute row sum
-ST calcInfNorm(const RCP<MAT> &A) {
+void calcInfNorm(const RCP<MAT> &A) {
 	GO rows = A->getGlobalNumRows();
 	ST locSum, locMaxSum, result = 0.0;
 	//  Go through each row on the current process
@@ -21,17 +21,17 @@ ST calcInfNorm(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MAX, 1, &locMaxSum, &result);
-	return result;
+	*fos << result << SPACE;
 }
 
 //  Max absolute row sum of symmetric part
-ST calcSymmetricInfNorm(const RCP<MAT> &A) {
+void calcSymmetricInfNorm(const RCP<MAT> &A) {
 	RCP<MAT> A_s = Tpetra::MatrixMatrix::add(0.5, false, *A, 0.5, true, *A);
-	return calcInfNorm(A_s);
+	calcInfNorm(A_s);
 }
 
 //  Max absolute row sum of anti-symmetric part
-ST calcAntisymmetricInfNorm(const RCP<MAT> &A) {
+void calcAntisymmetricInfNorm(const RCP<MAT> &A) {
 	RCP<MAT> A_a = Tpetra::MatrixMatrix::add(0.5, false, *A, -0.5, true, *A);
-	return calcInfNorm(A_a);
+	calcInfNorm(A_a);
 }

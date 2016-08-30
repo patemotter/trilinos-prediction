@@ -1,6 +1,6 @@
 #include "tpetra_properties_crsmatrix.h"
 
-ST calcDiagonalMean(const RCP<MAT> &A) {
+void calcDiagonalMean(const RCP<MAT> &A) {
 	ST locMean, mean = 0.0;
   GO rows = A->getGlobalNumRows();
   for (GO row = 0; row < rows; row++) {
@@ -18,5 +18,5 @@ ST calcDiagonalMean(const RCP<MAT> &A) {
   }
   Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &locMean, &mean);
   mean /= A->getGlobalNumRows();
-  return mean;
+  *fos << mean << SPACE;
 }

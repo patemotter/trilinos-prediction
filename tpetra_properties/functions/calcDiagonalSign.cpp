@@ -3,7 +3,7 @@
 // indicates the diagonal sign pattern
 // -2 all negative, -1 nonpositive, 0 all zero, 1 nonnegative, 2 all positive,
 // 3 some negative,some or no zero,some positive
-int calcDiagonalSign(const RCP<MAT> &A) {
+void calcDiagonalSign(const RCP<MAT> &A) {
 	long locPos = 0, locNeg = 0, locZero = 0;
 	long totalPos, totalNeg, totalZero;
 	GO rows = A->getGlobalNumRows();
@@ -30,17 +30,17 @@ int calcDiagonalSign(const RCP<MAT> &A) {
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &locPos, &totalPos);
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &locNeg, &totalNeg);
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &locZero, &totalZero);
+	int result = -99;
 	if (totalPos > 0 && totalNeg == 0 && totalZero == 0) {
-		return 2;
+		result = 2;
 	} else if (totalNeg > 0 && totalPos == 0 && totalZero == 0) {
-		return -2;
+		result = -2;
 	} else if (totalZero > 0 && totalPos == 0 && totalNeg == 0) {
-		return 0;
+		result = 0;
 	} else if (totalNeg == 0) {
-		return 1;
+		result = 1;
 	} else if (totalPos == 0) {
-		return -1;
-	} else {
-		return 3;
+		result = -1;
 	}
+	*fos << result << SPACE;
 }

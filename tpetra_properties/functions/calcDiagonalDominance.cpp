@@ -2,7 +2,7 @@
 
 // 0 not, 1 weak, 2 strict
 // a_ii >= sum(a_ij) for all i,js i!=j
-int calcRowDiagonalDominance(const RCP<MAT> &A) {
+void calcRowDiagonalDominance(const RCP<MAT> &A) {
 	GO rows = A->getGlobalNumRows();
 	ST result = 0.0;
 	GO totalMatch, match = 0;
@@ -27,7 +27,7 @@ int calcRowDiagonalDominance(const RCP<MAT> &A) {
 					}
 				}
 				if (locDiagSum < locRowSum) {
-					return 0;
+					*fos << 0;
 				} else if (locDiagSum == locRowSum) {
 					strict = 0;
 				}
@@ -36,13 +36,13 @@ int calcRowDiagonalDominance(const RCP<MAT> &A) {
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MAX, 1, &strict, &totalStrict);
 	if (totalStrict == 1) {
-		return 2;
+		*fos << 2 << SPACE;
 	} else {
-		return 1;
+		*fos << 1 << SPACE;
 	}
 }
 
-int calcColDiagonalDominance(const RCP<MAT> &A) {
+void calcColDiagonalDominance(const RCP<MAT> &A) {
 	Tpetra::RowMatrixTransposer<ST, LO, GO, NT> transposer(A);
 	RCP<MAT> B = transposer.createTranspose();
 
@@ -70,7 +70,7 @@ int calcColDiagonalDominance(const RCP<MAT> &A) {
 					}
 				}
 				if (locDiagSum < locRowSum) {
-					return 0;
+					*fos << 0;
 				} else if (locDiagSum == locRowSum) {
 					strict = 0;
 				}
@@ -79,8 +79,8 @@ int calcColDiagonalDominance(const RCP<MAT> &A) {
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MAX, 1, &strict, &totalStrict);
 	if (totalStrict == 1) {
-		return 2;
+		*fos << 2 << SPACE;
 	} else {
-		return 1;
+		*fos << 1 << SPACE;
 	}
 }

@@ -1,6 +1,6 @@
 #include "tpetra_properties_crsmatrix.h"
 
-size_t calcMinNonzerosPerRow(const RCP<MAT> &A) {
+void calcMinNonzerosPerRow(const RCP<MAT> &A) {
 	size_t rows = A->getGlobalNumRows();
 	size_t locNonzeros = rows, locMinNonzeros = rows, result = 0;
 
@@ -15,10 +15,10 @@ size_t calcMinNonzerosPerRow(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MIN, 1, &locMinNonzeros, &result);
-	return result;
+	*fos << result << SPACE;
 }
 
-ST calcAvgNonzerosPerRow(const RCP<MAT> &A) {
+void calcAvgNonzerosPerRow(const RCP<MAT> &A) {
 	GO rows = A->getGlobalNumRows();
 	GO locNonzeros = 0, result = 0;
 
@@ -31,5 +31,5 @@ ST calcAvgNonzerosPerRow(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &locNonzeros, &result);
-	return (ST)result / (ST)rows;
+	*fos << (ST)result / (ST)rows << SPACE;
 }

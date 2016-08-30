@@ -1,7 +1,7 @@
 #include "tpetra_properties_crsmatrix.h"
 
 //  Max absolute column sum
-ST calcOneNorm(const RCP<MAT> &A) {
+void calcOneNorm(const RCP<MAT> &A) {
 	Tpetra::RowMatrixTransposer<ST, LO, GO, NT> transposer(A);
 	RCP<MAT> B = transposer.createTranspose();
 
@@ -24,5 +24,5 @@ ST calcOneNorm(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MAX, 1, &locMaxSum, &result);
-	return result;
+	*fos << result << SPACE;
 }

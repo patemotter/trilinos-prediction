@@ -1,6 +1,6 @@
 #include "tpetra_properties_crsmatrix.h"
 
-ST calcTrace(const RCP<MAT> &A) {
+void calcTrace(const RCP<MAT> &A) {
 	GO rows = A->getGlobalNumRows();
 	ST trace = 0.0, result = 0.0;
 
@@ -19,10 +19,10 @@ ST calcTrace(const RCP<MAT> &A) {
     }
   }
   Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &trace, &result);
-  return result;
+  *fos << result << SPACE;
 }
 
-ST calcAbsTrace(const RCP<MAT> &A) {
+void calcAbsTrace(const RCP<MAT> &A) {
 	GO rows = A->getGlobalNumRows();
 	ST trace = 0.0, result = 0.0;
 
@@ -41,5 +41,5 @@ ST calcAbsTrace(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &trace, &result);
-	return result;
+	*fos << result << SPACE;
 }
