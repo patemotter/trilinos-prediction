@@ -25,7 +25,6 @@
 #include <Tpetra_RowMatrixTransposer.hpp>
 #include <MatrixMarket_Tpetra.hpp>
 
-
 //  Teuchos
 #include <Teuchos_ScalarTraits.hpp>
 #include <Teuchos_RCP.hpp>
@@ -50,7 +49,6 @@
 #include <AnasaziOperator.hpp>
 #include <AnasaziEpetraAdapter.hpp>
 #include <AnasaziBlockDavidsonSolMgr.hpp>
-
 
 //  C++ Typedefs
 typedef double ST;
@@ -91,6 +89,7 @@ const std::string CSV = ", ";
 
 //  Functions
 void runGauntlet(const RCP<MAT> &A);
+void runGauntlet(const RCP<MAT> &A, json &j, std::ofstream &outputFile);
 void calcRowVariance(const RCP<MAT> &A);
 void calcColVariance(const RCP<MAT> &A);
 void calcDiagVariance(const RCP<MAT> &A);
@@ -121,10 +120,49 @@ void calcNonzeroPatternSymmetryPercentage(const RCP<MAT> &A);
 void calcInverseMethod(const RCP<MAT> &A);
 void calcAbsNonzeroSum(const RCP<MAT> &A);
 void calcNonzeroSum(const RCP<MAT> &A);
-void funcsSum(const RCP<MAT> &A);
-void funcsNonzeros(const RCP<MAT> &A);
-void funcsInfNorm(const RCP<MAT> &A);
-void funcsBandwidth(const RCP<MAT> &A);
+
+void calcRowVariance(const RCP<MAT> &A, json &j);
+void calcColVariance(const RCP<MAT> &A, json &j);
+void calcDiagVariance(const RCP<MAT> &A, json &j);
+void calcNonzeros(const RCP<MAT> &A, json &j);
+void calcDim(const RCP<MAT> &A, json &j);
+void calcFrobeniusNorm(const RCP<MAT> &A, json &j);
+void calcSymmetricFrobeniusNorm(const RCP<MAT> &A, json &j);
+void calcAntisymmetricFrobeniusNorm(const RCP<MAT> &A, json &j);
+void calcInfNorm(const RCP<MAT> &A, json &j, const int &flag);
+void calcOneNorm(const RCP<MAT> &A, json &j);
+void calcSymmetricInfNorm(const RCP<MAT> &A, json &j);
+void calcAntisymmetricInfNorm(const RCP<MAT> &A, json &j);
+void calcMaxNonzerosPerRow(const RCP<MAT> &A, json &j);
+void calcMinNonzerosPerRow(const RCP<MAT> &A, json &j);
+void calcAvgNonzerosPerRow(const RCP<MAT> &A, json &j);
+void calcTrace(const RCP<MAT> &A, json &j);
+void calcAbsTrace(const RCP<MAT> &A, json &j);
+void calcDummyRows(const RCP<MAT> &A, json &j);
+void calcSymmetry(const RCP<MAT> &A, json &j);
+void calcRowDiagonalDominance(const RCP<MAT> &A, json &j);
+void calcColDiagonalDominance(const RCP<MAT> &A, json &j);
+void calcDiagonalMean(const RCP<MAT> &A, json &j);
+void calcDiagonalSign(const RCP<MAT> &A, json &j);
+void calcDiagonalNonzeros(const RCP<MAT> &A, json &j);
+void calcLowerBandwidth(const RCP<MAT> &A, json &j);
+void calcUpperBandwidth(const RCP<MAT> &A, json &j);
+void calcNonzeroPatternSymmetryPercentage(const RCP<MAT> &A, json &j);
+void calcInverseMethod(const RCP<MAT> &A, json &j);
+void calcAbsNonzeroSum(const RCP<MAT> &A, json &j);
+void calcNonzeroSum(const RCP<MAT> &A, json &j);
+
 void funcsBuiltin(const RCP<MAT> &A);
+void funcsBuiltin(const RCP<MAT> &A, json &j);
+void funcsBandwidth(const RCP<MAT> &A);
+void funcsBandwidth(const RCP<MAT> &A, json &j);
+void funcsDiagonalDominance(const RCP<MAT> &A);
+void funcsDiagonalDominance(const RCP<MAT> &A, json &j);
+void funcsInfNorm(const RCP<MAT> &A);
+void funcsInfNorm(const RCP<MAT> &A, json &j);
+void funcsNonzeros(const RCP<MAT> &A);
+void funcsNonzeros(const RCP<MAT> &A, json &j);
+void funcsSum(const RCP<MAT> &A);
+void funcsSum(const RCP<MAT> &A, json &j);
 
 #endif

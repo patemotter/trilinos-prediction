@@ -44,3 +44,44 @@ void calcDiagonalSign(const RCP<MAT> &A) {
 	}
 	*fos << result << CSV;
 }
+void calcDiagonalSign(const RCP<MAT> &A, json &j) {
+	long locPos = 0, locNeg = 0, locZero = 0;
+	long totalPos, totalNeg, totalZero;
+	GO rows = A->getGlobalNumRows();
+	for (GO row = 0; row < rows; row++) {
+		if (A->getRowMap()->isNodeGlobalElement(row)) {
+			size_t cols = A->getNumEntriesInGlobalRow(row);
+			Array<ST> values(cols);
+			Array<GO> indices(cols);
+			A->getGlobalRowCopy(row, indices(), values(), cols);
+			for (size_t col = 0; col < cols; col++) {
+				if (indices[col] == row) {
+					if (values[col] > 0) {
+						locPos++;
+					} else if (values[col] < 0) {
+						locNeg++;
+					} else {
+						locZero++;
+					}
+				}
+			}
+		}
+	}
+
+	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &locPos, &totalPos);
+	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &locNeg, &totalNeg);
+	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &locZero, &totalZero);
+	int result = -99;
+	if (totalPos > 0 && totalNeg == 0 && totalZero == 0) {
+		result = 2;
+	} else if (totalNeg > 0 && totalPos == 0 && totalZero == 0) {
+		result = -2;
+	} else if (totalZero > 0 && totalPos == 0 && totalNeg == 0) {
+		result = 0;
+	} else if (totalNeg == 0) {
+		result = 1;
+	} else if (totalPos == 0) {
+		result = -1;
+	}
+	j["diagonal_sign"] = result;
+}
