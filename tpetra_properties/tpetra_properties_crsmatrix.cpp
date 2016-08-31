@@ -1,8 +1,18 @@
 #include "tpetra_properties_crsmatrix.h"
 
+/* 	outputs in order (33): matrix, dimension, frobNorm, symmFrobNorm,
+ *	antisymmFrobNorm, nnz, maxNonzerosPerRow, diagonalNNZ, lowerBW, upperBW,
+ *	colVariance, rowDiagonalDominance, colDiagonalDominance, diagonalMean,
+ *	diagonalSign, diagVariance, numDummyRows, infNorm, symmInfNorm,
+ *  antisymmInfNorm, minNNZPerRow, AvgNNZPerRow, oneNorm, rowVariance,
+ *	absNonzeroSum, nonzeroSum, matchPercentage, noMatchPercentage,
+ *  DNEPercentage, matchBinary, noMatchBinary, DNEBinary
+*/
+
 RCP<const Teuchos::Comm<int> > comm;
 RCP<Teuchos::FancyOStream> fos;
 int myRank, numNodes;
+
 
 int main(int argc, char *argv[]) {
 	std::string outputDir;
@@ -55,7 +65,11 @@ int main(int argc, char *argv[]) {
 	}
 	RCP<MAT> A = Reader::readSparseFile(origFilename, comm, node, true);
 	*fos << filename << CSV;
-	runGauntlet(A);
+	try {
+		runGauntlet(A);
+	} catch (...) {
+		*fos << "PROCESSING ERROR" << std::endl;
+	}
 }
 
 void funcsBuiltin(const RCP<MAT> &A) {
