@@ -87,7 +87,7 @@ using nlohmann::json;
 extern RCP<const Teuchos::Comm<int> > comm;
 extern RCP<Teuchos::FancyOStream> fos;
 extern int myRank, numNodes;
-const std::string SPACE = ", ";
+const std::string CSV = ", ";
 
 //  Functions
 void runGauntlet(const RCP<MAT> &A);

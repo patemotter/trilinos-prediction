@@ -15,7 +15,7 @@ void calcMinNonzerosPerRow(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MIN, 1, &locMinNonzeros, &result);
-	*fos << result << SPACE;
+	*fos << result << CSV;
 }
 
 void calcAvgNonzerosPerRow(const RCP<MAT> &A) {
@@ -31,5 +31,5 @@ void calcAvgNonzerosPerRow(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &locNonzeros, &result);
-	*fos << (ST)result / (ST)rows << SPACE;
+	*fos << (ST)result / (ST)rows << CSV;
 }

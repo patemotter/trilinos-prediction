@@ -42,5 +42,5 @@ void calcDiagVariance(const RCP<MAT> &A) {
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &locVariance, &result);
 	result /= A->getGlobalNumRows();
-	*fos << result << SPACE;
+	*fos << result << CSV;
 }

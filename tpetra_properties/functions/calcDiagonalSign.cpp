@@ -42,5 +42,5 @@ void calcDiagonalSign(const RCP<MAT> &A) {
 	} else if (totalPos == 0) {
 		result = -1;
 	}
-	*fos << result << SPACE;
+	*fos << result << CSV;
 }

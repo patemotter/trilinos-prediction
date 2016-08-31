@@ -29,7 +29,7 @@ void calcLowerBandwidth(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MAX, 1, &localMaxLB, &totalLB);
-	*fos << totalLB << SPACE;
+	*fos << totalLB << CSV;
 }
 
 void calcUpperBandwidth(const RCP<MAT> &A) {
@@ -61,5 +61,5 @@ void calcUpperBandwidth(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MAX, 1, &localMaxUB, &totalUB);
-	*fos << totalUB << SPACE;
+	*fos << totalUB << CSV;
 }

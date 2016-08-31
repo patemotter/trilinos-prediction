@@ -19,7 +19,7 @@ void calcTrace(const RCP<MAT> &A) {
     }
   }
   Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &trace, &result);
-  *fos << result << SPACE;
+  *fos << result << CSV;
 }
 
 void calcAbsTrace(const RCP<MAT> &A) {
@@ -41,5 +41,5 @@ void calcAbsTrace(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &trace, &result);
-	*fos << result << SPACE;
+	*fos << result << CSV;
 }

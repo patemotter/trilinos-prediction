@@ -34,5 +34,5 @@ void calcRowVariance(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MAX, 1, &locMaxVariance, &result);
-	*fos << result << SPACE;
+	*fos << result << CSV;
 }

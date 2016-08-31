@@ -18,5 +18,5 @@ void calcDiagonalMean(const RCP<MAT> &A) {
   }
   Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &locMean, &mean);
   mean /= A->getGlobalNumRows();
-  *fos << mean << SPACE;
+  *fos << mean << CSV;
 }

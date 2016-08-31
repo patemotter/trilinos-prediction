@@ -36,9 +36,9 @@ void calcRowDiagonalDominance(const RCP<MAT> &A) {
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MAX, 1, &strict, &totalStrict);
 	if (totalStrict == 1) {
-		*fos << 2 << SPACE;
+		*fos << 2 << CSV;
 	} else {
-		*fos << 1 << SPACE;
+		*fos << 1 << CSV;
 	}
 }
 
@@ -79,8 +79,8 @@ void calcColDiagonalDominance(const RCP<MAT> &A) {
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MAX, 1, &strict, &totalStrict);
 	if (totalStrict == 1) {
-		*fos << 2 << SPACE;
+		*fos << 2 << CSV;
 	} else {
-		*fos << 1 << SPACE;
+		*fos << 1 << CSV;
 	}
 }

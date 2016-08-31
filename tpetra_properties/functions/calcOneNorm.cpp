@@ -24,5 +24,5 @@ void calcOneNorm(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MAX, 1, &locMaxSum, &result);
-	*fos << result << SPACE;
+	*fos << result << CSV;
 }

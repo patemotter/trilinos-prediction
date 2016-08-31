@@ -17,5 +17,5 @@ void calcAbsNonzeroSum(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_SUM, 1, &sum, &result);
-	*fos << result << SPACE;
+	*fos << result << CSV;
 }

@@ -21,7 +21,7 @@ void calcInfNorm(const RCP<MAT> &A) {
 		}
 	}
 	Teuchos::reduceAll(*comm, Teuchos::REDUCE_MAX, 1, &locMaxSum, &result);
-	*fos << result << SPACE;
+	*fos << result << CSV;
 }
 
 //  Max absolute row sum of symmetric part
