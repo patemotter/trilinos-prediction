@@ -65,5 +65,5 @@ void calcSymmetry(const RCP<MAT> &A) {
 	*fos << (double)totalDne/(double)offDiagNonzeros << ", ";
 	totalMatch == offDiagNonzeros ? *fos << 1 : *fos << 0; *fos << CSV;
 	totalNoMatch == offDiagNonzeros ? *fos << 1 : *fos << 0; *fos << CSV;
-	totalDne == offDiagNonzeros ? *fos << 1 : *fos << 0; *fos << CSV;
+	totalDne == offDiagNonzeros ? *fos << 1 : *fos << 0; 
 }

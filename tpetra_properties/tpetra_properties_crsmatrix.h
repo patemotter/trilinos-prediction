@@ -120,5 +120,11 @@ void calcUpperBandwidth(const RCP<MAT> &A);
 void calcNonzeroPatternSymmetryPercentage(const RCP<MAT> &A);
 void calcInverseMethod(const RCP<MAT> &A);
 void calcAbsNonzeroSum(const RCP<MAT> &A);
+void calcNonzeroSum(const RCP<MAT> &A);
+void funcsSum(const RCP<MAT> &A);
+void funcsNonzeros(const RCP<MAT> &A);
+void funcsInfNorm(const RCP<MAT> &A);
+void funcsBandwidth(const RCP<MAT> &A);
+void funcsBuiltin(const RCP<MAT> &A);
 
 #endif

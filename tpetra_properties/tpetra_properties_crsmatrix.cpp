@@ -26,11 +26,10 @@ int main(int argc, char *argv[]) {
 	Teuchos::oblackholestream blackhole;
 	std::ostream& out = (myRank == 0) ? std::cout : blackhole;
 	std::ofstream outputFile;
-	bool complex = false;
 
 	//  Decide to print to screen or file
 	if (outputDir.empty()) {
-		//std::cout << "No output directory was specified. Printing to screen" << std::endl;
+		std::cout << "No output directory was specified. Printing to screen" << std::endl;
 		fos = Teuchos::fancyOStream(Teuchos::rcpFromRef(out));
 		unsigned found = filename.find_last_of("/\\");
 		filename = filename.substr(found+1);
@@ -40,7 +39,6 @@ int main(int argc, char *argv[]) {
 		filename = filename.substr(found+1);
 		outputFile.open(outputFilename.c_str());
 		fos = Teuchos::fancyOStream(Teuchos::rcpFromRef(outputFile));
-
 	}
 
 	//  Check if matrix is complex
@@ -50,20 +48,50 @@ int main(int argc, char *argv[]) {
 		std::string firstLine;
 		getline(infile, firstLine);
 		if (firstLine.find("complex") != std::string::npos) {
-			complex = true;
+			*fos << "Complex matrices are not currently supported: exiting\n";
+			infile.close();
+			exit(-1);
 		}
 	}
-	infile.close();
-	if (complex) {
-		*fos << "Complex matrices are not currently supported: exiting\n";
-		exit(-1);
-	} else {
-		RCP<MAT> A = Reader::readSparseFile(origFilename, comm, node, true);
-		Tpetra::RowMatrixTransposer<ST, LO, GO, NT> transposer(A);
-		RCP<MAT> B = transposer.createTranspose();
-		*fos <<  filename;
-		runGauntlet(A);
-	}
+	RCP<MAT> A = Reader::readSparseFile(origFilename, comm, node, true);
+	*fos << filename << CSV;
+	runGauntlet(A);
+}
+
+void funcsBuiltin(const RCP<MAT> &A) {
+	calcDim(A);
+	calcFrobeniusNorm(A);
+	calcSymmetricFrobeniusNorm(A);
+	calcAntisymmetricFrobeniusNorm(A);
+	calcNonzeros(A);
+	calcMaxNonzerosPerRow(A);
+	calcDiagonalNonzeros(A);
+}
+
+void funcsBandwidth(const RCP<MAT> &A) {
+	calcLowerBandwidth(A);
+	calcUpperBandwidth(A);
+}
+
+void funcsDiagonalDominance(const RCP<MAT> &A) {
+	calcRowDiagonalDominance(A);
+	calcColDiagonalDominance(A);
+}
+
+void funcsInfNorm(const RCP<MAT> &A) {
+	calcInfNorm(A);
+	calcSymmetricInfNorm(A);
+	calcAntisymmetricInfNorm(A);
+}
+
+void funcsNonzeros(const RCP<MAT> &A) {
+	calcMinNonzerosPerRow(A);
+	calcAvgNonzerosPerRow(A);
+}
+
+void funcsSum(const RCP<MAT> &A) {
+	calcAbsNonzeroSum(A);
+	calcNonzeroSum(A);
 }
 
 void runGauntlet(const RCP<MAT> &A) {
@@ -72,31 +100,19 @@ void runGauntlet(const RCP<MAT> &A) {
 		*fos << "Not a square matrix, exiting." << std::endl;
 		exit(-1);
 	}
-	calcRowVariance(A);
+	funcsBuiltin(A);
+	funcsBandwidth(A);
 	calcColVariance(A);
-	calcDiagVariance(A);
-	calcNonzeros(A);
-	calcDim(A);
-	calcFrobeniusNorm(A);
-	calcSymmetricFrobeniusNorm(A);
-	calcAntisymmetricFrobeniusNorm(A);
-	calcOneNorm(A);
-	calcInfNorm(A);
-	calcSymmetricInfNorm(A);
-	calcAntisymmetricInfNorm(A);
-	calcMaxNonzerosPerRow(A);
-	calcMinNonzerosPerRow(A);
-	calcAvgNonzerosPerRow(A);
-	calcTrace(A);
-	calcAbsTrace(A);
-	calcDummyRows(A);
-	calcSymmetry(A);
-	calcRowDiagonalDominance(A);
-	calcColDiagonalDominance(A);
-	calcLowerBandwidth(A);
-	calcUpperBandwidth(A);
+	funcsDiagonalDominance(A);
 	calcDiagonalMean(A);
 	calcDiagonalSign(A);
-	calcDiagonalNonzeros(A);
-	calcAbsNonzeroSum(A);
+	calcDiagVariance(A);
+	calcDummyRows(A);
+	funcsInfNorm(A);
+	funcsNonzeros(A);
+	calcOneNorm(A);
+	calcRowVariance(A);
+	funcsSum(A);
+	calcSymmetry(A);
+	*fos << std::endl;
 }
