@@ -1,12 +1,12 @@
 #include "tpetra_properties_crsmatrix.h"
 
 /* 	outputs in order (33): matrix, dimension, frobNorm, symmFrobNorm,
- *	antisymmFrobNorm, nnz, maxNonzerosPerRow, diagonalNNZ, lowerBW, upperBW,
- *	colVariance, rowDiagonalDominance, colDiagonalDominance, diagonalMean,
- *	diagonalSign, diagVariance, numDummyRows, infNorm, symmInfNorm,
- *  antisymmInfNorm, minNNZPerRow, AvgNNZPerRow, oneNorm, rowVariance,
- *	absNonzeroSum, nonzeroSum, matchPercentage, noMatchPercentage,
- *  DNEPercentage, matchBinary, noMatchBinary, DNEBinary
+*	antisymmFrobNorm, nnz, maxNonzerosPerRow, diagonalNNZ, lowerBW, upperBW,
+*	colVariance, rowDiagonalDominance, colDiagonalDominance, diagonalMean,
+*	diagonalSign, diagVariance, numDummyRows, infNorm, symmInfNorm,
+*  antisymmInfNorm, minNNZPerRow, AvgNNZPerRow, oneNorm, rowVariance,
+*	absNonzeroSum, nonzeroSum, matchPercentage, noMatchPercentage,
+*  DNEPercentage, matchBinary, noMatchBinary, DNEBinary
 */
 
 RCP<const Teuchos::Comm<int> > comm;
@@ -27,15 +27,17 @@ int main(int argc, char *argv[]) {
 	if (argc < 2) {
 		std::cout << "No input file was specified" << std::endl;
 		return -1;
-	} else 	if (args[2] == "-csv") {
+	} else if (argc == 2) {
+		std::cout << "No output file specified, printing to screen\n";
+	} else if (args[2] == "-csv") {
 		csv = true;
 	} else	if (args[2] == "-json") {
 		json = true;
 	} else {
-		std::cout << "Specify -csv or -json\n";
+		std::cout << "ERROR\n";
 		exit(-1);
 	}
-	std::string filename = args[1];
+	std::string matrixFile = args[1];
 
 	//  Check if matrix is complex
 	std::ifstream infile;
@@ -64,19 +66,35 @@ int main(int argc, char *argv[]) {
 	if (json == 0 && csv == 0) {
 		std::cout << "No output directory was specified. Printing to screen\n";
 		fos = Teuchos::fancyOStream(Teuchos::rcpFromRef(out));
-		unsigned found = filename.find_last_of("/\\");
-		*fos << filename.substr(found+1) << CSV;
+		unsigned found = matrixFile.find_last_of("/\\");
+		*fos << matrixFile.substr(found+1) << CSV;
 		runGauntlet(A);
 	} else if (json == 0 && csv == 1){ //  print to file
-		unsigned found = args[1].find_last_of("/\\");
-		outputFile.open(args[3], std::ofstream::app);
+		unsigned found = matrixFile.find_last_of("/\\");
+		std::string outputFilename = args[3];
+		if (outputFilename.find(".csv") != std::string::npos) {
+			outputFile.open(outputFilename, std::ofstream::app);
+		} else {
+			if (outputFilename.back() != '/')
+				outputFilename.push_back('/');
+			outputFile.open(outputFilename + matrixFile.substr(found+1) + ".csv",
+			std::ofstream::app);
+		}
 		fos = Teuchos::fancyOStream(Teuchos::rcpFromRef(outputFile));
-		*fos << filename.substr(found+1) << CSV;
+		*fos << matrixFile.substr(found+1) << CSV;
 		runGauntlet(A);
 	} else if (json == 1 && csv == 0) {
 		unsigned found = args[1].find_last_of("/\\");
-		outputFile.open(args[3], std::ofstream::app);
-		j["matrix_name"] = filename.substr(found+1);
+		std::string outputFilename = args[3];
+		if (outputFilename.find(".json") != std::string::npos) {
+			outputFile.open(outputFilename, std::ofstream::app);
+		} else {
+			if (outputFilename.back() != '/')
+				outputFilename.push_back('/');
+			outputFile.open(outputFilename + matrixFile.substr(found+1) + ".json",
+			std::ofstream::app);
+		}
+		j["matrix_name"] = matrixFile.substr(found+1);
 		runGauntlet(A, j, outputFile);
 	} else {
 		std::cout << "Incorrect flags\n";
