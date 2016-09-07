@@ -146,7 +146,7 @@ void runGauntlet(const RCP<MAT> &A, json  &j, std::ofstream &outputFile) {
 	calcRowVariance(A, j);
 	funcsSum(A, j);
 	calcSymmetry(A, j);
-	outputFile << std::setw(4) << j << std::endl;
+	outputFile << std::setw(4) << j << "," << std::endl;
 }
 
 void funcsBuiltin(const RCP<MAT> &A) {
