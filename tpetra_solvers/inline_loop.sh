@@ -1,17 +1,7 @@
 #!/bin/bash
-
-#SBATCH --job-name=UF.1000+nnz.np1
-#SBATCH --qos=janus
-#SBATCH --time=08:00:00
-#SBATCH --reservation=janus-serial
-#SBATCH --nodes 1
-#SBATCH --ntasks-per-node=1
-#SBATCH --output=/lustre/janus_scratch/pamo8800/All_Results/slurm-%j.out
-
-DATE=`date +%m.%d.%Y_%H:%M`
-OUTDIR="/lustre/janus_scratch/pamo8800/All_Results/${SLURM_JOB_NAME}__${DATE}__${SLURM_JOB_ID}"
-MATDIR=/lustre/janus_scratch/pamo8800/UF_Collection_Matrix-Market
-EXEDIR=~/project/lighthouse/sandbox/trilinos/tpetra_solvers
+OUTDIR=/media/sf_F_DRIVE/output
+MATDIR=/media/sf_E_DRIVE/UFget/untarred_mtx
+EXEDIR=/media/sf_F_DRIVE/repos/trilinos-prediction/tpetra_properties
 
 INPUT=$1
 
