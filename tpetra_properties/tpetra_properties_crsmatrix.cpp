@@ -117,6 +117,8 @@ void runGauntlet(const RCP<MAT> &A) {
 	calcDiagonalSign(A);
 	calcDiagVariance(A);
 	calcDummyRows(A);
+    calcTrace(A);
+    calcAbsTrace(A);
 	funcsInfNorm(A);
 	funcsNonzeros(A);
 	calcOneNorm(A);
@@ -140,6 +142,8 @@ void runGauntlet(const RCP<MAT> &A, json  &j, std::ofstream &outputFile) {
 	calcDiagonalSign(A, j);
 	calcDiagVariance(A, j);
 	calcDummyRows(A, j);
+    calcTrace(A, j);
+    calcAbsTrace(A, j);
 	funcsInfNorm(A, j);
 	funcsNonzeros(A, j);
 	calcOneNorm(A, j);
