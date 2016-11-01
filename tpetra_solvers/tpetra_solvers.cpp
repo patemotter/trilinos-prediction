@@ -61,7 +61,8 @@ int main(int argc, char *argv[]) {
         }
         // Do all the work
         belosSolve(A, inputFile, j);
-	    outputLoc << std::setw(4) << j << "," << std::endl;
+        if (myRank == 0)
+	        outputLoc << std::setw(4) << j << "," << std::endl;
     }
     TEUCHOS_STANDARD_CATCH_STATEMENTS(true, std::cerr, success)
 }
