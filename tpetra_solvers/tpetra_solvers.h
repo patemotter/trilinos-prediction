@@ -9,8 +9,12 @@
 //  Ifpack2
 #include <Ifpack2_Factory.hpp>
 
+//  Teuchos
+#include "Teuchos_StandardCatchMacros.hpp"
+
 //  c++
 #include <exception>
+#include "json.hpp"
 
 //  Typedefs
 typedef double ST;
@@ -39,6 +43,7 @@ using Teuchos::Time;
 using Teuchos::TimeMonitor;
 using Teuchos::ParameterList;
 using Teuchos::parameterList;
+using nlohmann::json;
 
 //  Globals
 int myRank;
@@ -52,14 +57,14 @@ STRINGS ifpack2Precs = {"ILUT", "RILUK",/* "DIAGONAL",*/ "RELAXATION", "CHEBYSHE
 STRINGS belos_sq = {"PSEUDOBLOCK TFQMR", "TFQMR", "BICGSTAB", "BLOCK GMRES",
                     "PSEUDOBLOCK GMRES", "HYBRID BLOCK GMRES", "GCRODR"}; //, "LSQR"};
 
-STRINGS belos_all = {"PSEUDOBLOCK TFQMR", "TFQMR", "BICGSTAB", "BLOCK GMRES",
-                     "PSEUDOBLOCK GMRES", "HYBRID BLOCK GMRES", "GCRODR", //"LSQR",
+STRINGS belos_all = {"PSEUDOBLOCK TFQMR", "BICGSTAB", "BLOCK GMRES",
+                     "PSEUDOBLOCK GMRES", "GCRODR", //"LSQR",
                      "BLOCK CG", "PSEUDOBLOCK CG", "PSEUDOBLOCK STOCHASTIC CG",
-                     "RCG", "PCPG", "MINRES"};
+                     "RCG", "TFQMR", "PCPG", "MINRES", "HYBRID BLOCK GMRES"};
 
 //  Functions
 STRINGS determineSolvers(const std::string &filename);
 
-void belosSolve(const RCP<const MAT> &A, const std::string &filename);
+void belosSolve(const RCP<const MAT> &A, const std::string &filename, json &j);
 
 RCP<PRE> getIfpack2Preconditoner(const RCP<const MAT> &A, std::string ifpack2PrecChoice);
