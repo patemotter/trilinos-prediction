@@ -4,38 +4,38 @@ int symm = 0;
 
 int main(int argc, char *argv[]) {
     bool success = false;
+    json j;
+    std::string outputDir, outputFile;
+    if (argv[1] == NULL) {
+        std::cout << "No input file was specified" << std::endl;
+        std::cout << "Usage: ./tpetra_solvers <.mtx file> ['-d output_dir' | '-f output_file']" << std::endl;
+        return -1;
+    }
+    for (int i = 2; i < argc; i++) {
+        //std::cout << "arg[" << i << "]: " << argv[i] << std::endl;
+        if (strcmp(argv[i], "-f") == 0) { //output to file
+            i++;
+            outputFile = argv[i];
+        } else if (strcmp(argv[i], "-d") == 0) {
+            i++;
+            outputDir = argv[i];
+        }
+    }
+
+    //  General setup for Teuchos/communication
+    std::string inputFile = argv[1];
+    belosSolvers = determineSolvers(inputFile);
+    Teuchos::GlobalMPISession mpiSession(&argc, &argv);
+    Platform &platform = Tpetra::DefaultPlatform::getDefaultPlatform();
+    comm = platform.getComm();
+    RCP<NT> node = platform.getNode();
+    myRank = comm->getRank();
+
+    RCP<MAT> A = Reader::readSparseFile(inputFile, comm, node, true);
+    Teuchos::oblackholestream blackhole;
+    std::ostream &out = (myRank == 0) ? std::cout : blackhole;
+    std::ofstream outputLoc;
     try {
-        json j;
-        std::string outputDir, outputFile;
-        if (argv[1] == NULL) {
-            std::cout << "No input file was specified" << std::endl;
-            std::cout << "Usage: ./tpetra_solvers <.mtx file> ['-d output_dir' | '-f output_file']" << std::endl;
-            return -1;
-        }
-        for (int i = 2; i < argc; i++) {
-            //std::cout << "arg[" << i << "]: " << argv[i] << std::endl;
-            if (strcmp(argv[i], "-f") == 0) { //output to file
-                i++;
-                outputFile = argv[i];
-            } else if (strcmp(argv[i], "-d") == 0) {
-                i++;
-                outputDir = argv[i];
-            }
-        }
-
-        //  General setup for Teuchos/communication
-        std::string inputFile = argv[1];
-        belosSolvers = determineSolvers(inputFile);
-        Teuchos::GlobalMPISession mpiSession(&argc, &argv);
-        Platform &platform = Tpetra::DefaultPlatform::getDefaultPlatform();
-        comm = platform.getComm();
-        RCP<NT> node = platform.getNode();
-        myRank = comm->getRank();
-
-        RCP<MAT> A = Reader::readSparseFile(inputFile, comm, node, true);
-        Teuchos::oblackholestream blackhole;
-        std::ostream &out = (myRank == 0) ? std::cout : blackhole;
-        std::ofstream outputLoc;
 
         //  How to output results
         if (outputDir.empty() && outputFile.empty()) {
@@ -63,12 +63,20 @@ int main(int argc, char *argv[]) {
         }
         // Do all the work
         belosSolve(A, inputFile, j);
+        std::string matrixName = inputFile.substr(inputFile.find_last_of("/") + 1);
         if (myRank == 0) {
+            j[matrixName]["status"] = "success";
+	        outputLoc << std::setw(4) << j << "," << std::endl;
+            outputLoc.close();
+        }
+    } catch (...) {
+        if (myRank == 0) {
+            std::string matrixName = inputFile.substr(inputFile.find_last_of("/") + 1);
+            j[matrixName]["status"] = "failure";
 	        outputLoc << std::setw(4) << j << "," << std::endl;
             outputLoc.close();
         }
     }
-    TEUCHOS_STANDARD_CATCH_STATEMENTS(true, std::cerr, success)
 }
 
 RCP<PRE> getIfpack2Preconditoner(const RCP<const MAT> &A,
