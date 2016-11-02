@@ -48,21 +48,25 @@ int main(int argc, char *argv[]) {
             // Print to directory
             unsigned long found = inputFile.find_last_of("/\\");
             std::string outputFilename = outputDir + "/" + inputFile.substr(found + 1) + ".json";
-            if (myRank == 0)
+            if (myRank == 0) {
                 std::cout << "Printing to " << outputFilename << std::endl;
-            inputFile = inputFile.substr(found + 1);
-            outputLoc.open(outputFilename.c_str());
+                inputFile = inputFile.substr(found + 1);
+                outputLoc.open(outputFilename.c_str());
+            }
             //fos = Teuchos::fancyOStream(Teuchos::rcpFromRef(outputLoc));
         } else if (outputDir.empty() && outputFile.size()) {
-            if (myRank == 0)
+            if (myRank == 0) {
                 std::cout << "Printing to " << outputFile << std::endl;
-            outputLoc.open(outputFile.c_str());
+                outputLoc.open(outputFile.c_str());
+            }
             //fos = Teuchos::fancyOStream(Teuchos::rcpFromRef(outputLoc));
         }
         // Do all the work
         belosSolve(A, inputFile, j);
-        if (myRank == 0)
+        if (myRank == 0) {
 	        outputLoc << std::setw(4) << j << "," << std::endl;
+            outputLoc.close();
+        }
     }
     TEUCHOS_STANDARD_CATCH_STATEMENTS(true, std::cerr, success)
 }
@@ -112,7 +116,8 @@ void belosSolve(const RCP<const MAT> &A, const std::string &inputFile, json &j) 
             prec = Teuchos::null;
             //*fos << inputFile << ", " << comm->getSize() << ", ";
             //j[inputFile][solverIter][precIter]["matrix_name"] = inputFile;
-            j[matrixName][solverIter][precIter]["num_procs"] = comm->getSize();
+            if (myRank == 0)
+                j[matrixName][solverIter][precIter]["num_procs"] = comm->getSize();
             try {
                 solver = getBelosSolver(A, solverIter);
                 if (precIter.compare("None"))
@@ -120,9 +125,10 @@ void belosSolve(const RCP<const MAT> &A, const std::string &inputFile, json &j) 
             } catch (const std::exception &exc) {
                 //*fos << solverIter << ", " << precIter << ", PREC-SOLVER_ERROR, ";
                 //*fos << timer.totalElapsedTime() << std::endl;
-                j[matrixName][solverIter][precIter]["status"] = "prec/solver_error";
-                if (myRank == 0)
+                if (myRank == 0) {
+                    j[matrixName][solverIter][precIter]["status"] = "prec/solver_error";
                     std::cerr << exc.what() << std::endl;
+                }
                 break;
             }
             try {
@@ -143,9 +149,10 @@ void belosSolve(const RCP<const MAT> &A, const std::string &inputFile, json &j) 
                 //j["solver"] = solverIter;
                 //j["preconditioner"] = precIter;
                 //j["status"] = "creation_error";
-                j[matrixName][solverIter][precIter]["status"] = "creation_error";
-                if (myRank == 0)
+                if (myRank == 0) {
+                    j[matrixName][solverIter][precIter]["status"] = "creation_error";
                     std::cerr << exc.what() << std::endl;
+                }
                 break;
             }
             try {
@@ -155,17 +162,21 @@ void belosSolve(const RCP<const MAT> &A, const std::string &inputFile, json &j) 
                 //*fos << std::string(solverIter) << ", " << precIter; // output solver/prec pair
                 if (result == Belos::Converged) {
                     //*fos << ", converged, ";
-                    j[matrixName][solverIter][precIter]["status"] = "converged";
+                    if (myRank == 0)
+                        j[matrixName][solverIter][precIter]["status"] = "converged";
                 } else {
                     //*fos << ", unconverged, ";
-                    j[matrixName][solverIter][precIter]["status"] = "unconverged";
+                    if (myRank == 0)
+                        j[matrixName][solverIter][precIter]["status"] = "unconverged";
                 }
                 //*fos << solver->getNumIters() << ", " << timer.totalElapsedTime() << std::endl;
                 //j["solver"] = solverIter;
                 //j["preconditioner"] = precIter;
                 //j["iterations"] = solver->getNumIters();
-                j[matrixName][solverIter][precIter]["time"] = timer.totalElapsedTime();
-                j[matrixName][solverIter][precIter]["iterations"] = solver->getNumIters();
+                if (myRank == 0) {
+                    j[matrixName][solverIter][precIter]["time"] = timer.totalElapsedTime();
+                    j[matrixName][solverIter][precIter]["iterations"] = solver->getNumIters();
+                }
                 //j["time"] = timer.totalElapsedTime();
             } catch (const std::exception &exc) {
                 //*fos << solverIter << ", " << precIter << ", SOLVING_ERROR, ";
@@ -173,9 +184,10 @@ void belosSolve(const RCP<const MAT> &A, const std::string &inputFile, json &j) 
                 //j["solver"] = solverIter;
                 //j["preconditioner"] = precIter;
                 //j["status"] = "solving_error";
-                j[matrixName][solverIter][precIter]["status"] = "solving_error";
-                if (myRank == 0)
+                if (myRank == 0) {
+                    j[matrixName][solverIter][precIter]["status"] = "solving_error";
                     std::cerr << exc.what() << std::endl;
+                }
                 break;
             }
         }
