@@ -22,6 +22,20 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    //  Check if matrix is complex or integer
+    std::ifstream infile;
+    infile.open(argv[1]);
+    if (infile.is_open()) {
+        std::string firstLine;
+        getline(infile, firstLine);
+        if (firstLine.find("complex") != std::string::npos || 
+                firstLine.find("integer") != std::string::npos) {
+            std::cout << "Invalid matrix (complex or integer)\n";
+            infile.close();
+            exit(-1); 
+        }
+    }
+
     //  General setup for Teuchos/communication
     std::string inputFile = argv[1];
     belosSolvers = determineSolvers(inputFile);
