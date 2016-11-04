@@ -52,15 +52,36 @@ RCP<const Teuchos::Comm<int> > comm;
 std::vector<std::string> belosSolvers;
 
 //  6 precs, 14 solvers, 84 combinations (incl no prec)
-STRINGS ifpack2Precs = {"ILUT", "RILUK",/* "DIAGONAL",*/ "RELAXATION", "CHEBYSHEV", "None"};
+STRINGS ifpack2Precs = {"ILUT", "RILUK",/* "DIAGONAL",*/ "RELAXATION", "CHEBYSHEV"}; //None
 
 STRINGS belos_sq = {"PSEUDOBLOCK TFQMR", "TFQMR", "BICGSTAB", "BLOCK GMRES",
                     "PSEUDOBLOCK GMRES", "HYBRID BLOCK GMRES", "GCRODR"}; //, "LSQR"};
 
+/*
 STRINGS belos_all = {"PSEUDOBLOCK TFQMR", "BICGSTAB", "BLOCK GMRES",
                      "PSEUDOBLOCK GMRES", "GCRODR", //"LSQR",
                      "BLOCK CG", "PSEUDOBLOCK CG", "PSEUDOBLOCK STOCHASTIC CG",
                      "RCG", "TFQMR", "PCPG", "MINRES", "HYBRID BLOCK GMRES"};
+                */
+
+STRINGS belos_all = {"GMRES"};
+    
+//                   "FIXED POINT",
+//                   "MINRES",
+//                   "PSEUDOBLOCK CG",
+//                   "PSEUDOBLOCK GMRES",
+//                   "PSEUDOBLOCK STOCHASTIC CG",
+//                   "PSEUDOBLOCK TFQMR",
+//                   "TFQMR",
+//                   "BICGSTAB",
+//                   "BLOCK GMRES",
+//                   "FLEXIBLE GMRES",
+//                   "LSQR",
+//                   "RECYCLING CG",
+//                   "RECYCLING GMRES",
+//                   "SEED CG",
+//                   "SEED GMRES",
+
 
 //  Functions
 STRINGS determineSolvers(const std::string &filename);
