@@ -3,89 +3,119 @@
 int symm = 0;
 
 int main(int argc, char *argv[]) {
-    bool success = false;
-    json j;
-    std::string outputDir, outputFile;
-    std::string inputFile = argv[1];
-    belosSolvers = belos_all;
+	bool success = false;
+	json j;
+	std::string outputDir, outputFile;
+	std::string inputFile = argv[1];
+	belosSolvers = belos_all;
 
-    Teuchos::GlobalMPISession mpiSession(&argc, &argv);
-    Platform &platform = Tpetra::DefaultPlatform::getDefaultPlatform();
-    comm = platform.getComm();
-    RCP<NT> node = platform.getNode();
-    myRank = comm->getRank();
-
-    std::cout << "After setup\n";
-
-    RCP<MAT> A = Reader::readSparseFile(inputFile, comm, node, true);
-    Teuchos::oblackholestream blackhole;
-    std::ostream &out = (myRank == 0) ? std::cout : blackhole;
-    std::ofstream outputLoc;
-    //  How to output results
-    if (outputDir.empty() && outputFile.empty()) {
-        unsigned long found = inputFile.find_last_of("/\\");
-        inputFile = inputFile.substr(found + 1);
-    } else if (outputDir.size() && outputFile.empty()) {
-        // Print to directory
-        unsigned long found = inputFile.find_last_of("/\\");
-        std::string outputFilename = outputDir + "/" + inputFile.substr(found + 1) + ".json";
-        if (myRank == 0) {
-            std::cout << "Printing to " << outputFilename << std::endl;
-            inputFile = inputFile.substr(found + 1);
-            outputLoc.open(outputFilename.c_str());
-        }
-    } else if (outputDir.empty() && outputFile.size()) {
-        if (myRank == 0) {
-            std::cout << "Printing to " << outputFile << std::endl;
-            outputLoc.open(outputFile.c_str());
+    for (int i = 2; i < argc; i++) {
+        if (strcmp(argv[i], "-d") == 0) {
+            i++;
+            outputDir = argv[i];
+        } else {
+            std::cout << "not using -d\n";
+            exit(-1);
         }
     }
-    std::cout << "Before barriers\n";
-    // Do all the work
-    belosSolve(A, inputFile, j);
-}
 
-//  https://code.google.com/p/trilinos/wiki/Tpetra_Belos_CreateSolver
-void belosSolve(const RCP<const MAT> &A, const std::string &inputFile, json &j) {
+	Teuchos::GlobalMPISession mpiSession(&argc, &argv);
+	Platform &platform = Tpetra::DefaultPlatform::getDefaultPlatform();
+	comm = platform.getComm();
+	RCP<NT> node = platform.getNode();
+	myRank = comm->getRank();
 
-    for (auto precIter : ifpack2Precs) {
-        for (auto solverIter : belos_all) {
-            try {
-                std::cout << "In Belos Solve\n";
+	if (myRank == 0) std::cout << "After setup\n";
 
-                // Preconditioner
-                Ifpack2::Factory ifpack2Factory;
-                RCP<PRE> prec; 
-                RCP<LP> problem;
-                prec = ifpack2Factory.create(precIter, A);
-                prec->initialize();
-                prec->compute();
+	const RCP<const MAT> A = Reader::readSparseFile(inputFile, comm, node, true);
+	Teuchos::oblackholestream blackhole;
+	std::ofstream outputLocJSON, outputLocCSV;
 
-                std::cout << "After prec\n";
+	if (outputDir.size() && outputFile.empty()) {
+		if (myRank == 0) {
+			unsigned long found = inputFile.find_last_of("/\\");
+			std::string outputFilenameJSON = outputDir + "/" + inputFile.substr(found + 1) + ".json";
+			std::string outputFilenameCSV = outputDir + "/" + inputFile.substr(found + 1) + ".csv";
+			inputFile = inputFile.substr(found + 1);
+			outputLocJSON.open(outputFilenameJSON.c_str());
+			outputLocCSV.open(outputFilenameCSV.c_str());
+		}
+		//fos = Teuchos::fancyOStream(Teuchos::rcpFromRef(outputLoc));
+	}  
+    Teuchos::Time timer("timer", false);
+    unsigned long found = inputFile.find_last_of("/\\");
+    std::string matrixName = inputFile.substr(found + 1);
 
-                // Solver
-                Belos::SolverFactory<ST, MV, OP> belosFactory;
-                RCP<ParameterList> solverParams = parameterList();
-                RCP<BSM> solver = belosFactory.create(solverIter, solverParams);
-                RCP<MV> x = rcp(new MV(A->getDomainMap(), 1));
-                RCP<MV> b = rcp(new MV(A->getRangeMap(), 1));
-                b->randomize();
+	for (std::string precIter : ifpack2Precs) {
+		for (std::string solverIter : belos_all) {
+			comm->barrier();
+                timer.start(true);
+				try {
+					if (myRank == 0) {
+                        std::cout << "In Belos Solve\n";
+					    j[solverIter][precIter]["started"] = true;
+                    }
 
-                std::cout << "After solver\n";
+					RCP<LP> problem;
 
-                //  Create the linear problem
-                problem = rcp(new LP(A, x, b));
-                problem->setProblem(); //done adding to the linear problem
-                solver->setProblem(problem); //add the linear problem to the solver
+					// Preconditioner
+					RCP<PRE> prec;
+					Ifpack2::Factory ifpack2Factory;
+					prec = ifpack2Factory.create(precIter, A);
+					prec->initialize();
+					prec->compute();
 
-                std::cout << "After LP\n";
+					if (myRank == 0) std::cout << "After prec\n";
 
-                // Solve
-                Belos::ReturnType result = solver->solve();
-                std::cout << "After solve\n";
-            } catch (...) {
-                std::cout << "Catch\n";
-            }
-        }
-    }
+					// Solver
+					Belos::SolverFactory<ST, MV, OP> belosFactory;
+					RCP<ParameterList> solverParams = parameterList();
+                    solverParams->set("Maximum Iterations", 10000);
+                    solverParams->set("Convergence Tolerance", 1.0e-6);
+					RCP<BSM> solver = belosFactory.create(solverIter, solverParams);
+					RCP<MV> x = rcp(new MV(A->getDomainMap(), 1));
+					RCP<MV> b = rcp(new MV(A->getRangeMap(), 1));
+					b->randomize();
+
+					if (myRank == 0) std::cout << "After solver\n";
+
+					//  Create the linear problem
+					problem = rcp(new LP(A, x, b));
+					problem->setProblem();       // done adding to the linear problem
+					solver->setProblem(problem); // add the linear problem to the solver
+
+					if (myRank == 0) std::cout << "After LP\n";
+
+					// Solve
+					Belos::ReturnType result = solver->solve();
+                    timer.stop();
+					if (myRank == 0) {
+                        outputLocCSV << matrixName << ", "
+                                  << solverIter << ", "
+                                  << precIter << ", "
+                                  << timer.totalElapsedTime() << ", "
+                                  << solver->getNumIters() << std::endl;
+                        if (result)	j[solverIter][precIter]["solved"] = "success";
+                        else j[solverIter][precIter]["solved"] = "failed";
+						j[solverIter][precIter]["time"] = timer.totalElapsedTime();
+						j[solverIter][precIter]["iterations"] = solver->getNumIters();
+						outputLocJSON << std::setw(4) << j << "," << std::endl;
+						//std::cout << "After solve\n";
+					}
+				} catch (...) {
+                    timer.stop();
+					if (myRank == 0) {
+                        outputLocCSV << matrixName << ", "
+                                  << solverIter << ", "
+                                  << precIter << ", error\n";
+						j[solverIter][precIter]["solved"] = "error";
+						j[solverIter][precIter]["time"] = timer.totalElapsedTime();
+						outputLocJSON << std::setw(4) << j << "," << std::endl;
+						//std::cout << "Catch\n";
+					}
+				}
+		}
+	}
+    outputLocJSON.close();
+    outputLocCSV.close();
 }
