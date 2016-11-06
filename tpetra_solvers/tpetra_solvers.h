@@ -19,7 +19,7 @@
 //  Typedefs
 typedef double ST;
 typedef int LO;
-typedef int64_t GO;
+typedef int GO;
 typedef Tpetra::DefaultPlatform::DefaultPlatformType Platform;
 typedef Tpetra::Map<>::node_type NT;
 typedef Tpetra::CrsMatrix<ST, LO, GO, NT> MAT;
@@ -64,8 +64,8 @@ STRINGS belos_all = {"PSEUDOBLOCK TFQMR", "BICGSTAB", "BLOCK GMRES",
                      "RCG", "TFQMR", "PCPG", "MINRES", "HYBRID BLOCK GMRES"};
                 */
 
-STRINGS belos_all = {"GMRES", "MINRES", "PSEUDOBLOCK CG","PSEUDOBLOCK STOCHASTIC CG", 
-                     "PSEUDOBLOCK TFQMR", "TFQMR", "BICGSTAB", "LSQR"};
+STRINGS belos_all = {"MINRES", "PSEUDOBLOCK CG","PSEUDOBLOCK STOCHASTIC CG", "FIXED POINT",
+                     "PSEUDOBLOCK TFQMR", "TFQMR", "BICGSTAB", "LSQR", "PSEUDOBLOCK GMRES"};
 
 //                   "FIXED POINT",
 //                   "MINRES",
