@@ -7,6 +7,23 @@ int main(int argc, char *argv[]) {
 	json j;
 	std::string outputDir, outputFile;
 	std::string inputFile = argv[1];
+	//  Check if matrix is complex or integer
+	std::ifstream infile;
+	infile.open(inputFile);
+	if (infile.is_open()) {
+		std::string firstLine;
+		getline(infile, firstLine);
+		if (firstLine.find("complex") != std::string::npos) {
+			std::cout << "Complex matrices are not currently supported: exiting\n";
+			infile.close();
+			exit(-1);
+		}
+		if (firstLine.find("integer") != std::string::npos) {
+			std::cout << "Integer matrices are not currently supported: exiting\n";
+			infile.close();
+			exit(-1);
+		}
+	}
 	belosSolvers = belos_all;
 
     for (int i = 2; i < argc; i++) {
@@ -46,9 +63,8 @@ int main(int argc, char *argv[]) {
     unsigned long found = inputFile.find_last_of("/\\");
     std::string matrixName = inputFile.substr(found + 1);
 
-	for (std::string precIter : ifpack2Precs) {
-		for (std::string solverIter : belos_all) {
-			comm->barrier();
+	for (std::string solverIter : belos_all) {
+    	for (std::string precIter : ifpack2Precs) {
                 timer.start(true);
 				try {
 					if (myRank == 0) {
@@ -56,35 +72,32 @@ int main(int argc, char *argv[]) {
 					    j[solverIter][precIter]["started"] = true;
                     }
 
-					RCP<LP> problem;
+					// Vectors
+					RCP<MV> x = rcp(new MV(A->getDomainMap(), 1));
+					RCP<MV> b = rcp(new MV(A->getDomainMap(), 1));
+                    x->randomize();
+                    A->apply(*x, *b);
+                    x->putScalar(0.0);
 
 					// Preconditioner
-					RCP<PRE> prec;
 					Ifpack2::Factory ifpack2Factory;
+					RCP<PRE> prec;
 					prec = ifpack2Factory.create(precIter, A);
 					prec->initialize();
 					prec->compute();
 
-					if (myRank == 0) std::cout << "After prec\n";
+					//  Create the linear problem w/ prec
+					RCP<LP> problem = rcp(new LP(A, x, b));
+                    problem->setLeftPrec(prec);
+					bool set = problem->setProblem();       // done adding to the linear problem
 
-					// Solver
-					Belos::SolverFactory<ST, MV, OP> belosFactory;
+                    //  Setup belos solver
 					RCP<ParameterList> solverParams = parameterList();
-                    solverParams->set("Maximum Iterations", 10000);
-                    solverParams->set("Convergence Tolerance", 1.0e-6);
+                    //solverParams->set("Maximum Iterations", 10000);
+                    //solverParams->set("Convergence Tolerance", 1.0e-6);
+					Belos::SolverFactory<ST, MV, OP> belosFactory;
 					RCP<BSM> solver = belosFactory.create(solverIter, solverParams);
-					RCP<MV> x = rcp(new MV(A->getDomainMap(), 1));
-					RCP<MV> b = rcp(new MV(A->getRangeMap(), 1));
-					b->randomize();
-
-					if (myRank == 0) std::cout << "After solver\n";
-
-					//  Create the linear problem
-					problem = rcp(new LP(A, x, b));
-					problem->setProblem();       // done adding to the linear problem
 					solver->setProblem(problem); // add the linear problem to the solver
-
-					if (myRank == 0) std::cout << "After LP\n";
 
 					// Solve
 					Belos::ReturnType result = solver->solve();
@@ -92,15 +105,21 @@ int main(int argc, char *argv[]) {
 					if (myRank == 0) {
                         outputLocCSV << matrixName << ", "
                                   << solverIter << ", "
-                                  << precIter << ", "
-                                  << timer.totalElapsedTime() << ", "
-                                  << solver->getNumIters() << std::endl;
-                        if (result)	j[solverIter][precIter]["solved"] = "success";
-                        else j[solverIter][precIter]["solved"] = "failed";
+                                  << precIter << ", ";
+                        if (result == Belos::Converged)	{
+                            j[solverIter][precIter]["solved"] = "converged";
+                            outputLocCSV << "converged, "
+                                         << timer.totalElapsedTime() << ", "
+                                         << solver->getNumIters() << std::endl;
+                        } else {
+                            j[solverIter][precIter]["solved"] = "unconverged";
+                            outputLocCSV << "unconverged, "
+                                         << timer.totalElapsedTime() << ", "
+                                         << solver->getNumIters() << std::endl;
+                        }
 						j[solverIter][precIter]["time"] = timer.totalElapsedTime();
 						j[solverIter][precIter]["iterations"] = solver->getNumIters();
-						outputLocJSON << std::setw(4) << j << "," << std::endl;
-						//std::cout << "After solve\n";
+
 					}
 				} catch (...) {
                     timer.stop();
@@ -109,13 +128,13 @@ int main(int argc, char *argv[]) {
                                   << solverIter << ", "
                                   << precIter << ", error\n";
 						j[solverIter][precIter]["solved"] = "error";
-						j[solverIter][precIter]["time"] = timer.totalElapsedTime();
-						outputLocJSON << std::setw(4) << j << "," << std::endl;
-						//std::cout << "Catch\n";
 					}
 				}
 		}
 	}
-    outputLocJSON.close();
-    outputLocCSV.close();
+	if (myRank == 0) {
+        outputLocJSON << std::setw(4) << j << "," << std::endl;
+        outputLocJSON.close();
+        outputLocCSV.close();
+    }
 }
