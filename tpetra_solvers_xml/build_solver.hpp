@@ -55,6 +55,7 @@
 #include "BelosBlockGmresSolMgr.hpp"
 #include "BelosTFQMRSolMgr.hpp"
 #include "BelosBlockCGSolMgr.hpp"
+#include "BelosMinresSolMgr.hpp"
 
 template<class Scalar,class MV, class OP>
 Teuchos::RCP<Belos::SolverManager<Scalar,MV,OP> >
@@ -88,6 +89,9 @@ build_solver(Teuchos::ParameterList& test_params,
   }
   else if (solver_type == "TFQMR") {
     solver = Teuchos::rcp(new Belos::TFQMRSolMgr<Scalar,MV,OP>(problem,rcpparams));
+  }
+  else if (solver_type == "MINRES") {
+    solver = Teuchos::rcp(new Belos::MinresSolMgr<Scalar,MV,OP>(problem,rcpparams));
   }
   else if (solver_type == "not specified") {
     throw std::runtime_error("Error in build_solver: solver_type not specified.");

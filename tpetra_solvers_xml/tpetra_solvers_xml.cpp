@@ -119,6 +119,7 @@ int main(int argc, char*argv[])
 
     Belos::ReturnType ret = solver->solve();
 
+    *out << "Return value: " << ret << std::endl;
     *out << "Converged in " << solver->getNumIters() << " iterations." << std::endl;
 
     Teuchos::RCP<TMV> R = Teuchos::rcp(new TMV(*problem->getRHS()));
