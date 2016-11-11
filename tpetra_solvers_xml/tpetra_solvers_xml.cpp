@@ -63,6 +63,7 @@ void process_command_line(int argc, char*argv[], std::string& xml_file);
 
 int main(int argc, char*argv[])
 {
+  std::cout << "Hello\n";
   Teuchos::GlobalMPISession mpisess(&argc, &argv);
 
   bool success = true;
@@ -70,7 +71,7 @@ int main(int argc, char*argv[])
   Teuchos::RCP<Teuchos::FancyOStream>
     out = Teuchos::VerboseObjectBase::getDefaultOStream();
 
-  try {
+    std::cout << "A\n";
 
     Teuchos::Time timer("total");
     timer.start();
@@ -91,6 +92,7 @@ int main(int argc, char*argv[])
     //to get parameters from.
 
     std::string xml_file;
+    std::cout << "B\n";
     process_command_line(argc, argv, xml_file);
 
     //Read the contents of the xml file into a ParameterList. That parameter list
@@ -102,6 +104,7 @@ int main(int argc, char*argv[])
     /* *out << "Every proc reading parameters from xml_file: "
          << xml_file << std::endl;
     */
+    std::cout << "C\n";
     Teuchos::ParameterList test_params =
       Teuchos::ParameterXMLFileReader(xml_file).getParameters();
 
@@ -111,13 +114,17 @@ int main(int argc, char*argv[])
 
     Teuchos::RCP<BLinProb> problem =
       build_problem<Scalar,LO,GO,Node>(test_params, comm, platform.getNode());
+    std::cout << "D\n";
 
     Teuchos::RCP<BSolverMgr> solver = build_solver<Scalar,TMV,TOP>(test_params, problem);
+    std::cout << "E\n";
 
     Teuchos::RCP<const Teuchos::ParameterList> params = solver->getValidParameters();
     params->print(*out);
+    std::cout << "F\n";
 
     Belos::ReturnType ret = solver->solve();
+    std::cout << "G\n";
 
     *out << "Return value: " << ret << std::endl;
     *out << "Converged in " << solver->getNumIters() << " iterations." << std::endl;
@@ -139,18 +146,6 @@ int main(int argc, char*argv[])
     timer.stop();
     *out << "proc 0 total program time: " << timer.totalElapsedTime()
          << std::endl;
-
-  }
-  TEUCHOS_STANDARD_CATCH_STATEMENTS(true, std::cerr, success)
-
-  if (success) {
-    *out << "End Result: PASSED\n";
-  }
-  else {
-    *out << "End Result: FAILED\n";
-  }
-
-  return ( success ? 0 : 1 );
 }
 
 
