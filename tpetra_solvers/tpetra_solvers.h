@@ -1,10 +1,10 @@
 //  Tpetra
-#include <Tpetra_CrsMatrix.hpp>
 #include <MatrixMarket_Tpetra.hpp>
+#include <Tpetra_CrsMatrix.hpp>
 
 //  Belos
-#include <BelosTpetraAdapter.hpp>
 #include <BelosSolverFactory.hpp>
+#include <BelosTpetraAdapter.hpp>
 
 //  Ifpack2
 #include <Ifpack2_Factory.hpp>
@@ -13,8 +13,9 @@
 #include "Teuchos_StandardCatchMacros.hpp"
 
 //  c++
-#include <exception>
 #include "json.hpp"
+#include <exception>
+#include <fstream>
 
 //  Typedefs
 typedef double ST;
@@ -48,14 +49,20 @@ using nlohmann::json;
 //  Globals
 int myRank;
 RCP<Teuchos::FancyOStream> fos;
-RCP<const Teuchos::Comm<int> > comm;
+RCP<const Teuchos::Comm<int>> comm;
 std::vector<std::string> belosSolvers;
 
-//  4 precs, 8 solvers, 32 combinations 
-STRINGS ifpack2Precs = {"ILUT", "RILUK",/* "DIAGONAL",*/ "RELAXATION", "CHEBYSHEV"}; //None
+//  4 precs, 8 solvers, 32 combinations
+STRINGS ifpack2Precs = {"ILUT", "RILUK", /* "DIAGONAL",*/ "RELAXATION",
+                        "CHEBYSHEV"}; // None
 
-STRINGS belos_sq = {"PSEUDOBLOCK TFQMR", "TFQMR", "BICGSTAB", "BLOCK GMRES",
-                    "PSEUDOBLOCK GMRES", "HYBRID BLOCK GMRES", "GCRODR"}; //, "LSQR"};
+STRINGS belos_sq = {"PSEUDOBLOCK TFQMR",
+                    "TFQMR",
+                    "BICGSTAB",
+                    "BLOCK GMRES",
+                    "PSEUDOBLOCK GMRES",
+                    "HYBRID BLOCK GMRES",
+                    "GCRODR"}; //, "LSQR"};
 
 /*
 STRINGS belos_all = {"PSEUDOBLOCK TFQMR", "BICGSTAB", "BLOCK GMRES",
@@ -64,8 +71,15 @@ STRINGS belos_all = {"PSEUDOBLOCK TFQMR", "BICGSTAB", "BLOCK GMRES",
                      "RCG", "TFQMR", "PCPG", "MINRES", "HYBRID BLOCK GMRES"};
                 */
 
-STRINGS belos_all = {"MINRES", "PSEUDOBLOCK CG","PSEUDOBLOCK STOCHASTIC CG", "FIXED POINT",
-                     "PSEUDOBLOCK TFQMR", "TFQMR", "BICGSTAB", "LSQR", "PSEUDOBLOCK GMRES"};
+STRINGS belos_all = {"MINRES",
+                     "PSEUDOBLOCK CG",
+                     "PSEUDOBLOCK STOCHASTIC CG",
+                     "FIXED POINT",
+                     "PSEUDOBLOCK TFQMR",
+                     "TFQMR",
+                     "BICGSTAB",
+                     "LSQR",
+                     "PSEUDOBLOCK GMRES"};
 
 //                   "FIXED POINT",
 //                   "MINRES",
@@ -83,10 +97,10 @@ STRINGS belos_all = {"MINRES", "PSEUDOBLOCK CG","PSEUDOBLOCK STOCHASTIC CG", "FI
 //                   "SEED CG",
 //                   "SEED GMRES",
 
-
 //  Functions
 STRINGS determineSolvers(const std::string &filename);
 
 void belosSolve(const RCP<const MAT> &A, const std::string &filename, json &j);
 
-RCP<PRE> getIfpack2Preconditoner(const RCP<const MAT> &A, std::string ifpack2PrecChoice);
+RCP<PRE> getIfpack2Preconditoner(const RCP<const MAT> &A,
+                                 std::string ifpack2PrecChoice);
