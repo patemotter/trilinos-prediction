@@ -4,8 +4,7 @@ int symm = 0;
 
 int main(int argc, char *argv[]) {
   if (strcmp(argv[1], "-h") == 0) {
-    std::cout << "Usage:\n mpirun tpetra_solver <mtx_file> <solver name> "
-              << "<preconditioner_name> <number_of_solves> <-d> <output_dir>\n";
+    std::cout << "Usage:\n mpirun tpetra_solver <mtx_file> <-d> <output_dir>\n";
     std::cout << "Preconditioner choices:\nRILUK, ILUT, DIAGONAL, CHEBYSHEV, "
               << "BLOCK_RELAXATION, RELAXATION, and SCHWARZ\n";
     std::cout
@@ -51,6 +50,7 @@ int main(int argc, char *argv[]) {
   comm = platform.getComm();
   RCP<NT> node = platform.getNode();
   myRank = comm->getRank();
+  int numProcs = comm->getSize();
 
   const RCP<const MAT> A = Reader::readSparseFile(inputFile, comm, node, true);
   Teuchos::oblackholestream blackhole;
@@ -59,8 +59,9 @@ int main(int argc, char *argv[]) {
   if (outputDir.size() && outputFile.empty()) {
     if (myRank == 0) {
       unsigned long found = inputFile.find_last_of("/\\");
-      std::string outputFilenameCSV = outputDir + "/" + "results.csv";
       inputFile = inputFile.substr(found + 1);
+      std::string outputFilenameCSV = outputDir + "/results_" +
+                                      std::to_string(numProcs) + ".csv";
       std::cout << outputFilenameCSV << std::endl;
       outputLocCSV.open(outputFilenameCSV.c_str(),
                         std::ofstream::out | std::ofstream::app);
