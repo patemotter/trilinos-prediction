@@ -53,6 +53,13 @@ int main(int argc, char *argv[]) {
   int numProcs = comm->getSize();
 
   const RCP<const MAT> A = Reader::readSparseFile(inputFile, comm, node, true);
+  if ( A->getGlobalNumRows() != A->getGlobalNumCols() ) {
+    if (myRank == 0) {
+        std::cout << "Matrix is not square, exiting\n";
+    }
+    exit(-2);
+  }
+
   Teuchos::oblackholestream blackhole;
   std::ofstream outputLocCSV;
 
