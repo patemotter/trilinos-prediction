@@ -19,18 +19,27 @@ int main(int argc, char *argv[]) {
     //  Check if matrix is complex or integer
     std::ifstream infile;
     infile.open(inputFile);
-    if (infile.is_open()) {
+    if (!infile.good()) {
+        std::cout << "Input file (" << inputFile << ") does not exist. Exiting.\n";
+        exit(0);
+    } 
+    else if (infile.is_open()) {
         std::string firstLine;
         getline(infile, firstLine);
         if (firstLine.find("complex") != std::string::npos) {
-            std::cout << "Complex matrices are not currently supported: exiting\n";
+            std::cout << inputFile << ": Complex matrices are not currently supported. Exiting\n";
             infile.close();
-            exit(-1);
+            exit(0);
         }
         if (firstLine.find("integer") != std::string::npos) {
-            std::cout << "Integer matrices are not currently supported: exiting\n";
+            std::cout << inputFile << ": Integer matrices are not currently supported. Exiting\n";
             infile.close();
-            exit(-1);
+            exit(0);
+        }
+        if (firstLine.find("pattern") != std::string::npos) {
+            std::cout << inputFile << ": Pattern matrices are not currently supported: exiting\n";
+            infile.close();
+            exit(0);
         }
     }
 
@@ -40,8 +49,8 @@ int main(int argc, char *argv[]) {
             i++;
             outputDir = argv[i];
         } else {
-            std::cout << "not using -d\n";
-            exit(-1);
+            std::cout << "not using -d or -f\n";
+            exit(0);
         }
     }
 
@@ -57,7 +66,7 @@ int main(int argc, char *argv[]) {
         if (myRank == 0) {
             std::cout << "Matrix is not square, exiting\n";
         }
-        exit(-2);
+        exit(0);
     }
 
     Teuchos::oblackholestream blackhole;
@@ -83,16 +92,17 @@ int main(int argc, char *argv[]) {
 
             timer.start(true);
             if (myRank == 0) {
-                std::cout << "Working on: " << solverChoice << "\t" << precChoice
+                std::cout << "Working on: " << matrixName << "\t" << solverChoice << "\t" << precChoice
                     << std::endl;
             }
 
             // Vectors
             RCP<MV> x = rcp(new MV(A->getDomainMap(), 1));
             RCP<MV> b = rcp(new MV(A->getDomainMap(), 1));
-            x->randomize();
-            A->apply(*x, *b);
+            //x->randomize();
+            //A->apply(*x, *b);
             x->putScalar(0.0);
+            b->putScalar(1.0);
 
             // Preconditioner
             Ifpack2::Factory ifpack2Factory;
@@ -126,7 +136,7 @@ int main(int argc, char *argv[]) {
             }
             timer.stop();
             if (myRank == 0) {
-                if (error == 0) {
+                if (error == false) {
                     outputLocCSV << matrixName << ", " << solverChoice << ", " << precChoice
                         << ", ";
                     if (result == Belos::Converged) {
@@ -138,12 +148,12 @@ int main(int argc, char *argv[]) {
                     }
                 } else {
                     outputLocCSV << matrixName << ", " << solverChoice << ", "
-                        << precChoice << ", error\n";
+                        << precChoice << ", error," << timer.totalElapsedTime() << std::endl;
                 }
             }
         }
-        if (myRank == 0) {
-            outputLocCSV.close();
-        }
+    }
+    if (myRank == 0) {
+        outputLocCSV.close();
     }
 }
