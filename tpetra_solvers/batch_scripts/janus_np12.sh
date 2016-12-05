@@ -1,36 +1,39 @@
 #!/bin/bash
 
-#SBATCH --job-name=UF.1k.np24
-#SBATCH --qos=janus-debug
-#SBATCH --time=0:20:00
+#SBATCH --job-name=UF.1k.np12
+#SBATCH --qos=janus
+#SBATCH --time=12:00:00
 #SBATCH --nodes 1
-#SBATCH --ntasks 4
-#SBATCH --cpus-per-task 3
-#SBATCH --output=/lustre/janus_scratch/pamo8800/json_output/slurm-%j.out
-#SBATCH --error=/lustre/janus_scratch/pamo8800/json_output/slurm-%j.err
+#SBATCH --ntasks-per-node 12
+##SBATCH --output=/lustre/janus_scratch/pamo8800/np12_1k/slurm-%j.out
+##SBATCH --error=/lustre/janus_scratch/pamo8800/np12_1k/slurm-%j.err
 
-export OMP_NUM_THREADS=4
+export OMP_NUM_THREADS=1
 
-DATE=`date +%m.%d.%Y_%H:%M`
-OUTDIR=~/lustre/
+module load slurm
+
+OUTDIR=$2
 MATDIR=~/lustre/UF_Collection_Matrix-Market
 EXEDIR=/home/pamo8800/project/trilinos-prediction/tpetra_solvers
-INPUT=/home/pamo8800/project/trilinos-prediction/tpetra_solvers/test_mats.txt
+INPUT=$1
 
 mkdir -p $OUTDIR
+export I_MPI_PMI_LIBRARY=/curc/slurm/slurm/current/lib/libpmi.so
 
 OLDIFS=$IFS
 IFS=,
 [ ! -f $INPUT ] && { echo "$INPUT file not found"; exit 99; }
 while read matrix solved <&3
 do
-  if [ $solved -eq 0 ]
-  then
-    echo solving $matrix
-    mpirun $EXEDIR/tpetra_solvers $MATDIR/$matrix -d $OUTDIR
-  else
-    echo skipping $matrix
-  fi
-done 3< $INPUT
-IFS=$OLDIFS
-
+    COUNT=$((COUNT + 1))
+    if [ "$solved" -ne 1 ]
+    then
+        echo "$COUNT solving $matrix"
+        sed -i "s/${matrix}, 0/${matrix}, -1/g" "$1"
+        mpirun ${EXEDIR}/tpetra_solvers ${MATDIR}/${matrix} -d ${OUTDIR} && 
+            sed -i "s/${matrix}, -1/${matrix}, 1/g" "$1"
+    else
+        echo "$COUNT : skipping $matrix"
+    fi
+done 3< "${INPUT}"
+IFS="${OLDIFS}"
