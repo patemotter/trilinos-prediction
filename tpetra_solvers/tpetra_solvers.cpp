@@ -113,7 +113,11 @@ int main(int argc, char *argv[]) {
 
             //  Create the linear problem w/ prec
             RCP<LP> problem = rcp(new LP(A, x, b));
-            problem->setLeftPrec(prec);
+            if (precChoice == "BICGSTAB") {
+                problem->setLeftPrec(prec);
+            } else {
+                problem->setRightPrec(prec);
+            }
             problem->setProblem(); // done adding to the linear problem
 
             //  Setup belos solver
@@ -130,8 +134,9 @@ int main(int argc, char *argv[]) {
             {
                 try {
                     result = solver->solve();
-                } catch (...) {
+                } catch (const std::exception &e) {
                     error = true;
+                    std::cerr << e.what();
                 }
             }
             timer.stop();

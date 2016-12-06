@@ -71,13 +71,13 @@ STRINGS belos_all = {"PSEUDOBLOCK TFQMR", "BICGSTAB", "BLOCK GMRES",
                      "RCG", "TFQMR", "PCPG", "MINRES", "HYBRID BLOCK GMRES"};
                 */
 
-STRINGS belos_all = {"MINRES",
+STRINGS belos_all = {"BICGSTAB",
+                     "MINRES",
                      "PSEUDOBLOCK CG",
                      "PSEUDOBLOCK STOCHASTIC CG",
                      "FIXED POINT",
                      "PSEUDOBLOCK TFQMR",
                      "TFQMR",
-                     "BICGSTAB",
                      "LSQR",
                      "PSEUDOBLOCK GMRES"};
 
