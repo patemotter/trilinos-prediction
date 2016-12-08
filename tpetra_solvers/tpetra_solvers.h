@@ -10,7 +10,7 @@
 #include <Ifpack2_Factory.hpp>
 
 //  Teuchos
-#include "Teuchos_StandardCatchMacros.hpp"
+#include <Teuchos_StandardCatchMacros.hpp>
 
 //  c++
 #include "json.hpp"
@@ -53,16 +53,12 @@ RCP<const Teuchos::Comm<int>> comm;
 std::vector<std::string> belosSolvers;
 
 //  4 precs, 8 solvers, 32 combinations
-STRINGS ifpack2Precs = {"ILUT", "RILUK", /* "DIAGONAL",*/ "RELAXATION",
-                        "CHEBYSHEV"}; // None
+STRINGS ifpack2Precs = {"ILUT", "RILUK", /* "DIAGONAL",*/ "RELAXATION", "CHEBYSHEV",
+                        "NONE"}; // None
 
-STRINGS belos_sq = {"PSEUDOBLOCK TFQMR",
-                    "TFQMR",
-                    "BICGSTAB",
-                    "BLOCK GMRES",
-                    "PSEUDOBLOCK GMRES",
-                    "HYBRID BLOCK GMRES",
-                    "GCRODR"}; //, "LSQR"};
+STRINGS belos_sq = {
+    "PSEUDOBLOCK TFQMR",  "TFQMR", "BICGSTAB", "BLOCK GMRES", "PSEUDOBLOCK GMRES",
+    "HYBRID BLOCK GMRES", "GCRODR"}; //, "LSQR"};
 
 /*
 STRINGS belos_all = {"PSEUDOBLOCK TFQMR", "BICGSTAB", "BLOCK GMRES",
@@ -102,5 +98,4 @@ STRINGS determineSolvers(const std::string &filename);
 
 void belosSolve(const RCP<const MAT> &A, const std::string &filename, json &j);
 
-RCP<PRE> getIfpack2Preconditoner(const RCP<const MAT> &A,
-                                 std::string ifpack2PrecChoice);
+RCP<PRE> getIfpack2Preconditoner(const RCP<const MAT> &A, std::string ifpack2PrecChoice);

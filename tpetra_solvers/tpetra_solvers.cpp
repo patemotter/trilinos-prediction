@@ -93,8 +93,8 @@ int main(int argc, char *argv[]) {
 
             timer.start(true);
             if (myRank == 0) {
-                std::cout << "Working on: " << matrixName << "\t" << solverChoice << "\t"
-                          << precChoice << std::endl;
+                std::cout << "\nWorking on: " << matrixName << "\t" << solverChoice
+                          << "\t" << precChoice << std::endl;
             }
 
             // Vectors
@@ -107,27 +107,45 @@ int main(int argc, char *argv[]) {
 
             //  Setup belos solver
             RCP<ParameterList> solverParams = parameterList();
+            if (solverChoice == "PSEUDOBLOCK GMRES")
+                solverParams->set("Max Restarts", 40);
             solverParams->set("Maximum Iterations", 10000);
             solverParams->set("Convergence Tolerance", 1.0e-6);
+            solverParams->set("Verbosity",
+                              Belos::Errors + Belos::Warnings + Belos::StatusTestDetails);
             Belos::SolverFactory<ST, MV, OP> belosFactory;
             RCP<BSM> solver = belosFactory.create(solverChoice, solverParams);
 
             // Preconditioner
             Ifpack2::Factory ifpack2Factory;
             RCP<PRE> prec;
-            prec = ifpack2Factory.create(precChoice, A);
-            prec->initialize();
-            prec->compute();
+            if (precChoice != "NONE") {
+                prec = ifpack2Factory.create(precChoice, A);
+                prec->initialize();
+                prec->compute();
+            }
 
             //  Create the linear problem w/ prec
             RCP<LP> problem = rcp(new LP(A, x, b));
-            if (solverChoice == "BICGSTAB") {
-                problem->setRightPrec(prec);
-            } else {
-                problem->setLeftPrec(prec);
+            if (precChoice != "NONE") {
+                if (solverChoice != "FIXED POINT") {
+                    problem->setRightPrec(prec);
+                } else {
+                    problem->setLeftPrec(prec);
+                }
             }
             problem->setProblem(); // done adding to the linear problem
             solver->setProblem(problem);
+            /*
+            if (myRank == 0) {
+                RCP<const ParameterList> valid = solver->getValidParameters();
+                RCP<const ParameterList> current = solver->getCurrentParameters();
+                std::cout << "Valid:\n";
+                valid->print(std::cout, 4, true, true);
+                std::cout << "Current:\n";
+                current->print(std::cout, 4, true, true);
+            }
+            */
 
             // Solve
             bool error = false;
@@ -147,14 +165,19 @@ int main(int argc, char *argv[]) {
                                  << precChoice << ", ";
                     if (result == Belos::Converged) {
                         outputLocCSV << "converged, " << timer.totalElapsedTime() << ", "
-                                     << solver->getNumIters() << std::endl;
+                                     << solver->getNumIters() << ", ";
                     } else {
                         outputLocCSV << "unconverged, " << timer.totalElapsedTime()
-                                     << ", " << solver->getNumIters() << std::endl;
+                                     << ", " << solver->getNumIters() << ", ";
+                    }
+                    try {
+                        outputLocCSV << solver->achievedTol() << std::endl;
+                    } catch (...) {
+                        outputLocCSV << std::endl;
                     }
                 } else {
                     outputLocCSV << matrixName << ", " << solverChoice << ", "
-                                 << precChoice << ", error," << timer.totalElapsedTime()
+                                 << precChoice << ", error, " << timer.totalElapsedTime()
                                  << std::endl;
                 }
             }
