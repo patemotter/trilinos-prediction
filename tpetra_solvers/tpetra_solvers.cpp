@@ -6,11 +6,11 @@ int main(int argc, char *argv[]) {
     if (strcmp(argv[1], "-h") == 0) {
         std::cout << "Usage:\n mpirun tpetra_solver <mtx_file> <-d> <output_dir>\n";
         std::cout << "Preconditioner choices:\nRILUK, ILUT, DIAGONAL, CHEBYSHEV, "
-                  << "BLOCK_RELAXATION, RELAXATION, and SCHWARZ\n";
+            << "BLOCK_RELAXATION, RELAXATION, and SCHWARZ\n";
         std::cout << "Solver choices:\nMINRES, PSEUDOBLOCK_CG, "
-                     "PSEUDOBLOCK_STOCHASTIC_CG,"
-                  << "FIXED_POINT, PSEUDOBLOCK_TFQMR, TFQMR, BICGSTAB, LSQR, "
-                     "PSEUDOBLOCK_GMRES\n";
+            "PSEUDOBLOCK_STOCHASTIC_CG,"
+            << "FIXED_POINT, PSEUDOBLOCK_TFQMR, TFQMR, BICGSTAB, LSQR, "
+            "PSEUDOBLOCK_GMRES\n";
     }
 
     std::string outputDir, outputFile;
@@ -27,19 +27,19 @@ int main(int argc, char *argv[]) {
         getline(infile, firstLine);
         if (firstLine.find("complex") != std::string::npos) {
             std::cout << inputFile
-                      << ": Complex matrices are not currently supported. Exiting\n";
+                << ": Complex matrices are not currently supported. Exiting\n";
             infile.close();
             exit(0);
         }
         if (firstLine.find("integer") != std::string::npos) {
             std::cout << inputFile
-                      << ": Integer matrices are not currently supported. Exiting\n";
+                << ": Integer matrices are not currently supported. Exiting\n";
             infile.close();
             exit(0);
         }
         if (firstLine.find("pattern") != std::string::npos) {
             std::cout << inputFile
-                      << ": Pattern matrices are not currently supported: exiting\n";
+                << ": Pattern matrices are not currently supported: exiting\n";
             infile.close();
             exit(0);
         }
@@ -71,6 +71,7 @@ int main(int argc, char *argv[]) {
     }
 
     Teuchos::oblackholestream blackhole;
+    std::ostream &out = (myRank == 0 ? std::cout : blackhole);
     std::ofstream outputLocCSV;
 
     if (outputDir.size() && outputFile.empty()) {
@@ -81,12 +82,14 @@ int main(int argc, char *argv[]) {
                 outputDir + "/results_" + std::to_string(numProcs) + ".csv";
             // std::cout << outputFilenameCSV << std::endl;
             outputLocCSV.open(outputFilenameCSV.c_str(),
-                              std::ofstream::out | std::ofstream::app);
+                    std::ofstream::out | std::ofstream::app);
         }
     }
 
     for (std::string solverChoice : belos_all) {
         for (std::string precChoice : ifpack2Precs) {
+            RCP<Time> t = TimeMonitor::getNewCounter("");
+            t->start();
             Teuchos::Time timer("timer", false);
             unsigned long found = inputFile.find_last_of("/\\");
             std::string matrixName = inputFile.substr(found + 1);
@@ -94,7 +97,7 @@ int main(int argc, char *argv[]) {
             timer.start(true);
             if (myRank == 0) {
                 std::cout << "\nWorking on: " << matrixName << "\t" << solverChoice
-                          << "\t" << precChoice << std::endl;
+                    << "\t" << precChoice << std::endl;
             }
 
             // Vectors
@@ -107,12 +110,15 @@ int main(int argc, char *argv[]) {
 
             //  Setup belos solver
             RCP<ParameterList> solverParams = parameterList();
-            if (solverChoice == "PSEUDOBLOCK GMRES")
+            if (solverChoice == "PSEUDOBLOCK GMRES") {
+                if (myRank == 0) 
+                    std::cout << "Changing number of restarts for GMRES\n";
                 solverParams->set("Max Restarts", 40);
+            }
             solverParams->set("Maximum Iterations", 10000);
             solverParams->set("Convergence Tolerance", 1.0e-6);
             solverParams->set("Verbosity",
-                              Belos::Errors + Belos::Warnings + Belos::StatusTestDetails);
+                    Belos::Errors + Belos::Warnings + Belos::StatusTestDetails);
             Belos::SolverFactory<ST, MV, OP> belosFactory;
             RCP<BSM> solver = belosFactory.create(solverChoice, solverParams);
 
@@ -123,6 +129,8 @@ int main(int argc, char *argv[]) {
                 prec = ifpack2Factory.create(precChoice, A);
                 prec->initialize();
                 prec->compute();
+            } else {
+                prec = Teuchos::null;
             }
 
             //  Create the linear problem w/ prec
@@ -133,19 +141,22 @@ int main(int argc, char *argv[]) {
                 } else {
                     problem->setLeftPrec(prec);
                 }
+            } else {
+                problem->setRightPrec(Teuchos::null);
+                problem->setLeftPrec(Teuchos::null);
             }
             problem->setProblem(); // done adding to the linear problem
             solver->setProblem(problem);
             /*
-            if (myRank == 0) {
-                RCP<const ParameterList> valid = solver->getValidParameters();
-                RCP<const ParameterList> current = solver->getCurrentParameters();
-                std::cout << "Valid:\n";
-                valid->print(std::cout, 4, true, true);
-                std::cout << "Current:\n";
-                current->print(std::cout, 4, true, true);
-            }
-            */
+               if (myRank == 0) {
+               RCP<const ParameterList> valid = solver->getValidParameters();
+               RCP<const ParameterList> current = solver->getCurrentParameters();
+               std::cout << "Valid:\n";
+               valid->print(std::cout, 4, true, true);
+               std::cout << "Current:\n";
+               current->print(std::cout, 4, true, true);
+               }
+               */
 
             // Solve
             bool error = false;
@@ -159,16 +170,20 @@ int main(int argc, char *argv[]) {
                 }
             }
             timer.stop();
+            t->stop();
+            TimeMonitor::summarize();
+            TimeMonitor::zeroOutTimers();
+
             if (myRank == 0) {
                 if (error == false) {
                     outputLocCSV << matrixName << ", " << solverChoice << ", "
-                                 << precChoice << ", ";
+                        << precChoice << ", ";
                     if (result == Belos::Converged) {
                         outputLocCSV << "converged, " << timer.totalElapsedTime() << ", "
-                                     << solver->getNumIters() << ", ";
+                            << solver->getNumIters() << ", ";
                     } else {
                         outputLocCSV << "unconverged, " << timer.totalElapsedTime()
-                                     << ", " << solver->getNumIters() << ", ";
+                            << ", " << solver->getNumIters() << ", ";
                     }
                     try {
                         outputLocCSV << solver->achievedTol() << std::endl;
@@ -177,8 +192,8 @@ int main(int argc, char *argv[]) {
                     }
                 } else {
                     outputLocCSV << matrixName << ", " << solverChoice << ", "
-                                 << precChoice << ", error, " << timer.totalElapsedTime()
-                                 << std::endl;
+                        << precChoice << ", error, " << timer.totalElapsedTime()
+                        << std::endl;
                 }
             }
         }
