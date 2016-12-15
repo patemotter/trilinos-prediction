@@ -13,7 +13,6 @@
 #include <Teuchos_StandardCatchMacros.hpp>
 
 //  c++
-#include "json.hpp"
 #include <exception>
 #include <fstream>
 
@@ -44,7 +43,6 @@ using Teuchos::Time;
 using Teuchos::TimeMonitor;
 using Teuchos::ParameterList;
 using Teuchos::parameterList;
-using nlohmann::json;
 
 //  Globals
 int myRank;
@@ -92,10 +90,3 @@ STRINGS belos_all = {"FIXED POINT",
 //                   "RECYCLING GMRES",
 //                   "SEED CG",
 //                   "SEED GMRES",
-
-//  Functions
-STRINGS determineSolvers(const std::string &filename);
-
-void belosSolve(const RCP<const MAT> &A, const std::string &filename, json &j);
-
-RCP<PRE> getIfpack2Preconditoner(const RCP<const MAT> &A, std::string ifpack2PrecChoice);
