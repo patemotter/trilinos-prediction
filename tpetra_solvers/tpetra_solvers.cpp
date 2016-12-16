@@ -93,8 +93,8 @@ int main(int argc, char *argv[]) {
     //  Main loop over each solver and preconditioner
     for (std::string solverChoice : belos_all) {
         for (std::string precChoice : ifpack2Precs) {
-            RCP<Time> t = TimeMonitor::getNewCounter("TotalTimer");
-            t->start();
+            Teuchos::Time timer("timer", rfalse);
+            timer.start(true);
             unsigned long found = inputFile.find_last_of("/\\");
             std::string matrixName = inputFile.substr(found + 1);
 
@@ -120,13 +120,9 @@ int main(int argc, char *argv[]) {
                 solverParams->set("Maximum Restarts", 100);
             }
 
-            //  Creating the needed solver type
+            //  Creating the needed solver type w/ changed parameters
             Belos::SolverFactory<ST, MV, OP> belosFactory;
             RCP<BSM> solver = belosFactory.create(solverChoice, solverParams);
-            if (myRank == 0) {
-                RCP<const ParameterList> current = solver->getCurrentParameters();
-                current->print(std::cout, 4, true, true);
-            }
 
             // Creating the needed preconditioner type
             Ifpack2::Factory ifpack2Factory;
@@ -166,6 +162,7 @@ int main(int argc, char *argv[]) {
                 }
             }
             t->stop();
+            timer.stop();
             TimeMonitor::summarize();     // Print timing info to cout
             TimeMonitor::zeroOutTimers(); // Reset timers for next solver-prec
 
