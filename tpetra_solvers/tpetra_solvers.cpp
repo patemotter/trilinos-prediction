@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
     //  Main loop over each solver and preconditioner
     for (std::string solverChoice : belos_all) {
         for (std::string precChoice : ifpack2Precs) {
-            Teuchos::Time timer("timer", rfalse);
+            Teuchos::Time timer("timer", false);
             timer.start(true);
             unsigned long found = inputFile.find_last_of("/\\");
             std::string matrixName = inputFile.substr(found + 1);
@@ -161,7 +161,6 @@ int main(int argc, char *argv[]) {
                     std::cerr << e.what();
                 }
             }
-            t->stop();
             timer.stop();
             TimeMonitor::summarize();     // Print timing info to cout
             TimeMonitor::zeroOutTimers(); // Reset timers for next solver-prec
