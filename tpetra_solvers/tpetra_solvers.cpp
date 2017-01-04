@@ -3,7 +3,7 @@
 int symm = 0;
 
 int main(int argc, char *argv[]) {
-    if (strcmp(argv[1], "-h") == 0) {
+    if (argc == 1 || strcmp(argv[1], "-h") == 0) {
         std::cout << "Usage:\n mpirun tpetra_solver <mtx_file> <-d> <output_dir>\n";
         std::cout << "Preconditioner choices:\nRILUK, ILUT, DIAGONAL, CHEBYSHEV, "
                      "BLOCK_RELAXATION, RELAXATION, and SCHWARZ\n";
@@ -11,6 +11,7 @@ int main(int argc, char *argv[]) {
                      "PSEUDOBLOCK_STOCHASTIC_CG,"
                      "FIXED_POINT, PSEUDOBLOCK_TFQMR, TFQMR, BICGSTAB, LSQR, "
                      "PSEUDOBLOCK_GMRES\n";
+        exit(0);
     }
 
     std::string outputDir, outputFile;
