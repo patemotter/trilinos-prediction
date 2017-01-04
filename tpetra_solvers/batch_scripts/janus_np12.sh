@@ -2,11 +2,11 @@
 
 #SBATCH --job-name=UF.1k.np12
 #SBATCH --qos=janus
-#SBATCH --time=12:00:00
+#SBATCH --time=4:00:00
 #SBATCH --nodes 1
 #SBATCH --ntasks-per-node 12
-##SBATCH --output=/lustre/janus_scratch/pamo8800/np12_1k/slurm-%j.out
-##SBATCH --error=/lustre/janus_scratch/pamo8800/np12_1k/slurm-%j.err
+##SBATCH --output=/lustre/janus_scratch/pamo8800/output/slurm-%j.out
+##SBATCH --error=/lustre/janus_scratch/pamo8800/error/slurm-%j.err
 
 export OMP_NUM_THREADS=1
 
