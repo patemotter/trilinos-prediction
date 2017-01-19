@@ -1,8 +1,11 @@
 import pandas as pd
 import numpy as np
 
-timings = pd.read_csv("../data/all_results_janus_single_node_1-14-17.csv")
-timings.columns = ['np', 'matrix', 'solver', 'prec', 'status', 'time', 'iters', 'resid']
+# Read in the timings from each csv file, aliases for cols
+np1_timings = pd.read_csv('../data/np1_results.csv', header=0)
+np1_timings.columns = ['np', 'matrix', 'solver', 'prec', 'status', 'time', 'iters', 'resid']
+
+# Read in the matrix properties from the csv file, aliases cols
 properties = pd.read_csv('../data/uflorida-features.csv', header=0)
 properties.columns = ['rows', 'cols', 'min_nnz_row', 'row_var', 'col_var',
                       'diag_var', 'nnz', 'frob_norm', 'symm_frob_norm',
@@ -14,53 +17,66 @@ properties.columns = ['rows', 'cols', 'min_nnz_row', 'row_var', 'col_var',
                       'diag_sign', 'diag_nnz', 'lower_bw', 'upper_bw', 'row_log_val_spread',
                       'col_log_val_spread', 'symm', 'matrix']
 
-matrix_list = timings['matrix'].unique()
-combined = pd.merge(timings, properties, on='matrix')
+# Combine the two dataframes (timings and properties)
+combined = pd.merge(np1_timings, properties, on='matrix')
+
+# Change string entries into numerical (for SKLearn)
 combined['solver_num'] = combined.solver.map(
     {'FIXED_POINT': 0, 'BICGSTAB': 1, 'MINRES': 2, 'PSEUDOBLOCK_CG': 3, 'PSEUDOBLOCK_STOCHASTIC_CG': 4,
      'PSEUDOBLOCK_TFQMR': 5, 'TFQMR': 6, 'LSQR': 7, 'PSEUDOBLOCK_GMRES': 8}).astype(int)
-combined['prec_num'] = combined.prec.map({'ILUT': 0, 'RILUK': 1, 'RELAXATION': 2, 'CHEBYSHEV': 3, 'NONE': 4}).astype(int)
+combined['prec_num'] = combined.prec.map({'ILUT': 0, 'RILUK': 1, 'RELAXATION': 2, 'CHEBYSHEV': 3,
+                                          'NONE': 4}).astype(int)
 combined['status_num'] = combined.status.map({'error': -1, 'unconverged': 0, 'converged': 1}).astype(int)
 
+# Group based on the matrix, find the best times for each matrix (error, unconverged, converged)
 grouped = combined.groupby(['matrix', 'status_num'])
-grouped2 = combined.groupby('matrix')
-
 matrix_best_times = grouped['time'].aggregate(np.min)
 
-# print(matrix_best_times["1138_bus.mtx"][1])
+# Create two empty lists that will be new columns
+good_bad_list = []
+new_time_list = []
 
-good_bad_series = []
-new_time_series = []
-for index, row in combined.iterrows(): #iterates through the datframe
-    #for mat in matrix_best_times.keys():
+# Iterate through each row of the dataframe
+for index, row in combined.iterrows():
     current_matrix_time = row['time']
     matrix_name = row['matrix']
+
+    # Check for matrices which never converged
     try:
-        matrix_min_time = matrix_best_times[matrix_name][1] # 1 indicates converged
+        matrix_min_time = matrix_best_times[matrix_name][1]  # 1 indicates converged
     except:
         matrix_min_time = np.inf
-        #print(matrix_name, "exception")
 
-#    if current_matrix_time == matrix_min_time: # check if current time matches best time for that matrix
+    # Error or unconverged runs = inf time
     if row['status_num'] != 1:
-        good_bad_series.append("bad")
-        new_time_series.append(np.inf)
+        good_bad_list.append(-1)
+        new_time_list.append(np.inf)
+    # Good = anything within 25% of the fastest run for that matrix
+    elif current_matrix_time <= 1.25 * matrix_min_time:
+        good_bad_list.append(1)
+        new_time_list.append(current_matrix_time)
+    # Bad = anything else outside of that range but still converged
+    else:
+        good_bad_list.append(-1)
+        new_time_list.append(current_matrix_time)
 
-        #print(matrix_name, "bad")
-    elif current_matrix_time <= 1.25*matrix_min_time:
-        good_bad_series.append("good")
-        new_time_series.append(current_matrix_time)
-        #print(matrix_name, "good")
+# Create Pandas series from the lists
+good_bad_series = pd.Series(good_bad_list)
+good_bad_series.to_csv('good_bad_series.csv')
+new_time_series = pd.Series(new_time_list)
+new_time_series.to_csv('new_time_series.csv')
 
-a = pd.Series(good_bad_series)
-a.to_csv('good_bad_list.csv')
-b = pd.Series(new_time_series)
-b.to_csv('new_time_list.csv')
+# Add series to dataframe as new columns
+np1_timings = np1_timings.assign(good_or_bad=pd.Series(good_bad_series))
+np1_timings = np1_timings.assign(new_time=pd.Series(new_time_series))
+np1_timings = np1_timings.assign(solver_num=combined['solver_num'])
+np1_timings = np1_timings.assign(prec_num=combined['prec_num'])
+np1_timings = np1_timings.assign(status_num=combined['status_num'])
 
-#print(good_bad_series)
-combined = combined.assign(good_or_bad = pd.Series(good_bad_series))
-combined.to_csv('hope.csv')
-    # todo add in fraction of min
-    # todo set error/converged to inf times
-    # todo compare only against converged items
-    # todo some error checking in case no items converged for that matrix
+np1_timings = np1_timings.drop(['matrix', 'solver', 'prec', 'status', 'iters', 'resid'], axis=1)
+
+np1_timings.to_csv('revised_np1_results.csv')
+
+# combined = combined.assign(good_or_bad=pd.Series(good_bad_series))
+# combined = combined.assign(new_time=pd.Series(new_time_series))
+# combined.to_csv('combined_np1.csv')
