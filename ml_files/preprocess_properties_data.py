@@ -2,15 +2,11 @@
 # Pate Motter
 # 1-19-17
 
-# Timings files should be csv w/ no space
-# Timings cols = num_procs,matrix_name,solver,preconditioner,status,time,iterations,final_residual
-# Timing file examples can be found within the trilinos-prediction/data directory
-
-# Properties files have many columns
-# Properties file used is trilinos-prediction/data/uflorida-features.csv
+# Input;
+#   Properties files have many columns of features computed using Anamod
+#   Properties file used is trilinos-prediction/data/uflorida-features.csv
 
 import pandas as pd
-import numpy as np
 
 matrix_properties = pd.read_csv('../data/uflorida-features.csv', header=0)
 matrix_properties.columns = ['rows', 'cols', 'min_nnz_row', 'row_var', 'col_var',
@@ -31,6 +27,7 @@ for name in matrix_names:
 hash_list = []
 matrix_name_series = matrix_properties['matrix']
 for name in matrix_name_series:
+    print(name, hash(name))
     hash_list.append(hash_dict[name])
 
 matrix_id_series = pd.Series(hash_list)

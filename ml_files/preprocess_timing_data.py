@@ -2,12 +2,10 @@
 # Pate Motter
 # 1-19-17
 
-# Timings files should be csv w/ no space
-# Timings cols = num_procs,matrix_name,solver,preconditioner,status,time,iterations,final_residual
-# Timing file examples can be found within the trilinos-prediction/data directory
-
-# Properties files have many columns
-# Properties file used is trilinos-prediction/data/uflorida-features.csv
+# Input:
+#   Timings files should be csv w/ no space
+#   Timings cols = num_procs,matrix_name,solver,preconditioner,status,time,iterations,final_residual
+#   Timing file examples can be found within the trilinos-prediction/data directory
 
 import pandas as pd
 import numpy as np
@@ -77,14 +75,14 @@ for index, row in subset.iterrows():
 
 # Create Pandas series from the lists which used to contain strings
 good_bad_series = pd.Series(good_bad_list)
-all_timing_data = all_timing_data.assign(good_or_bad=pd.Series(good_bad_series))
-
 new_time_series = pd.Series(new_time_list)
-all_timing_data = all_timing_data.assign(new_time=pd.Series(new_time_series))
-
 name_hash_series = pd.Series(hash_list)
+
+# Add the series to the dataframe as columns
+all_timing_data = all_timing_data.assign(good_or_bad=pd.Series(good_bad_series))
+all_timing_data = all_timing_data.assign(new_time=pd.Series(new_time_series))
 all_timing_data = all_timing_data.assign(matrix_id=pd.Series(name_hash_series))
 
-# Add series to dataframe as new columns
-cleaned_timing_data = all_timing_data[['np', 'matrix_id', 'solver_id', 'prec_id', 'status_id', 'new_time', 'good_or_bad']]
+# Select which columns to keep and output to file
+cleaned_timing_data = all_timing_data[['np', 'matrix', 'matrix_id', 'solver_id', 'prec_id', 'status_id', 'new_time', 'good_or_bad']]
 cleaned_timing_data.to_csv('processed_timings.csv')
