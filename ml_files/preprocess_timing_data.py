@@ -48,6 +48,7 @@ for name in matrix_names:
 
 # Iterate through each row of the dataframe
 subset = all_timing_data[['time','matrix','status_id']]
+max_float_value = np.finfo(np.float32).max
 
 for index, row in subset.iterrows():
     current_matrix_time = row['time']
@@ -60,7 +61,7 @@ for index, row in subset.iterrows():
     except:
         matrix_min_time = np.inf
 
-    # Error or unconverged runs = inf time
+    # Error or unconverged runs = max float time
     if row['status_id'] != 1:
         good_bad_list.append(-1)
         new_time_list.append(np.inf)
