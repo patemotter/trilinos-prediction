@@ -36,3 +36,13 @@ CMakeFiles
 CMakeScripts
 Makefile
 install_manifest.txt
+
+*.csv#
+
+tpetra_properties/\.ipynb_checkpoints/
+
+\.ipynb_checkpoints/
+
+ml_files/\.idea/
+
+ml_files/\.vscode/
