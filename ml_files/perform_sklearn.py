@@ -6,7 +6,6 @@ import itertools
 import pandas as pd
 import numpy as np
 import random
-from ggplot import *
 from sklearn import metrics
 from sklearn.naive_bayes import GaussianNB
 from sklearn import svm
@@ -28,12 +27,23 @@ from imblearn.combine import SMOTEENN, SMOTETomek
 from imblearn import over_sampling as os
 from imblearn import pipeline as pl
 from imblearn.metrics import classification_report_imbalanced
-from imblearn.over_sampling import SMOTE
+from imblearn.over_sampling import ADASYN, SMOTE, RandomOverSampler
 from imblearn.pipeline import make_pipeline
 from sklearn.decomposition import PCA
 from sklearn.svm import LinearSVC
 import matplotlib.colors as colors
 
+
+class DummySampler(object):
+
+    def sample(self, X, y):
+        return X, y
+
+    def fit(self, X, y):
+        return self
+
+    def fit_sample(self, X, y):
+        return self.sample(X, y)
 
 def show_confusion_matrix(C, class_labels=['0', '1']):
     """
@@ -239,11 +249,19 @@ classifier_list = [GaussianNB(),
                    LogisticRegression(),
                    GradientBoostingClassifier(),
                    KNeighborsClassifier()]
-for clf in classifier_list:
-    pipeline = pl.make_pipeline(clf)
-    pipeline.fit(X_train, y_train)
-    print(pipeline.steps)
-    print(classification_report_imbalanced(y_test, pipeline.predict(X_test)))
+samplers_list = [DummySampler(),
+                 SMOTE(),
+                 SMOTEENN(),
+                 SMOTETomek(),
+                 ADASYN(),
+                 RandomOverSampler()]
+
+for i in classifier_list:
+    for j in samplers_list:
+        pipeline = pl.make_pipeline(j,i)
+        pipeline.fit(X_train, y_train)
+        print(pipeline.steps)
+        print(classification_report_imbalanced(y_test, pipeline.predict(X_test)))
 
 clf = DecisionTreeClassifier()
 
