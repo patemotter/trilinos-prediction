@@ -151,43 +151,8 @@ def show_confusion_matrix(C, class_labels=['0', '1']):
             bbox=dict(fc='w', boxstyle='round,pad=1'))
 
     plt.tight_layout()
-    plt.show()
-
-def plot_confusion_matrix(cm, classes,
-                          normalize=False,
-                          title='Confusion matrix'):
-    """
-    This function prints and plots the confusion matrix.
-    Normalization can be applied by setting `normalize=True`.
-    """
-    plt.imshow(cm, interpolation='nearest')
-    plt.title(title)
-    #bounds = np.array([0, 0.25, 0.50, 0.75, 1.0])
-    #norm = colors.BoundaryNorm(boundaries=bounds, ncolors=4)
-    #plt.colorbar(ticks=np.linspace(0,1,5))
-    tick_marks = np.arange(len(classes))
-    plt.xticks(tick_marks, classes, rotation=45)
-    plt.yticks(tick_marks, classes)
-
-    if normalize:
-        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        print("Normalized confusion matrix")
-    else:
-        print('Confusion matrix, without normalization')
-
-    print(cm)
-
-    thresh = cm.max() / 2.
-    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-        plt.text(j, i, cm[i, j],
-                 horizontalalignment="center",
-                 color="white" if i == 0 and j == 0 else "black")
 
 
-    plt.tight_layout()
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
-    plt.show()
 
 np.set_printoptions(precision=3)
 
@@ -207,54 +172,38 @@ rng = np.random.RandomState()
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=rng, stratify=y, test_size=0.5)
 cross_validation = StratifiedKFold(n_splits=3)
 
-"""
-# Based on tutorial 04 - Training and Testing Data
-classifier = KNeighborsClassifier(n_neighbors=5)
-classifier.fit(X_train, y_train)
-scores = cross_val_score(classifier, X, y, cv=cross_validation)
-y_test_pred = classifier.predict(X_test)
-print("KNN Score" ,classifier.score(X_test,y_test))
-print("KNN Scores" , scores)
-print(confusion_matrix(y_test, y_test_pred))
-print(classification_report(y_test, y_test_pred))
+# Learn to predict each class against the other
+classifier = GradientBoostingClassifier()
+y_score = classifier.fit(X_train, y_train).decision_function(X_test)
 
-classifier = GaussianNB().fit(X_train, y_train)
-classifier.fit(X_train, y_train)
-scores = cross_val_score(classifier, X, y, cv=cross_validation)
-y_test_pred = classifier.predict(X_test)
-print("GaussianNB Score" ,classifier.score(X_test,y_test))
-print("GaussianNB Scores" , scores)
-print(confusion_matrix(y_test, y_test_pred))
-print(classification_report(y_test, y_test_pred))
+# Compute ROC curve and ROC area for each class
+fpr, tpr, _ = roc_curve(y_test, y_score)
+roc_auc = auc(fpr, tpr)
 
-classifier = LogisticRegression()
-classifier.fit(X_train, y_train)
-y_test_pred = classifier.predict(X_test)
-print("Logistic Regression Training Score:", classifier.score(X_train, y_train))
-print("Logistic Regression Test Score:", classifier.score(X_test, y_test))
-print(confusion_matrix(y_test, y_test_pred))
-print(classification_report(y_test, y_test_pred))
+plt.figure()
+plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver operating characteristic example')
+plt.legend(loc="lower right")
+plt.show()
 
-classifier = DecisionTreeClassifier(max_depth=5)
-classifier.fit(X_train, y_train)
-y_test_pred = classifier.predict(X_test)
-print("Decision Tree Training Score:", classifier.score(X_train, y_train))
-print("Decision Tree Test Score:", classifier.score(X_test, y_test))
-print(confusion_matrix(y_test, y_test_pred))
-print(classification_report(y_test, y_test_pred))
-"""
+
 #pipeline = pl.make_pipeline(SMOTE(), GradientBoostingClassifier())
-classifier_list = [GaussianNB(),
-                   DecisionTreeClassifier(),
-                   LogisticRegression(),
-                   GradientBoostingClassifier(),
-                   KNeighborsClassifier()]
-samplers_list = [DummySampler(),
-                 SMOTE(),
-                 SMOTEENN(),
-                 SMOTETomek(),
-                 ADASYN(),
-                 RandomOverSampler()]
+classifier_list = [#GaussianNB(),
+                   #DecisionTreeClassifier(),
+                   #LogisticRegression(),
+                   GradientBoostingClassifier()]
+                   #KNeighborsClassifier()]
+samplers_list = [DummySampler()]
+                 #SMOTE(),
+                 #SMOTEENN(),
+                 #SMOTETomek()]
+                 #ADASYN(),
+                 #RandomOverSampler()]
 
 for i in classifier_list:
     for j in samplers_list:
@@ -262,8 +211,26 @@ for i in classifier_list:
         pipeline.fit(X_train, y_train)
         print(pipeline.steps)
         print(classification_report_imbalanced(y_test, pipeline.predict(X_test)))
+        fpr, tpr, _ = metrics.roc_curve(y_test, pipeline.predict(X_test))
+        roc_auc = auc(fpr, tpr)
+        print(fpr,tpr)
+        #cnf_matrix = confusion_matrix(y_test, pipeline.predict(X_test))
+        #show_confusion_matrix(cnf_matrix, ['-1', '1'])
 
-clf = DecisionTreeClassifier()
+        # Plot of a ROC curve for a specific class
+        plt.figure()
+        plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
+        plt.plot([0, 1], [0, 1], 'k--')
+        plt.xlim([0.0, 1.0])
+        plt.ylim([0.0, 1.05])
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title('Receiver operating characteristic example')
+        plt.legend(loc="lower right")
+        plt.show()
+
+
+#plt.show()
 
 
 #classifier = GradientBoostingClassifier()
