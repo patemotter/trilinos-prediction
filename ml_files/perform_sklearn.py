@@ -152,9 +152,8 @@ def show_confusion_matrix(C, class_labels=['0', '1']):
 
     plt.tight_layout()
 
-
-
 np.set_printoptions(precision=3)
+rng = np.random.RandomState()
 
 # Read files
 processed_matrix_properties = pd.read_csv('processed_properties.csv', index_col=0)
@@ -168,9 +167,39 @@ combined = pd.merge(processed_matrix_properties, processed_timings, on='matrix_i
 # Create training and target sets
 X = combined.iloc[0:,0:40]
 y = combined.iloc[0:,41]
-rng = np.random.RandomState()
-X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=rng, stratify=y, test_size=0.5)
-cross_validation = StratifiedKFold(n_splits=3)
+
+classifier_list = [['GaussianNB', GaussianNB()],
+                   ['DecisionTree', DecisionTreeClassifier()],
+                   ['LogisticRegression', LogisticRegression()],
+                   ['GradientBoosting', GradientBoostingClassifier()],
+                   ['KNN', KNeighborsClassifier()]]
+samplers_list = [['DummySampler', DummySampler()],
+                 ['SMOTE', SMOTE()],
+                 ['SMOTEENN', SMOTEENN()],
+                 ['SMOTETomek', SMOTETomek()],
+                 ['ADASYN', ADASYN()],
+                 ['RandomOverSampler', RandomOverSampler()]]
+
+skf = StratifiedKFold(n_splits=3)
+skf.get_n_splits(X, y)
+
+for clf_name,clf in classifier_list:
+    for smp_name,smp in samplers_list:
+        for train_index, test_index in skf.split(X, y):
+            X_train, X_test = X.values[train_index], X.values[test_index]
+            y_train, y_test = y.values[train_index], y.values[test_index]
+            pipeline = pl.make_pipeline(smp, clf)
+            pipeline.fit(X_train, y_train)
+            print(clf_name, smp_name)
+            print(classification_report_imbalanced(y_test, pipeline.predict(X_test)))
+            cnf_matrix = confusion_matrix(y_test, pipeline.predict(X_test))
+            print(cnf_matrix)
+
+        #show_confusion_matrix(cnf_matrix, ['-1', '1'])
+#X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=rng, stratify=y, test_size=0.5)
+#cross_validation = StratifiedKFold(n_splits=3)
+
+"""
 
 # Learn to predict each class against the other
 classifier = GradientBoostingClassifier()
@@ -190,44 +219,8 @@ plt.ylabel('True Positive Rate')
 plt.title('Receiver operating characteristic example')
 plt.legend(loc="lower right")
 plt.show()
+"""
 
-
-#pipeline = pl.make_pipeline(SMOTE(), GradientBoostingClassifier())
-classifier_list = [#GaussianNB(),
-                   #DecisionTreeClassifier(),
-                   #LogisticRegression(),
-                   GradientBoostingClassifier()]
-                   #KNeighborsClassifier()]
-samplers_list = [DummySampler()]
-                 #SMOTE(),
-                 #SMOTEENN(),
-                 #SMOTETomek()]
-                 #ADASYN(),
-                 #RandomOverSampler()]
-
-for i in classifier_list:
-    for j in samplers_list:
-        pipeline = pl.make_pipeline(j,i)
-        pipeline.fit(X_train, y_train)
-        print(pipeline.steps)
-        print(classification_report_imbalanced(y_test, pipeline.predict(X_test)))
-        fpr, tpr, _ = metrics.roc_curve(y_test, pipeline.predict(X_test))
-        roc_auc = auc(fpr, tpr)
-        print(fpr,tpr)
-        #cnf_matrix = confusion_matrix(y_test, pipeline.predict(X_test))
-        #show_confusion_matrix(cnf_matrix, ['-1', '1'])
-
-        # Plot of a ROC curve for a specific class
-        plt.figure()
-        plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
-        plt.plot([0, 1], [0, 1], 'k--')
-        plt.xlim([0.0, 1.0])
-        plt.ylim([0.0, 1.05])
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title('Receiver operating characteristic example')
-        plt.legend(loc="lower right")
-        plt.show()
 
 
 #plt.show()
