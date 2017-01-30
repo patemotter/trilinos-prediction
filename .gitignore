@@ -46,3 +46,9 @@ tpetra_properties/\.ipynb_checkpoints/
 ml_files/\.idea/
 
 ml_files/\.vscode/
+
+*.iml
+
+*.xml
+
+*.pyc
