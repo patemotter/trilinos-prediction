@@ -55,7 +55,6 @@ def compute_metrics(clf_name, smp_name, y_test, y_pred, file):
     iba = iba_gmean(y_pred, y_test, labels=labels, average=None)
     for i, label in enumerate(labels):
         clf_name = clf_name.strip()
-        print(clf_name + ',' + smp_name + ',' + label)#, smp_name, ',', label, end=',')
         file.write(clf_name + ',' + smp_name + ',' + str(label) + ',')
         for v in (precision[i], recall[i], specificity[i], f1[i], geo_mean[i],
                   iba[i]):
@@ -65,6 +64,25 @@ def compute_metrics(clf_name, smp_name, y_test, y_pred, file):
         file.flush()
         #print('\n')
 
+def show_roc(clf, clf_name, X_train, y_train, X_test):
+    y_score = clf.fit(X_train, y_train).predict_proba(X_test)[:,1]
+    #  y_score = clf.fit(X_train, y_train).decision_function(X_test)
+    print(len(y_score))
+
+    # Compute ROC curve and ROC area for each class
+    fpr, tpr, _ = roc_curve(y_test, y_score)
+    roc_auc = auc(fpr, tpr)
+
+    plt.figure()
+    plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
+    plt.plot([0, 1], [0, 1], 'k--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver operating characteristic ' + str(clf_name))
+    plt.legend(loc="lower right")
+    plt.show()
 
 def show_confusion_matrix(C, class_labels=['0', '1']):
     """
@@ -186,8 +204,8 @@ processed_timings = processed_timings.drop('matrix', axis=1)
 combined = pd.merge(processed_matrix_properties, processed_timings, on='matrix_id')
 
 # Create training and target sets
-X = combined.iloc[0:,0:40]
-y = combined.iloc[0:,41]
+X = combined.iloc[:,:-2]
+y = combined.iloc[:,-1]
 
 classifier_list = [['GaussianNB', GaussianNB()],
                    ['DecisionTree', DecisionTreeClassifier()],
@@ -198,50 +216,29 @@ samplers_list = [['DummySampler', DummySampler()],
                  ['SMOTE', SMOTE()],
                  ['SMOTEENN', SMOTEENN()],
                  ['SMOTETomek', SMOTETomek()],
-                 #['ADASYN', ADASYN()],
+                 ['ADASYN', ADASYN()],
                  ['RandomOverSampler', RandomOverSampler()]]
 
 skf = StratifiedKFold(n_splits=3)
 skf.get_n_splits(X, y)
 
-file = open('3_fold.txt', 'w')
+file = open('3_fold_2.txt', 'w')
 for clf_name,clf in classifier_list:
     for smp_name,smp in samplers_list:
         for train_index, test_index in skf.split(X, y):
+            print(clf_name + ',' + smp_name)#, smp_name, ',', label, end=',')
             X_train, X_test = X.values[train_index], X.values[test_index]
             y_train, y_test = y.values[train_index], y.values[test_index]
             pipeline = pl.make_pipeline(smp, clf)
             pipeline.fit(X_train, y_train)
             y_pred = pipeline.predict(X_test)
             compute_metrics(clf_name, smp_name, y_test, y_pred, file)
+            show_roc(clf, clf_name, X_train, y_train, X_test)
             #print(clf_name, smp_name)
             #file.write(clf_name + ' ' + smp_name)
             #print(classification_report_imbalanced(y_test, y_pred))
             #file.write(classification_report_imbalanced(y_test, y_pred))
 file.close()
-
-
-"""
-# Learn to predict each class against the other
-classifier = GradientBoostingClassifier()
-y_score = classifier.fit(X_train, y_train).decision_function(X_test)
-
-# Compute ROC curve and ROC area for each class
-fpr, tpr, _ = roc_curve(y_test, y_score)
-roc_auc = auc(fpr, tpr)
-
-plt.figure()
-plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
-plt.plot([0, 1], [0, 1], 'k--')
-plt.xlim([0.0, 1.0])
-plt.ylim([0.0, 1.05])
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('Receiver operating characteristic example')
-plt.legend(loc="lower right")
-plt.show()
-"""
-
 
 
 #plt.show()
