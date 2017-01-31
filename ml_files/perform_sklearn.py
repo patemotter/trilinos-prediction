@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 import random
 from imblearn.metrics import *
+from sklearn.model_selection import GridSearchCV
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import precision_recall_fscore_support
 from sklearn import svm
@@ -26,17 +27,21 @@ from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegress
 import matplotlib.pyplot as plt
 from imblearn.combine import SMOTEENN, SMOTETomek
 from imblearn import over_sampling as os
+from sklearn.pipeline import FeatureUnion
 from imblearn import pipeline as pl
 from imblearn.metrics import classification_report_imbalanced
 from imblearn.over_sampling import ADASYN, SMOTE, RandomOverSampler
 from imblearn.pipeline import make_pipeline
 from sklearn.decomposition import PCA
 from sklearn.svm import LinearSVC
+from sklearn.feature_selection import SelectKBest, SelectPercentile
 import matplotlib.colors as colors
+from sklearn.svm import SVC
+from sklearn.pipeline import Pipeline
+from sklearn.feature_selection import VarianceThreshold, GenericUnivariateSelect, SelectPercentile, SelectKBest, RFECV
 
 
 class DummySampler(object):
-
     def sample(self, X, y):
         return X, y
 
@@ -45,6 +50,23 @@ class DummySampler(object):
 
     def fit_sample(self, X, y):
         return self.sample(X, y)
+
+
+def compute_pca(X, y):
+    svc = SVC(kernel="linear")
+    rfecv = RFECV(estimator=svc, step=1, cv=StratifiedKFold(2), scoring="f1")
+    rfecv.fit(X, y)
+    print("Optimal number of features : %d" % rfecv.n_features_)
+
+    # Plot number of features VS. cross-validation scores
+    plt.figure()
+    plt.xlabel("Number of features selected")
+    plt.ylabel("Cross validation score (nb of correct classifications)")
+    plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
+    plt.show()
+    print(rfecv.scores_)
+    print(rfecv.grid_scores_)
+
 
 def compute_metrics(clf_name, smp_name, y_test, y_pred, file):
     labels = ['-1', '1']
@@ -59,13 +81,14 @@ def compute_metrics(clf_name, smp_name, y_test, y_pred, file):
         for v in (precision[i], recall[i], specificity[i], f1[i], geo_mean[i],
                   iba[i]):
             file.write(str(v) + ',')
-            #print(v, end=',')
+            # print(v, end=',')
         file.write('\n')
         file.flush()
-        #print('\n')
+        # print('\n')
+
 
 def show_roc(clf, clf_name, X_train, y_train, X_test):
-    y_score = clf.fit(X_train, y_train).predict_proba(X_test)[:,1]
+    y_score = clf.fit(X_train, y_train).predict_proba(X_test)[:, 1]
     #  y_score = clf.fit(X_train, y_train).decision_function(X_test)
     print(len(y_score))
 
@@ -83,6 +106,7 @@ def show_roc(clf, clf_name, X_train, y_train, X_test):
     plt.title('Receiver operating characteristic ' + str(clf_name))
     plt.legend(loc="lower right")
     plt.show()
+
 
 def show_confusion_matrix(C, class_labels=['0', '1']):
     """
@@ -178,7 +202,7 @@ def show_confusion_matrix(C, class_labels=['0', '1']):
             bbox=dict(fc='w', boxstyle='round,pad=1'))
 
     ax.text(0, 2,
-            'Neg Predictive Value: %.2f' % (tn/(tn+fn+0.)), #(1 - fn / (fn + tn + 0.)),
+            'Neg Predictive Value: %.2f' % (tn / (tn + fn + 0.)),  # (1 - fn / (fn + tn + 0.)),
             va='center',
             ha='center',
             bbox=dict(fc='w', boxstyle='round,pad=1'))
@@ -190,6 +214,7 @@ def show_confusion_matrix(C, class_labels=['0', '1']):
             bbox=dict(fc='w', boxstyle='round,pad=1'))
 
     plt.tight_layout()
+
 
 np.set_printoptions(precision=3)
 rng = np.random.RandomState()
@@ -204,8 +229,8 @@ processed_timings = processed_timings.drop('matrix', axis=1)
 combined = pd.merge(processed_matrix_properties, processed_timings, on='matrix_id')
 
 # Create training and target sets
-X = combined.iloc[:,:-2]
-y = combined.iloc[:,-1]
+X = combined.iloc[:, :-2]
+y = combined.iloc[:, -1]
 
 classifier_list = [['GaussianNB', GaussianNB()],
                    ['DecisionTree', DecisionTreeClassifier()],
@@ -221,40 +246,41 @@ samplers_list = [['DummySampler', DummySampler()],
 
 skf = StratifiedKFold(n_splits=3)
 skf.get_n_splits(X, y)
+compute_pca(X, y)
 
 file = open('3_fold_2.txt', 'w')
-for clf_name,clf in classifier_list:
-    for smp_name,smp in samplers_list:
+for clf_name, clf in classifier_list:
+    for smp_name, smp in samplers_list:
         for train_index, test_index in skf.split(X, y):
-            print(clf_name + ',' + smp_name)#, smp_name, ',', label, end=',')
+            print(clf_name + ',' + smp_name)  # , smp_name, ',', label, end=',')
             X_train, X_test = X.values[train_index], X.values[test_index]
             y_train, y_test = y.values[train_index], y.values[test_index]
             pipeline = pl.make_pipeline(smp, clf)
             pipeline.fit(X_train, y_train)
             y_pred = pipeline.predict(X_test)
-            compute_metrics(clf_name, smp_name, y_test, y_pred, file)
-            show_roc(clf, clf_name, X_train, y_train, X_test)
-            #print(clf_name, smp_name)
-            #file.write(clf_name + ' ' + smp_name)
-            #print(classification_report_imbalanced(y_test, y_pred))
-            #file.write(classification_report_imbalanced(y_test, y_pred))
+            # compute_metrics(clf_name, smp_name, y_test, y_pred, file)
+            # show_roc(clf, clf_name, X_train, y_train, X_test)
+            # print(clf_name, smp_name)
+            # file.write(clf_name + ' ' + smp_name)
+            # print(classification_report_imbalanced(y_test, y_pred))
+            # file.write(classification_report_imbalanced(y_test, y_pred))
 file.close()
 
 
-#plt.show()
+# plt.show()
 
 
-#classifier = GradientBoostingClassifier()
-#classifier.fit(X_train, y_train)
-#y_test_pred = classifier.predict(X_test)
-#print("Gradient Boosting Training Score:", classifier.score(X_train, y_train))
-#print("Gradient Boosting Test Score:", classifier.score(X_test, y_test))
-#print(confusion_matrix(y_test, y_test_pred))
-#print(classification_report(y_test, y_test_pred))
-#plt.figure()
-#cnf_matrix = confusion_matrix(y_test, pipeline.predict(X_test))
-#show_confusion_matrix(cnf_matrix, ['-1', '1'])
-#plot_confusion_matrix(cnf_matrix, classes=['-1', '1'], normalize=True, title='Normalized confusion matrix')
-#plt.matshow(cnf_matrix)
-#plt.colorbar()
-#plt.show()
+# classifier = GradientBoostingClassifier()
+# classifier.fit(X_train, y_train)
+# y_test_pred = classifier.predict(X_test)
+# print("Gradient Boosting Training Score:", classifier.score(X_train, y_train))
+# print("Gradient Boosting Test Score:", classifier.score(X_test, y_test))
+# print(confusion_matrix(y_test, y_test_pred))
+# print(classification_report(y_test, y_test_pred))
+# plt.figure()
+# cnf_matrix = confusion_matrix(y_test, pipeline.predict(X_test))
+# show_confusion_matrix(cnf_matrix, ['-1', '1'])
+# plot_confusion_matrix(cnf_matrix, classes=['-1', '1'], normalize=True, title='Normalized confusion matrix')
+# plt.matshow(cnf_matrix)
+# plt.colorbar()
+# plt.show()
