@@ -18,7 +18,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import model_selection
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.feature_selection import RFE
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, RandomizedLasso, LinearRegression, Ridge
 from sklearn import preprocessing
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import cross_val_score
@@ -63,6 +63,33 @@ def compute_features_rfr(X, y, col_names):
     return df
 
 
+def compute_features_lasso(X, y, col_names):
+    col_names = col_names[:-1]
+    rl = RandomizedLasso()
+    rl.fit(X, y)
+    a = sorted(zip(map(lambda x: round(x, 4), rl.scores_), col_names), reverse=True)
+    df = pd.DataFrame(a)
+    return df
+
+
+def compute_features_ridge(X, y, col_names):
+    col_names = col_names[:-1]
+    ridge = Ridge()
+    ridge.fit(X, y)
+    a = sorted(zip(map(lambda x: round(x, 4), ridge.coef_), col_names), reverse=True)
+    df = pd.DataFrame(a)
+    return df
+
+
+def compute_features_rfe(X, y, col_names):
+    lr = LinearRegression()
+    rfe = RFE(lr, n_features_to_select=1)
+    rfe.fit(X,y)
+    a = sorted(zip(map(lambda x: round(x, 4), rfe.ranking_), col_names))
+    df = pd.DataFrame(a)
+    return df
+
+
 def compute_metrics(clf_name, smp_name, y_test, y_pred):
     labels = ['-1', '1']
     precision, recall, f1, support = precision_recall_fscore_support(y_test, y_pred, labels=labels, average=None)
@@ -98,7 +125,7 @@ def show_roc(clf, clf_name, X_train, y_train, X_test, y_test):
     plt.legend(loc="lower right")
 
 
-def show_confusion_matrix(C, class_labels=['0', '1']):
+def show_confusion_matrix(C, class_labels=['-1', '1']):
     """
     C: ndarray, shape (2,2) as given by scikit-learn confusion_matrix function
     class_labels: list of strings, default simply labels 0 and 1.
@@ -230,6 +257,7 @@ processed_timings = pd.read_csv('processed_timings.csv', index_col=0)
 processed_matrix_properties = processed_matrix_properties.drop('matrix', axis=1)
 processed_timings = processed_timings.drop('matrix', axis=1)
 combined = pd.merge(processed_matrix_properties, processed_timings, on='matrix_id')
+combined = combined.drop(['new_time', 'matrix_id', 'status_id'], axis=1)
 col_names = list(combined)
 
 # Create training and target sets
@@ -255,6 +283,10 @@ for train_index, test_index in skf.split(X, y):
 
 ## Determine the important features (cols of dataset)
 # print("RandomForestRegressor features ranked by value:\n", compute_features_rfr(X, y, col_names))
+# print("RandomizedLasso features ranked by value:\n", compute_features_lasso(X, y, col_names))
+# print("RFE ranked:\n", compute_features_rfe(X, y, col_names))
+print("Ridge features ranked:\n", compute_features_ridge(X, y, col_names))
+exit(0)
 
 for clf_name, clf in classifier_list:
     for smp_name, smp in samplers_list:
