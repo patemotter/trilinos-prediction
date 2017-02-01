@@ -31,6 +31,7 @@ from sklearn.pipeline import FeatureUnion
 from imblearn import pipeline as pl
 from imblearn.metrics import classification_report_imbalanced
 from imblearn.over_sampling import ADASYN, SMOTE, RandomOverSampler
+from sklearn.ensemble import RandomForestRegressor
 from imblearn.pipeline import make_pipeline
 from sklearn.decomposition import PCA
 from sklearn.svm import LinearSVC
@@ -40,6 +41,7 @@ from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import VarianceThreshold, GenericUnivariateSelect, SelectPercentile, SelectKBest, RFECV
 
+np.set_printoptions(precision=3)
 
 class DummySampler(object):
     def sample(self, X, y):
@@ -52,20 +54,16 @@ class DummySampler(object):
         return self.sample(X, y)
 
 
-def compute_pca(X, y):
-    svc = SVC(kernel="linear")
-    rfecv = RFECV(estimator=svc, step=1, cv=StratifiedKFold(2), scoring="f1")
-    rfecv.fit(X, y)
-    print("Optimal number of features : %d" % rfecv.n_features_)
+def compute_features_rfr(X, y, col_names):
+   col_names = col_names[:-1]
+   rf = RandomForestRegressor()
+   rf.fit(X,y)
+   print("Features sorted by their score using RandomForestRegressor")
+   a = sorted(zip(map(lambda x: round(x, 4), rf.feature_importances_), col_names), reverse=True)
+   df = pd.DataFrame(a)
+   print(df)
 
-    # Plot number of features VS. cross-validation scores
-    plt.figure()
-    plt.xlabel("Number of features selected")
-    plt.ylabel("Cross validation score (nb of correct classifications)")
-    plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
-    plt.show()
-    print(rfecv.scores_)
-    print(rfecv.grid_scores_)
+
 
 
 def compute_metrics(clf_name, smp_name, y_test, y_pred, file):
@@ -227,6 +225,7 @@ processed_timings = pd.read_csv('processed_timings.csv', index_col=0)
 processed_matrix_properties = processed_matrix_properties.drop('matrix', axis=1)
 processed_timings = processed_timings.drop('matrix', axis=1)
 combined = pd.merge(processed_matrix_properties, processed_timings, on='matrix_id')
+col_names = list(combined)
 
 # Create training and target sets
 X = combined.iloc[:, :-2]
@@ -246,7 +245,10 @@ samplers_list = [['DummySampler', DummySampler()],
 
 skf = StratifiedKFold(n_splits=3)
 skf.get_n_splits(X, y)
-compute_pca(X, y)
+print(type(col_names))
+print(col_names)
+compute_features_rfr(X, y, col_names)
+exit(0)
 
 file = open('3_fold_2.txt', 'w')
 for clf_name, clf in classifier_list:

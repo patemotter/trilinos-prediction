@@ -52,3 +52,5 @@ ml_files/\.vscode/
 *.xml
 
 *.pyc
+
+*.stackdump
