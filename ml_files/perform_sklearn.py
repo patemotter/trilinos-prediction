@@ -5,7 +5,10 @@
 import itertools
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 import random
+import matplotlib.colors as colors
+
 from imblearn.metrics import *
 from sklearn.model_selection import GridSearchCV
 from sklearn.naive_bayes import GaussianNB
@@ -24,7 +27,6 @@ from sklearn.metrics import confusion_matrix, roc_curve, auc
 from sklearn.metrics import classification_report
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
-import matplotlib.pyplot as plt
 from imblearn.combine import SMOTEENN, SMOTETomek
 from imblearn import over_sampling as os
 from sklearn.pipeline import FeatureUnion
@@ -36,12 +38,10 @@ from imblearn.pipeline import make_pipeline
 from sklearn.decomposition import PCA
 from sklearn.svm import LinearSVC
 from sklearn.feature_selection import SelectKBest, SelectPercentile
-import matplotlib.colors as colors
 from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import VarianceThreshold, GenericUnivariateSelect, SelectPercentile, SelectKBest, RFECV
 
-np.set_printoptions(precision=3)
 
 class DummySampler(object):
     def sample(self, X, y):
@@ -55,40 +55,33 @@ class DummySampler(object):
 
 
 def compute_features_rfr(X, y, col_names):
-   col_names = col_names[:-1]
-   rf = RandomForestRegressor()
-   rf.fit(X,y)
-   print("Features sorted by their score using RandomForestRegressor")
-   a = sorted(zip(map(lambda x: round(x, 4), rf.feature_importances_), col_names), reverse=True)
-   df = pd.DataFrame(a)
-   print(df)
+    col_names = col_names[:-1]
+    rf = RandomForestRegressor()
+    rf.fit(X, y)
+    a = sorted(zip(map(lambda x: round(x, 4), rf.feature_importances_), col_names), reverse=True)
+    df = pd.DataFrame(a)
+    return df
 
 
-
-
-def compute_metrics(clf_name, smp_name, y_test, y_pred, file):
+def compute_metrics(clf_name, smp_name, y_test, y_pred):
     labels = ['-1', '1']
     precision, recall, f1, support = precision_recall_fscore_support(y_test, y_pred, labels=labels, average=None)
     specificity = specificity_score(y_test, y_pred, labels=labels, average=None)
     geo_mean = geometric_mean_score(y_pred, y_pred, labels=labels, average=None)
     iba_gmean = make_index_balanced_accuracy(squared=True)(geometric_mean_score)
     iba = iba_gmean(y_pred, y_test, labels=labels, average=None)
+    str = ""
     for i, label in enumerate(labels):
         clf_name = clf_name.strip()
-        file.write(clf_name + ',' + smp_name + ',' + str(label) + ',')
-        for v in (precision[i], recall[i], specificity[i], f1[i], geo_mean[i],
-                  iba[i]):
-            file.write(str(v) + ',')
-            # print(v, end=',')
-        file.write('\n')
-        file.flush()
-        # print('\n')
+        str += clf_name + ',' + smp_name + ',' + str(label) + ','
+        for v in (precision[i], recall[i], specificity[i], f1[i], geo_mean[i], iba[i]):
+            str += str(v) + ','
+        str += "\n"
+        return str
 
 
-def show_roc(clf, clf_name, X_train, y_train, X_test):
+def show_roc(clf, clf_name, X_train, y_train, X_test, y_test):
     y_score = clf.fit(X_train, y_train).predict_proba(X_test)[:, 1]
-    #  y_score = clf.fit(X_train, y_train).decision_function(X_test)
-    print(len(y_score))
 
     # Compute ROC curve and ROC area for each class
     fpr, tpr, _ = roc_curve(y_test, y_score)
@@ -103,7 +96,6 @@ def show_roc(clf, clf_name, X_train, y_train, X_test):
     plt.ylabel('True Positive Rate')
     plt.title('Receiver operating characteristic ' + str(clf_name))
     plt.legend(loc="lower right")
-    plt.show()
 
 
 def show_confusion_matrix(C, class_labels=['0', '1']):
@@ -213,7 +205,20 @@ def show_confusion_matrix(C, class_labels=['0', '1']):
 
     plt.tight_layout()
 
+classifier_list = [['GaussianNB', GaussianNB()],
+                   ['DecisionTree', DecisionTreeClassifier()],
+                   ['LogisticRegression', LogisticRegression()],
+                   ['GradientBoosting', GradientBoostingClassifier()],
+                   ['KNN', KNeighborsClassifier()]]
 
+samplers_list = [['DummySampler', DummySampler()],
+                 ['SMOTE', SMOTE()],
+                 ['SMOTEENN', SMOTEENN()],
+                 ['SMOTETomek', SMOTETomek()],
+                 ['ADASYN', ADASYN()],
+                 ['RandomOverSampler', RandomOverSampler()]]
+
+# Printing options
 np.set_printoptions(precision=3)
 rng = np.random.RandomState()
 
@@ -231,58 +236,46 @@ col_names = list(combined)
 X = combined.iloc[:, :-2]
 y = combined.iloc[:, -1]
 
-classifier_list = [['GaussianNB', GaussianNB()],
-                   ['DecisionTree', DecisionTreeClassifier()],
-                   ['LogisticRegression', LogisticRegression()],
-                   ['GradientBoosting', GradientBoostingClassifier()],
-                   ['KNN', KNeighborsClassifier()]]
-samplers_list = [['DummySampler', DummySampler()],
-                 ['SMOTE', SMOTE()],
-                 ['SMOTEENN', SMOTEENN()],
-                 ['SMOTETomek', SMOTETomek()],
-                 ['ADASYN', ADASYN()],
-                 ['RandomOverSampler', RandomOverSampler()]]
-
+# Stratified split of the data
 skf = StratifiedKFold(n_splits=3)
 skf.get_n_splits(X, y)
-print(type(col_names))
-print(col_names)
-compute_features_rfr(X, y, col_names)
-exit(0)
 
-file = open('3_fold_2.txt', 'w')
+# Hold the various splits in memory
+X_train, X_test = [], []
+y_train, y_test = [], []
+i = 0
+for train_index, test_index in skf.split(X, y):
+    X_train.append(X.values[train_index])
+    X_test.append(X.values[test_index])
+    y_train.append(y.values[train_index])
+    y_test.append(y.values[test_index])
+    # X_train[i], X_test[i] = X.values[train_index], X.values[test_index]
+    # y_train[i], y_test[i] = y.values[train_index], y.values[test_index]
+    i += 1
+
+## Determine the important features (cols of dataset)
+# print("RandomForestRegressor features ranked by value:\n", compute_features_rfr(X, y, col_names))
+
 for clf_name, clf in classifier_list:
     for smp_name, smp in samplers_list:
-        for train_index, test_index in skf.split(X, y):
-            print(clf_name + ',' + smp_name)  # , smp_name, ',', label, end=',')
-            X_train, X_test = X.values[train_index], X.values[test_index]
-            y_train, y_test = y.values[train_index], y.values[test_index]
+        for split in range(0, i):
+            print(clf_name + ',' + smp_name)
             pipeline = pl.make_pipeline(smp, clf)
-            pipeline.fit(X_train, y_train)
-            y_pred = pipeline.predict(X_test)
-            # compute_metrics(clf_name, smp_name, y_test, y_pred, file)
-            # show_roc(clf, clf_name, X_train, y_train, X_test)
-            # print(clf_name, smp_name)
-            # file.write(clf_name + ' ' + smp_name)
+            pipeline.fit(X_train[split], y_train[split])
+
+            ## Compute the ROC for the classifier and sampler
+            show_roc(clf, clf_name, X_train[split], y_train[split], X_test[split], y_test[split])
+            plt.show()
+
+            ## Create figure of confusion matrix
+            # y_pred = pipeline.predict(X_test[split])
+            # cnf = confusion_matrix(y_true=y_test[split], y_pred=y_pred)
+            # show_confusion_matrix(cnf)
+
+            ## Produces information about the accuracy/precision/recall etc.
+            ## compute_metrics is a csv version of the same info as the classification_report_imbalanced
+            # y_pred = pipeline.predict(X_test[split])
             # print(classification_report_imbalanced(y_test, y_pred))
-            # file.write(classification_report_imbalanced(y_test, y_pred))
-file.close()
+            # print(compute_metrics(clf_name, smp_name, y_test[split], y_pred[split]))
 
-
-# plt.show()
-
-
-# classifier = GradientBoostingClassifier()
-# classifier.fit(X_train, y_train)
-# y_test_pred = classifier.predict(X_test)
-# print("Gradient Boosting Training Score:", classifier.score(X_train, y_train))
-# print("Gradient Boosting Test Score:", classifier.score(X_test, y_test))
-# print(confusion_matrix(y_test, y_test_pred))
-# print(classification_report(y_test, y_test_pred))
-# plt.figure()
-# cnf_matrix = confusion_matrix(y_test, pipeline.predict(X_test))
-# show_confusion_matrix(cnf_matrix, ['-1', '1'])
-# plot_confusion_matrix(cnf_matrix, classes=['-1', '1'], normalize=True, title='Normalized confusion matrix')
-# plt.matshow(cnf_matrix)
-# plt.colorbar()
-# plt.show()
+plt.show()
