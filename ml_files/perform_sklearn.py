@@ -42,6 +42,11 @@ from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import VarianceThreshold, GenericUnivariateSelect, SelectPercentile, SelectKBest, RFECV
 
+# Printing options
+np.set_printoptions(precision=3)
+rng = np.random.RandomState()
+
+skf = StratifiedKFold(n_splits=3)
 
 class DummySampler(object):
     def sample(self, X, y):
@@ -53,6 +58,18 @@ class DummySampler(object):
     def fit_sample(self, X, y):
         return self.sample(X, y)
 
+classifier_list = [['GaussianNB', GaussianNB()],
+                   ['DecisionTree', DecisionTreeClassifier()],
+                   ['LogisticRegression', LogisticRegression()],
+                   ['GradientBoosting', GradientBoostingClassifier()],
+                   ['KNN', KNeighborsClassifier()]]
+
+samplers_list = [['DummySampler', DummySampler()],
+                 ['SMOTE', SMOTE()],
+                 ['SMOTEENN', SMOTEENN()],
+                 ['SMOTETomek', SMOTETomek()],
+                 ['ADASYN', ADASYN()],
+                 ['RandomOverSampler', RandomOverSampler()]]
 
 def compute_features_rfr(X, y, col_names):
     col_names = col_names[:-1]
@@ -97,14 +114,14 @@ def compute_metrics(clf_name, smp_name, y_test, y_pred):
     geo_mean = geometric_mean_score(y_pred, y_pred, labels=labels, average=None)
     iba_gmean = make_index_balanced_accuracy(squared=True)(geometric_mean_score)
     iba = iba_gmean(y_pred, y_test, labels=labels, average=None)
-    str = ""
+    my_str = ""
     for i, label in enumerate(labels):
         clf_name = clf_name.strip()
-        str += clf_name + ',' + smp_name + ',' + str(label) + ','
+        my_str += clf_name + ',' + smp_name + ',' + str(label) + ','
         for v in (precision[i], recall[i], specificity[i], f1[i], geo_mean[i], iba[i]):
-            str += str(v) + ','
-        str += "\n"
-        return str
+            my_str += str(v) + ','
+        my_str += "\n"
+        return my_str
 
 
 def show_roc(clf, clf_name, X_train, y_train, X_test, y_test):
@@ -232,82 +249,106 @@ def show_confusion_matrix(C, class_labels=['-1', '1']):
 
     plt.tight_layout()
 
-classifier_list = [['GaussianNB', GaussianNB()],
-                   ['DecisionTree', DecisionTreeClassifier()],
-                   ['LogisticRegression', LogisticRegression()],
-                   ['GradientBoosting', GradientBoostingClassifier()],
-                   ['KNN', KNeighborsClassifier()]]
 
-samplers_list = [['DummySampler', DummySampler()],
-                 ['SMOTE', SMOTE()],
-                 ['SMOTEENN', SMOTEENN()],
-                 ['SMOTETomek', SMOTETomek()],
-                 ['ADASYN', ADASYN()],
-                 ['RandomOverSampler', RandomOverSampler()]]
+def compare_one_to_all(combined, np):
+    i_a = 0
+    i_b = 0
+    X_a_train, X_a_test = [], []
+    X_b_train, X_b_test = [], []
+    y_a_train, y_a_test = [], []
+    y_b_train, y_b_test = [], []
 
-# Printing options
-np.set_printoptions(precision=3)
-rng = np.random.RandomState()
+    a = combined[(combined.np == np)]
+    X_a = a.iloc[:, :-2]
+    y_a = a.iloc[:, -1]
+    for train_index, test_index in skf.split(X_a, y_a):
+        X_a_train.append(X_a.values[train_index])
+        X_a_test.append(X_a.values[test_index])
+        y_a_train.append(y_a.values[train_index])
+        y_a_test.append(y_a.values[test_index])
+        i_a += 1
 
-# Read files
-processed_matrix_properties = pd.read_csv('processed_properties.csv', index_col=0)
-processed_timings = pd.read_csv('processed_timings.csv', index_col=0)
+    b = combined
+    X_b = b.iloc[:, :-2]
+    y_b = b.iloc[:, -1]
+    for train_index, test_index in skf.split(X_b, y_b):
+        X_b_train.append(X_b.values[train_index])
+        X_b_test.append(X_b.values[test_index])
+        y_b_train.append(y_b.values[train_index])
+        y_b_test.append(y_b.values[test_index])
+        i_b += 1
 
-# Remove string-based cols
-processed_matrix_properties = processed_matrix_properties.drop('matrix', axis=1)
-processed_timings = processed_timings.drop('matrix', axis=1)
-combined = pd.merge(processed_matrix_properties, processed_timings, on='matrix_id')
-combined = combined.drop(['new_time', 'matrix_id', 'status_id'], axis=1)
-col_names = list(combined)
+    clf = GradientBoostingClassifier()
+    smp = SMOTE()
+    pipeline = pl.make_pipeline(smp, clf)
+    pipeline.fit(X_a_train[0], y_a_train[0])
+    print(compute_metrics("GradientBoostingClassifier", "SMOTE", y_b_test[0], pipeline.predict(X_b_test[0])))
+    # compute_metrics(clf_name, smp_name, y_test[split], pipeline.predict(X_test[split]))
 
-# Create training and target sets
-X = combined.iloc[:, :-2]
-y = combined.iloc[:, -1]
 
-# Stratified split of the data
-skf = StratifiedKFold(n_splits=3)
-skf.get_n_splits(X, y)
+def main():
+    # Read files
+    processed_matrix_properties = pd.read_csv('processed_properties.csv', index_col=0)
+    processed_timings = pd.read_csv('processed_timings.csv', index_col=0)
 
-# Hold the various splits in memory
-X_train, X_test = [], []
-y_train, y_test = [], []
-i = 0
-for train_index, test_index in skf.split(X, y):
-    X_train.append(X.values[train_index])
-    X_test.append(X.values[test_index])
-    y_train.append(y.values[train_index])
-    y_test.append(y.values[test_index])
-    # X_train[i], X_test[i] = X.values[train_index], X.values[test_index]
-    # y_train[i], y_test[i] = y.values[train_index], y.values[test_index]
-    i += 1
+    # Remove string-based cols
+    processed_matrix_properties = processed_matrix_properties.drop('matrix', axis=1)
+    processed_timings = processed_timings.drop('matrix', axis=1)
+    combined = pd.merge(processed_matrix_properties, processed_timings, on='matrix_id')
+    combined = combined.drop(['new_time', 'matrix_id', 'status_id'], axis=1)
+    col_names = list(combined)
 
-## Determine the important features (cols of dataset)
-# print("RandomForestRegressor features ranked by value:\n", compute_features_rfr(X, y, col_names))
-# print("RandomizedLasso features ranked by value:\n", compute_features_lasso(X, y, col_names))
-# print("RFE ranked:\n", compute_features_rfe(X, y, col_names))
-print("Ridge features ranked:\n", compute_features_ridge(X, y, col_names))
-exit(0)
+    # Create np specific dataframes
+    nps = combined.np.unique()
+    np_based_combined = {}
+    for i in nps:
+        np_based_combined[i] = combined[(combined.np == i)]
 
-for clf_name, clf in classifier_list:
-    for smp_name, smp in samplers_list:
-        for split in range(0, i):
-            print(clf_name + ',' + smp_name)
-            pipeline = pl.make_pipeline(smp, clf)
-            pipeline.fit(X_train[split], y_train[split])
+    # Create training and target sets
+    X = combined.iloc[:, :-2]
+    y = combined.iloc[:, -1]
 
-            ## Compute the ROC for the classifier and sampler
-            show_roc(clf, clf_name, X_train[split], y_train[split], X_test[split], y_test[split])
-            plt.show()
+    # Hold the various splits in memory
+    X_train, X_test = [], []
+    y_train, y_test = [], []
+    i = 0
+    for train_index, test_index in skf.split(X, y):
+        X_train.append(X.values[train_index])
+        X_test.append(X.values[test_index])
+        y_train.append(y.values[train_index])
+        y_test.append(y.values[test_index])
+        i += 1
 
-            ## Create figure of confusion matrix
-            # y_pred = pipeline.predict(X_test[split])
-            # cnf = confusion_matrix(y_true=y_test[split], y_pred=y_pred)
-            # show_confusion_matrix(cnf)
+    # Various methods for ranking the importance of each column
+    # print("RandomForestRegressor features ranked by value:\n", compute_features_rfr(X, y, col_names))
+    # print("RandomizedLasso features ranked by value:\n", compute_features_lasso(X, y, col_names))
+    # print("RFE ranked:\n", compute_features_rfe(X, y, col_names))
+    # print("Ridge features ranked:\n", compute_features_ridge(X, y, col_names))
 
-            ## Produces information about the accuracy/precision/recall etc.
-            ## compute_metrics is a csv version of the same info as the classification_report_imbalanced
-            # y_pred = pipeline.predict(X_test[split])
-            # print(classification_report_imbalanced(y_test, y_pred))
-            # print(compute_metrics(clf_name, smp_name, y_test[split], y_pred[split]))
+    compare_one_to_all(combined, 1)
+    exit(0)
 
-plt.show()
+    # Permute over the classifiers, samplers, and splits of the data
+    for clf_name, clf in classifier_list:
+        for smp_name, smp in samplers_list:
+            for split in range(0, i):
+                print(clf_name + ',' + smp_name)
+                pipeline = pl.make_pipeline(smp, clf)
+                pipeline.fit(X_train[split], y_train[split])
+
+                ## Compute the ROC for the classifier and sampler
+                show_roc(clf, clf_name, X_train[split], y_train[split], X_test[split], y_test[split])
+                plt.show()
+
+                ## Create figure of confusion matrix
+                cnf = confusion_matrix(y_true=y_test[split], y_pred=pipeline.predict(X_test[split]))
+                show_confusion_matrix(cnf)
+
+                ## Produces information about the accuracy/precision/recall etc.
+                ## compute_metrics is a csv version of the same info as the classification_report_imbalanced
+                print(classification_report_imbalanced(y_test, pipeline.predict(X_test[split])))
+                print(compute_metrics(clf_name, smp_name, y_test[split], pipeline.predict(X_test[split])))
+
+    plt.show()
+
+if __name__ == "__main__": main()

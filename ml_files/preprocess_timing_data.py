@@ -29,7 +29,7 @@ all_timing_data['solver_id'] = all_timing_data.solver.map(
     {'FIXED_POINT': 0, 'BICGSTAB': 1, 'MINRES': 2, 'PSEUDOBLOCK_CG': 3, 'PSEUDOBLOCK_STOCHASTIC_CG': 4,
      'PSEUDOBLOCK_TFQMR': 5, 'TFQMR': 6, 'LSQR': 7, 'PSEUDOBLOCK_GMRES': 8}).astype(int)
 all_timing_data['prec_id'] = all_timing_data.prec.map({'ILUT': 0, 'RILUK': 1, 'RELAXATION': 2, 'CHEBYSHEV': 3,
-                                          'NONE': 4}).astype(int)
+                                                       'NONE': 4}).astype(int)
 all_timing_data['status_id'] = all_timing_data.status.map({'error': -1, 'unconverged': 0, 'converged': 1}).astype(int)
 
 # Group based on the matrix, find the best times for each matrix (error, unconverged, converged)
@@ -47,7 +47,7 @@ for name in matrix_names:
     hash_dict[name] = hash(name)
 
 # Iterate through each row of the dataframe
-subset = all_timing_data[['time','matrix','status_id']]
+subset = all_timing_data[['time', 'matrix', 'status_id']]
 max_float_value = np.finfo(np.float32).max
 
 for index, row in subset.iterrows():
@@ -85,5 +85,15 @@ all_timing_data = all_timing_data.assign(new_time=pd.Series(new_time_series))
 all_timing_data = all_timing_data.assign(matrix_id=pd.Series(name_hash_series))
 
 # Select which columns to keep and output to file
-cleaned_timing_data = all_timing_data[['np', 'matrix', 'matrix_id', 'solver_id', 'prec_id', 'status_id', 'new_time', 'good_or_bad']]
+cleaned_timing_data = all_timing_data[['np', 'matrix', 'matrix_id', 'solver_id', 'prec_id',
+                                       'status_id', 'new_time', 'good_or_bad']]
 cleaned_timing_data.to_csv('processed_timings.csv')
+
+"""
+nps = cleaned_timing_data.np.unique()
+
+for i in nps:
+    df = cleaned_timing_data[(cleaned_timing_data.np == i)]
+    outfile = "np" + str(i) + "_processed_timings.csv"
+    df.to_csv(outfile)
+"""
