@@ -33,7 +33,7 @@ from sklearn.pipeline import FeatureUnion
 from imblearn import pipeline as pl
 from imblearn.metrics import classification_report_imbalanced
 from imblearn.over_sampling import ADASYN, SMOTE, RandomOverSampler
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier, AdaBoostClassifier
 from imblearn.pipeline import make_pipeline
 from sklearn.decomposition import PCA
 from sklearn.svm import LinearSVC
@@ -47,6 +47,7 @@ np.set_printoptions(precision=3)
 rng = np.random.RandomState()
 skf = StratifiedKFold(n_splits=3)
 
+
 class DummySampler(object):
     def sample(self, X, y):
         return X, y
@@ -56,6 +57,7 @@ class DummySampler(object):
 
     def fit_sample(self, X, y):
         return self.sample(X, y)
+
 
 classifier_list = [['GaussianNB', GaussianNB()],
                    ['DecisionTree', DecisionTreeClassifier()],
@@ -67,8 +69,9 @@ samplers_list = [['DummySampler', DummySampler()],
                  ['SMOTE', SMOTE()],
                  ['SMOTEENN', SMOTEENN()],
                  ['SMOTETomek', SMOTETomek()],
-                 #['ADASYN', ADASYN()],
+                 # ['ADASYN', ADASYN()],
                  ['RandomOverSampler', RandomOverSampler()]]
+
 
 def compute_features_rfr(X, y, col_names):
     col_names = col_names[:-1]
@@ -100,7 +103,7 @@ def compute_features_ridge(X, y, col_names):
 def compute_features_rfe(X, y, col_names):
     lr = LinearRegression()
     rfe = RFE(lr, n_features_to_select=1)
-    rfe.fit(X,y)
+    rfe.fit(X, y)
     a = sorted(zip(map(lambda x: round(x, 4), rfe.ranking_), col_names))
     df = pd.DataFrame(a)
     return df
@@ -132,7 +135,63 @@ def compute_all_metrics(combined):
             pipeline = pl.make_pipeline(smp, clf)
             for split in range(0, i):
                 pipeline.fit(X_train[split], y_train[split])
-                cur_str = compute_metrics(clf_name, smp_name, y_test[split], pipeline.predict(X_test[split]))
+                cur_str = compute_metrics(clf_name, smp_name, y_test[split],
+                                          pipeline.predict(X_test[split]))
+                print(cur_str)
+                output_file.write(cur_str + "\n")
+                output_file.flush()
+    output_file.close()
+
+
+def train_and_test_diff(combined, np_a, np_b):
+    i_a = 0
+    i_b = 0
+    X_a_train, X_a_test = [], []
+    X_b_train, X_b_test = [], []
+    y_a_train, y_a_test = [], []
+    y_b_train, y_b_test = [], []
+
+    a = combined[(combined.np == np_a)]
+    X_a = a.iloc[:, :-2]
+    y_a = a.iloc[:, -1]
+    for train_index, test_index in skf.split(X_a, y_a):
+        X_a_train.append(X_a.values[train_index])
+        X_a_test.append(X_a.values[test_index])
+        y_a_train.append(y_a.values[train_index])
+        y_a_test.append(y_a.values[test_index])
+        i_a += 1
+
+    b = pd.DataFrame()
+    if type(np_b) == str and np_b == "all":
+        b = combined[(combined.np != np_b)]
+    elif type(np_b) == int:
+        b = combined[(combined.np == np_b)]
+    elif type(np_b) == list:
+        for num in np_b:
+            b = b.append(combined[(combined.np == num)], ignore_index=True)
+
+    X_b = b.iloc[:, :-2]
+    y_b = b.iloc[:, -1]
+    for train_index, test_index in skf.split(X_b, y_b):
+        X_b_train.append(X_b.values[train_index])
+        X_b_test.append(X_b.values[test_index])
+        y_b_train.append(y_b.values[train_index])
+        y_b_test.append(y_b.values[test_index])
+        i_b += 1
+
+    # Permute over the classifiers, samplers, and splits of the data
+    output_file_name = "train_and_test_diff_" + str(np_a) + "_" + str(np_b) + ".csv"
+    output_file = open(output_file_name, 'w')
+    header = "classifier,sampler,precision,recall,specificity,f1,geometric_mean,iba"
+    print(header)
+    output_file.write(header + "\n")
+    for clf_name, clf in classifier_list:
+        for smp_name, smp in samplers_list:
+            pipeline = pl.make_pipeline(smp, clf)
+            for split in range(0, i_a):
+                pipeline.fit(X_a_train[split], y_a_train[split])
+                cur_str = compute_metrics(clf_name, smp_name, y_b_test[split],
+                                          pipeline.predict(X_b_test[split]))
                 print(cur_str)
                 output_file.write(cur_str + "\n")
                 output_file.flush()
@@ -141,7 +200,8 @@ def compute_all_metrics(combined):
 
 def compute_metrics(clf_name, smp_name, y_test, y_pred):
     labels = ['-1', '1']
-    precision, recall, f1, support = precision_recall_fscore_support(y_test, y_pred, labels=labels, average=None)
+    precision, recall, f1, support = \
+        precision_recall_fscore_support(y_test, y_pred, labels=labels, average=None)
     specificity = specificity_score(y_test, y_pred, labels=labels, average=None)
     geo_mean = geometric_mean_score(y_pred, y_pred, labels=labels, average=None)
     iba_gmean = make_index_balanced_accuracy(squared=True)(geometric_mean_score)
@@ -283,50 +343,6 @@ def show_confusion_matrix(C, class_labels=['-1', '1']):
     plt.tight_layout()
 
 
-def compare_one_to_all(combined, np):
-    i_a = 0
-    i_b = 0
-    X_a_train, X_a_test = [], []
-    X_b_train, X_b_test = [], []
-    y_a_train, y_a_test = [], []
-    y_b_train, y_b_test = [], []
-
-    a = combined[(combined.np == np)]
-    X_a = a.iloc[:, :-2]
-    y_a = a.iloc[:, -1]
-    for train_index, test_index in skf.split(X_a, y_a):
-        X_a_train.append(X_a.values[train_index])
-        X_a_test.append(X_a.values[test_index])
-        y_a_train.append(y_a.values[train_index])
-        y_a_test.append(y_a.values[test_index])
-        i_a += 1
-
-    b = combined
-    X_b = b.iloc[:, :-2]
-    y_b = b.iloc[:, -1]
-    for train_index, test_index in skf.split(X_b, y_b):
-        X_b_train.append(X_b.values[train_index])
-        X_b_test.append(X_b.values[test_index])
-        y_b_train.append(y_b.values[train_index])
-        y_b_test.append(y_b.values[test_index])
-        i_b += 1
-
-    # Permute over the classifiers, samplers, and splits of the data
-    my_str = ""
-    output_file_name = "compare_one_to_all_np" + str(np) + ".csv"
-    output_file = open(output_file_name, 'w')
-    for clf_name, clf in classifier_list:
-        for smp_name, smp in samplers_list:
-            pipeline = pl.make_pipeline(smp, clf)
-            for split in range(0, i_a):
-                pipeline.fit(X_a_train[split], y_a_train[split])
-                cur_str = compute_metrics(clf_name, smp_name, y_b_test[split], pipeline.predict(X_b_test[split]))
-                print(cur_str)
-                output_file.write(cur_str + "\n")
-                output_file.flush()
-    output_file.close()
-
-
 def main():
     # Read files
     processed_matrix_properties = pd.read_csv('processed_properties.csv', index_col=0)
@@ -338,14 +354,14 @@ def main():
     combined = pd.merge(processed_matrix_properties, processed_timings, on='matrix_id')
     combined = combined.drop(['new_time', 'matrix_id', 'status_id'], axis=1)
     #compute_all_metrics(combined)
-    compare_one_to_all(combined, 1)
+    train_and_test_diff(combined, 1, 1)
 
-    #show_roc(clf, clf_name, X_train[split], y_train[split], X_test[split], y_test[split])
+    # show_roc(clf, clf_name, X_train[split], y_train[split], X_test[split], y_test[split])
 
-    #print(classification_report_imbalanced(y_test, pipeline.predict(X_test[split])))
+    # print(classification_report_imbalanced(y_test, pipeline.predict(X_test[split])))
 
-    #cnf = confusion_matrix(y_true=y_test[split], y_pred=pipeline.predict(X_test[split]))
-    #show_confusion_matrix(cnf)
+    # cnf = confusion_matrix(y_true=y_test[split], y_pred=pipeline.predict(X_test[split]))
+    # show_confusion_matrix(cnf)
 
 
 if __name__ == "__main__": main()
