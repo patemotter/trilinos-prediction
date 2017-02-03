@@ -134,7 +134,7 @@ def compute_all_metrics(combined):
                 pipeline.fit(X_train[split], y_train[split])
                 cur_str = compute_metrics(clf_name, smp_name, y_test[split], pipeline.predict(X_test[split]))
                 print(cur_str)
-                output_file.write(cur_str)
+                output_file.write(cur_str + "\n")
                 output_file.flush()
     output_file.close()
 
@@ -313,7 +313,7 @@ def compare_one_to_all(combined, np):
 
     # Permute over the classifiers, samplers, and splits of the data
     my_str = ""
-    output_file_name = "compare_one_to_all_np" + str(np)
+    output_file_name = "compare_one_to_all_np" + str(np) + ".csv"
     output_file = open(output_file_name, 'w')
     for clf_name, clf in classifier_list:
         for smp_name, smp in samplers_list:
@@ -322,14 +322,13 @@ def compare_one_to_all(combined, np):
                 pipeline.fit(X_a_train[split], y_a_train[split])
                 cur_str = compute_metrics(clf_name, smp_name, y_b_test[split], pipeline.predict(X_b_test[split]))
                 print(cur_str)
-                output_file.write(cur_str)
+                output_file.write(cur_str + "\n")
                 output_file.flush()
     output_file.close()
 
 
 def main():
     # Read files
-    #adsf
     processed_matrix_properties = pd.read_csv('processed_properties.csv', index_col=0)
     processed_timings = pd.read_csv('processed_timings.csv', index_col=0)
 
@@ -338,8 +337,8 @@ def main():
     processed_timings = processed_timings.drop('matrix', axis=1)
     combined = pd.merge(processed_matrix_properties, processed_timings, on='matrix_id')
     combined = combined.drop(['new_time', 'matrix_id', 'status_id'], axis=1)
-    compute_all_metrics(combined)
-    #compare_one_to_all(combined, 1)
+    #compute_all_metrics(combined)
+    compare_one_to_all(combined, 1)
 
     #show_roc(clf, clf_name, X_train[split], y_train[split], X_test[split], y_test[split])
 
