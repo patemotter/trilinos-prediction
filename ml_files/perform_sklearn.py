@@ -206,24 +206,70 @@ def compute_metrics(clf_name, smp_name, y_test, y_pred):
     return my_str
 
 
-def show_roc(clf, clf_name, X_train, y_train, X_test, y_test):
-    """Creates an ROC curve and displays the amount of AUC given the classifier,
-    training, and testing data"""
-    y_score = clf.fit(X_train, y_train).predict_proba(X_test)[:, 1]
+def compute_roc(combined, np_a, np_b):
+    i_a = 0
+    i_b = 0
+    X_a_train, X_a_test = [], []
+    X_b_train, X_b_test = [], []
+    y_a_train, y_a_test = [], []
+    y_b_train, y_b_test = [], []
 
-    # Compute ROC curve and ROC area for each class
-    fpr, tpr, _ = roc_curve(y_test, y_score)
-    roc_auc = auc(fpr, tpr)
+    a = pd.DataFrame()
+    if type(np_a) == str and np_a == "all":
+        a = combined[(combined.np != np_a)]
+    elif type(np_a) == int:
+        a = combined[(combined.np == np_a)]
+    elif type(np_a) == list:
+        for num in np_a:
+            a = a.append(combined[(combined.np == num)], ignore_index=True)
+    X_a = a.iloc[:, :-2]
+    y_a = a.iloc[:, -1]
+    for train_index, test_index in skf.split(X_a, y_a):
+        X_a_train.append(X_a.values[train_index])
+        X_a_test.append(X_a.values[test_index])
+        y_a_train.append(y_a.values[train_index])
+        y_a_test.append(y_a.values[test_index])
+        i_a += 1
 
-    plt.figure()
-    plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
-    plt.plot([0, 1], [0, 1], 'k--')
-    plt.xlim([0.0, 1.0])
-    plt.ylim([0.0, 1.05])
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    plt.title('Receiver operating characteristic ' + str(clf_name))
-    plt.legend(loc="lower right")
+
+    b = pd.DataFrame()
+    if type(np_b) == str and np_b == "all":
+        b = combined[(combined.np != np_b)]
+    elif type(np_b) == int:
+        b = combined[(combined.np == np_b)]
+    elif type(np_b) == list:
+        for num in np_b:
+            b = b.append(combined[(combined.np == num)], ignore_index=True)
+    X_b = b.iloc[:, :-2]
+    y_b = b.iloc[:, -1]
+    for train_index, test_index in skf.split(X_b, y_b):
+        X_b_train.append(X_b.values[train_index])
+        X_b_test.append(X_b.values[test_index])
+        y_b_train.append(y_b.values[train_index])
+        y_b_test.append(y_b.values[test_index])
+        i_b += 1
+
+    # Permute over the classifiers, samplers, and splits of the data
+    for clf_name, clf in classifier_list:
+        for smp_name, smp in samplers_list:
+            pipeline = pl.make_pipeline(smp, clf)
+            for split in range(0, i_a):
+                y_b_score = pipeline.fit(X_a_train[split],
+                                       y_a_train[split]).predict_proba(X_b_test[split])[:,1]
+                # Compute ROC curve and ROC area for each class
+                fpr, tpr, _ = roc_curve(y_b_test[split], y_b_score)
+                roc_auc = auc(fpr, tpr)
+
+                plt.figure()
+                plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
+                plt.plot([0, 1], [0, 1], 'k--')
+                plt.xlim([0.0, 1.0])
+                plt.ylim([0.0, 1.05])
+                plt.xlabel('False Positive Rate')
+                plt.ylabel('True Positive Rate')
+                plt.title('Receiver operating characteristic ' + str(clf_name))
+                plt.legend(loc="lower right")
+                plt.show()
 
 
 def show_confusion_matrix(C, class_labels=['-1', '1']):
@@ -339,7 +385,8 @@ def main():
     processed_timings = processed_timings.drop('matrix', axis=1)
     combined = pd.merge(processed_matrix_properties, processed_timings, on='matrix_id')
     combined = combined.drop(['new_time', 'matrix_id', 'status_id'], axis=1)
-    #compute_all_metrics(combined)
+
+    """
     train_and_test(combined, 1, 1)
     train_and_test(combined, 2, 2)
     train_and_test(combined, 4, 4)
@@ -347,7 +394,9 @@ def main():
     train_and_test(combined, 8, 8)
     train_and_test(combined, 10, 10)
     train_and_test(combined, 12, 12)
+    """
 
+    compute_roc(combined, 1, 1)
     # show_roc(clf, clf_name, X_train[split], y_train[split], X_test[split], y_test[split])
 
     # print(classification_report_imbalanced(y_test, pipeline.predict(X_test[split])))
