@@ -53,7 +53,7 @@ np.set_printoptions(precision=3)
 rng = np.random.RandomState()
 
 # Number of splits for k-fold cross validation
-skf = StratifiedKFold(n_splits=3)
+skf = StratifiedKFold(n_splits=3, random_state=rng)
 
 
 class DummySampler(object):
@@ -252,6 +252,9 @@ def compute_roc(combined, np_a, np_b):
     # Permute over the classifiers, samplers, and splits of the data
     for clf_name, clf in classifier_list:
         for smp_name, smp in samplers_list:
+            plt.figure()
+            fpr = tpr = 0
+            temp_fpr = temp_tpr = 0
             pipeline = pl.make_pipeline(smp, clf)
             for split in range(0, i_a):
                 y_b_score = pipeline.fit(X_a_train[split],
@@ -259,17 +262,20 @@ def compute_roc(combined, np_a, np_b):
                 # Compute ROC curve and ROC area for each class
                 fpr, tpr, _ = roc_curve(y_b_test[split], y_b_score)
                 roc_auc = auc(fpr, tpr)
+                plt.plot(fpr, tpr, label='ROC curve - %d (area = %0.2f)' % (split, roc_auc))
+                print(clf_name, smp_name, split, roc_auc)
 
-                plt.figure()
-                plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
-                plt.plot([0, 1], [0, 1], 'k--')
-                plt.xlim([0.0, 1.0])
-                plt.ylim([0.0, 1.05])
-                plt.xlabel('False Positive Rate')
-                plt.ylabel('True Positive Rate')
-                plt.title('Receiver operating characteristic ' + str(clf_name))
-                plt.legend(loc="lower right")
-                plt.show()
+            plt.plot([0, 1], [0, 1], 'k--')
+            plt.xlim([0.0, 1.0])
+            plt.ylim([0.0, 1.05])
+            plt.xlabel('False Positive Rate')
+            plt.ylabel('True Positive Rate')
+            plt.title('ROC Curve ' + str(clf_name) + " + " + str(smp_name) + "\n" +
+                      "Train: " + str(np_a) + "   Test: " + str(np_b))
+            plt.legend(loc="lower right")
+            plt.savefig(str(clf_name) + '_' + str(smp_name) + '_' + str(np_a) + ' ' +
+                        str(np_b) + '.svg', bbox_inches='tight')
+
 
 
 def show_confusion_matrix(C, class_labels=['-1', '1']):
