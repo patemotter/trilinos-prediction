@@ -1,4 +1,9 @@
-# Written using Anaconda with Python 3.5
+"""
+
+This script is designed to take already processed matrix timing and properties
+files and perform a variety of machine learning techniques using the Scikit-Learn
+Python library.
+"""# Written using Anaconda with Python 3.5
 # Pate Motter
 # 1-22-17
 
@@ -42,13 +47,17 @@ from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import VarianceThreshold, GenericUnivariateSelect, SelectPercentile, SelectKBest, RFECV
 
+
 # Printing options
 np.set_printoptions(precision=3)
 rng = np.random.RandomState()
+
+# Number of splits for k-fold cross validation
 skf = StratifiedKFold(n_splits=3)
 
 
 class DummySampler(object):
+    """An empty sampler to compare against other classifier and sampler combinations"""
     def sample(self, X, y):
         return X, y
 
@@ -74,6 +83,7 @@ samplers_list = [['DummySampler', DummySampler()],
 
 
 def compute_features_rfr(X, y, col_names):
+    """Ranks the columns in order of importance based on Random Forest Regression"""
     col_names = col_names[:-1]
     rf = RandomForestRegressor()
     rf.fit(X, y)
@@ -83,6 +93,7 @@ def compute_features_rfr(X, y, col_names):
 
 
 def compute_features_lasso(X, y, col_names):
+    """Ranks the columns in order of importance based on Randomized Lasso (Stability Selection)"""
     col_names = col_names[:-1]
     rl = RandomizedLasso()
     rl.fit(X, y)
@@ -92,6 +103,7 @@ def compute_features_lasso(X, y, col_names):
 
 
 def compute_features_ridge(X, y, col_names):
+    """Ranks the columns in order of importance based on Ridge Regression"""
     col_names = col_names[:-1]
     ridge = Ridge()
     ridge.fit(X, y)
@@ -101,6 +113,7 @@ def compute_features_ridge(X, y, col_names):
 
 
 def compute_features_rfe(X, y, col_names):
+    """Ranks the columns in order of importance based on Recursive Feature Elimination (RFE)"""
     lr = LinearRegression()
     rfe = RFE(lr, n_features_to_select=1)
     rfe.fit(X, y)
@@ -109,41 +122,8 @@ def compute_features_rfe(X, y, col_names):
     return df
 
 
-def compute_all_metrics(combined):
-    col_names = list(combined)
-
-    # Create training and target sets
-    X = combined.iloc[:, :-2]
-    y = combined.iloc[:, -1]
-
-    # Hold the various splits in memory
-    X_train, X_test = [], []
-    y_train, y_test = [], []
-    i = 0
-    for train_index, test_index in skf.split(X, y):
-        X_train.append(X.values[train_index])
-        X_test.append(X.values[test_index])
-        y_train.append(y.values[train_index])
-        y_test.append(y.values[test_index])
-        i += 1
-
-    # Permute over the classifiers, samplers, and splits of the data
-    my_str = ""
-    output_file = open('compute_all_metrics.csv', 'w')
-    for clf_name, clf in classifier_list:
-        for smp_name, smp in samplers_list:
-            pipeline = pl.make_pipeline(smp, clf)
-            for split in range(0, i):
-                pipeline.fit(X_train[split], y_train[split])
-                cur_str = compute_metrics(clf_name, smp_name, y_test[split],
-                                          pipeline.predict(X_test[split]))
-                print(cur_str)
-                output_file.write(cur_str + "\n")
-                output_file.flush()
-    output_file.close()
-
-
-def train_and_test_diff(combined, np_a, np_b):
+def train_and_test(combined, np_a, np_b):
+    """Trains classifiers on the data in np_a while performing the testing on np_b"""
     i_a = 0
     i_b = 0
     X_a_train, X_a_test = [], []
@@ -151,7 +131,14 @@ def train_and_test_diff(combined, np_a, np_b):
     y_a_train, y_a_test = [], []
     y_b_train, y_b_test = [], []
 
-    a = combined[(combined.np == np_a)]
+    a = pd.DataFrame()
+    if type(np_a) == str and np_a == "all":
+        a = combined[(combined.np != np_a)]
+    elif type(np_a) == int:
+        a = combined[(combined.np == np_a)]
+    elif type(np_a) == list:
+        for num in np_a:
+            a = a.append(combined[(combined.np == num)], ignore_index=True)
     X_a = a.iloc[:, :-2]
     y_a = a.iloc[:, -1]
     for train_index, test_index in skf.split(X_a, y_a):
@@ -161,6 +148,7 @@ def train_and_test_diff(combined, np_a, np_b):
         y_a_test.append(y_a.values[test_index])
         i_a += 1
 
+
     b = pd.DataFrame()
     if type(np_b) == str and np_b == "all":
         b = combined[(combined.np != np_b)]
@@ -169,7 +157,6 @@ def train_and_test_diff(combined, np_a, np_b):
     elif type(np_b) == list:
         for num in np_b:
             b = b.append(combined[(combined.np == num)], ignore_index=True)
-
     X_b = b.iloc[:, :-2]
     y_b = b.iloc[:, -1]
     for train_index, test_index in skf.split(X_b, y_b):
@@ -199,6 +186,8 @@ def train_and_test_diff(combined, np_a, np_b):
 
 
 def compute_metrics(clf_name, smp_name, y_test, y_pred):
+    """Performs the same tests as Imblearn's classification report.
+    Computes precision, recall, specificity, f1, geometric mean, and index balanced accuracy (iba)"""
     labels = ['-1', '1']
     precision, recall, f1, support = \
         precision_recall_fscore_support(y_test, y_pred, labels=labels, average=None)
@@ -218,6 +207,8 @@ def compute_metrics(clf_name, smp_name, y_test, y_pred):
 
 
 def show_roc(clf, clf_name, X_train, y_train, X_test, y_test):
+    """Creates an ROC curve and displays the amount of AUC given the classifier,
+    training, and testing data"""
     y_score = clf.fit(X_train, y_train).predict_proba(X_test)[:, 1]
 
     # Compute ROC curve and ROC area for each class
@@ -236,22 +227,17 @@ def show_roc(clf, clf_name, X_train, y_train, X_test, y_test):
 
 
 def show_confusion_matrix(C, class_labels=['-1', '1']):
-    """
-    C: ndarray, shape (2,2) as given by scikit-learn confusion_matrix function
-    class_labels: list of strings, default simply labels 0 and 1.
-
-    Draws confusion matrix with associated metrics.
-    """
+    """Draws confusion matrix with associated metrics"""
     import matplotlib.pyplot as plt
     import numpy as np
 
     assert C.shape == (2, 2), "Confusion matrix should be from binary classification only."
 
     # true negative, false positive, etc...
-    tn = C[0, 0];
-    fp = C[0, 1];
-    fn = C[1, 0];
-    tp = C[1, 1];
+    tn = C[0, 0]
+    fp = C[0, 1]
+    fn = C[1, 0]
+    tp = C[1, 1]
 
     NP = fn + tp  # Num positive examples
     NN = tn + fp  # Num negative examples
@@ -354,7 +340,13 @@ def main():
     combined = pd.merge(processed_matrix_properties, processed_timings, on='matrix_id')
     combined = combined.drop(['new_time', 'matrix_id', 'status_id'], axis=1)
     #compute_all_metrics(combined)
-    train_and_test_diff(combined, 1, 1)
+    train_and_test(combined, 1, 1)
+    train_and_test(combined, 2, 2)
+    train_and_test(combined, 4, 4)
+    train_and_test(combined, 6, 6)
+    train_and_test(combined, 8, 8)
+    train_and_test(combined, 10, 10)
+    train_and_test(combined, 12, 12)
 
     # show_roc(clf, clf_name, X_train[split], y_train[split], X_test[split], y_test[split])
 
