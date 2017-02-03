@@ -45,7 +45,6 @@ from sklearn.feature_selection import VarianceThreshold, GenericUnivariateSelect
 # Printing options
 np.set_printoptions(precision=3)
 rng = np.random.RandomState()
-
 skf = StratifiedKFold(n_splits=3)
 
 class DummySampler(object):
@@ -68,7 +67,7 @@ samplers_list = [['DummySampler', DummySampler()],
                  ['SMOTE', SMOTE()],
                  ['SMOTEENN', SMOTEENN()],
                  ['SMOTETomek', SMOTETomek()],
-                 ['ADASYN', ADASYN()],
+                 #['ADASYN', ADASYN()],
                  ['RandomOverSampler', RandomOverSampler()]]
 
 def compute_features_rfr(X, y, col_names):
@@ -107,6 +106,39 @@ def compute_features_rfe(X, y, col_names):
     return df
 
 
+def compute_all_metrics(combined):
+    col_names = list(combined)
+
+    # Create training and target sets
+    X = combined.iloc[:, :-2]
+    y = combined.iloc[:, -1]
+
+    # Hold the various splits in memory
+    X_train, X_test = [], []
+    y_train, y_test = [], []
+    i = 0
+    for train_index, test_index in skf.split(X, y):
+        X_train.append(X.values[train_index])
+        X_test.append(X.values[test_index])
+        y_train.append(y.values[train_index])
+        y_test.append(y.values[test_index])
+        i += 1
+
+    # Permute over the classifiers, samplers, and splits of the data
+    my_str = ""
+    output_file = open('compute_all_metrics.csv', 'w')
+    for clf_name, clf in classifier_list:
+        for smp_name, smp in samplers_list:
+            pipeline = pl.make_pipeline(smp, clf)
+            for split in range(0, i):
+                pipeline.fit(X_train[split], y_train[split])
+                cur_str = compute_metrics(clf_name, smp_name, y_test[split], pipeline.predict(X_test[split]))
+                print(cur_str)
+                output_file.write(cur_str)
+                output_file.flush()
+    output_file.close()
+
+
 def compute_metrics(clf_name, smp_name, y_test, y_pred):
     labels = ['-1', '1']
     precision, recall, f1, support = precision_recall_fscore_support(y_test, y_pred, labels=labels, average=None)
@@ -120,8 +152,9 @@ def compute_metrics(clf_name, smp_name, y_test, y_pred):
         my_str += clf_name + ',' + smp_name + ',' + str(label) + ','
         for v in (precision[i], recall[i], specificity[i], f1[i], geo_mean[i], iba[i]):
             my_str += str(v) + ','
-        my_str += "\n"
-        return my_str
+        if i == 0:
+            my_str += "\n"
+    return my_str
 
 
 def show_roc(clf, clf_name, X_train, y_train, X_test, y_test):
@@ -278,16 +311,25 @@ def compare_one_to_all(combined, np):
         y_b_test.append(y_b.values[test_index])
         i_b += 1
 
-    clf = GradientBoostingClassifier()
-    smp = SMOTE()
-    pipeline = pl.make_pipeline(smp, clf)
-    pipeline.fit(X_a_train[0], y_a_train[0])
-    print(compute_metrics("GradientBoostingClassifier", "SMOTE", y_b_test[0], pipeline.predict(X_b_test[0])))
-    # compute_metrics(clf_name, smp_name, y_test[split], pipeline.predict(X_test[split]))
+    # Permute over the classifiers, samplers, and splits of the data
+    my_str = ""
+    output_file_name = "compare_one_to_all_np" + str(np)
+    output_file = open(output_file_name, 'w')
+    for clf_name, clf in classifier_list:
+        for smp_name, smp in samplers_list:
+            pipeline = pl.make_pipeline(smp, clf)
+            for split in range(0, i_a):
+                pipeline.fit(X_a_train[split], y_a_train[split])
+                cur_str = compute_metrics(clf_name, smp_name, y_b_test[split], pipeline.predict(X_b_test[split]))
+                print(cur_str)
+                output_file.write(cur_str)
+                output_file.flush()
+    output_file.close()
 
 
 def main():
     # Read files
+    #adsf
     processed_matrix_properties = pd.read_csv('processed_properties.csv', index_col=0)
     processed_timings = pd.read_csv('processed_timings.csv', index_col=0)
 
@@ -296,59 +338,15 @@ def main():
     processed_timings = processed_timings.drop('matrix', axis=1)
     combined = pd.merge(processed_matrix_properties, processed_timings, on='matrix_id')
     combined = combined.drop(['new_time', 'matrix_id', 'status_id'], axis=1)
-    col_names = list(combined)
+    compute_all_metrics(combined)
+    #compare_one_to_all(combined, 1)
 
-    # Create np specific dataframes
-    nps = combined.np.unique()
-    np_based_combined = {}
-    for i in nps:
-        np_based_combined[i] = combined[(combined.np == i)]
+    #show_roc(clf, clf_name, X_train[split], y_train[split], X_test[split], y_test[split])
 
-    # Create training and target sets
-    X = combined.iloc[:, :-2]
-    y = combined.iloc[:, -1]
+    #print(classification_report_imbalanced(y_test, pipeline.predict(X_test[split])))
 
-    # Hold the various splits in memory
-    X_train, X_test = [], []
-    y_train, y_test = [], []
-    i = 0
-    for train_index, test_index in skf.split(X, y):
-        X_train.append(X.values[train_index])
-        X_test.append(X.values[test_index])
-        y_train.append(y.values[train_index])
-        y_test.append(y.values[test_index])
-        i += 1
+    #cnf = confusion_matrix(y_true=y_test[split], y_pred=pipeline.predict(X_test[split]))
+    #show_confusion_matrix(cnf)
 
-    # Various methods for ranking the importance of each column
-    # print("RandomForestRegressor features ranked by value:\n", compute_features_rfr(X, y, col_names))
-    # print("RandomizedLasso features ranked by value:\n", compute_features_lasso(X, y, col_names))
-    # print("RFE ranked:\n", compute_features_rfe(X, y, col_names))
-    # print("Ridge features ranked:\n", compute_features_ridge(X, y, col_names))
-
-    compare_one_to_all(combined, 1)
-    exit(0)
-
-    # Permute over the classifiers, samplers, and splits of the data
-    for clf_name, clf in classifier_list:
-        for smp_name, smp in samplers_list:
-            for split in range(0, i):
-                print(clf_name + ',' + smp_name)
-                pipeline = pl.make_pipeline(smp, clf)
-                pipeline.fit(X_train[split], y_train[split])
-
-                ## Compute the ROC for the classifier and sampler
-                show_roc(clf, clf_name, X_train[split], y_train[split], X_test[split], y_test[split])
-                plt.show()
-
-                ## Create figure of confusion matrix
-                cnf = confusion_matrix(y_true=y_test[split], y_pred=pipeline.predict(X_test[split]))
-                show_confusion_matrix(cnf)
-
-                ## Produces information about the accuracy/precision/recall etc.
-                ## compute_metrics is a csv version of the same info as the classification_report_imbalanced
-                print(classification_report_imbalanced(y_test, pipeline.predict(X_test[split])))
-                print(compute_metrics(clf_name, smp_name, y_test[split], pipeline.predict(X_test[split])))
-
-    plt.show()
 
 if __name__ == "__main__": main()
