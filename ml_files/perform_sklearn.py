@@ -3,7 +3,7 @@
 This script is designed to take already processed matrix timing and properties
 files and perform a variety of machine learning techniques using the Scikit-Learn
 Python library.
-"""# Written using Anaconda with Python 3.5
+"""  # Written using Anaconda with Python 3.5
 # Pate Motter
 # 1-22-17
 
@@ -50,7 +50,6 @@ from sklearn.feature_selection import VarianceThreshold, GenericUnivariateSelect
 from sklearn.neural_network import MLPClassifier
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 
-
 # Printing options
 np.set_printoptions(precision=3)
 rng = np.random.RandomState()
@@ -61,7 +60,9 @@ skf = StratifiedKFold(n_splits=3, random_state=rng)
 
 class DummySampler(object):
     """An empty sampler to compare against other classifier and sampler combinations"""
-    def sample(self, X, y):
+
+    @staticmethod
+    def sample(X, y):
         return X, y
 
     def fit(self, X, y):
@@ -71,23 +72,25 @@ class DummySampler(object):
         return self.sample(X, y)
 
 
-classifier_list = [#['GaussianNB', GaussianNB()],
-                   #['DecisionTree', DecisionTreeClassifier()],
-                   #['LogisticRegression', LogisticRegression()],
-                   ['GradientBoosting', GradientBoostingClassifier()],
-                   #['MLP', MLPClassifier()],
-                   #['SVC', SVC(probability=True)],
-                   #['QDA', QuadraticDiscriminantAnalysis()],
-                   ['RandomForest', RandomForestClassifier()]]
-                   #['AdaBoost', AdaBoostClassifier()]]
-                   #['KNN', KNeighborsClassifier()]]
+classifier_list = [
+    ['GradientBoosting', GradientBoostingClassifier()],
+    ['RandomForest', RandomForestClassifier()]]
+    # ['GaussianNB', GaussianNB()],
+    # ['DecisionTree', DecisionTreeClassifier()],
+    # ['LogisticRegression', LogisticRegression()],
+    # ['MLP', MLPClassifier()],
+    # ['SVC', SVC(probability=True)],
+    # ['QDA', QuadraticDiscriminantAnalysis()],
+    # ['AdaBoost', AdaBoostClassifier()]
+    # ['KNN', KNeighborsClassifier()]
 
-samplers_list = [#['DummySampler', DummySampler()],
-                 ['SMOTE', SMOTE()],
-                 #['SMOTEENN', SMOTEENN()],
-                 #['SMOTETomek', SMOTETomek()],
-                 #['ADASYN', ADASYN()],
-                 ['RandomOverSampler', RandomOverSampler()]]
+samplers_list = [
+    ['SMOTE', SMOTE()],
+    ['RandomOverSampler', RandomOverSampler()]]
+    # ['DummySampler', DummySampler()],
+    # ['SMOTEENN', SMOTEENN()],
+    # ['SMOTETomek', SMOTETomek()],
+    # ['ADASYN', ADASYN()],
 
 
 def compute_features_rfr(X, y, col_names):
@@ -142,6 +145,7 @@ def train_and_test(combined, np_a, np_b):
     y_a_train, y_a_test = [], []
     y_b_train, y_b_test = [], []
 
+    # Create two data frames (a,b) which each contain the datasets for their np number
     a = pd.DataFrame()
     if type(np_a) == str and np_a == "all":
         a = combined[(combined.np != np_a)]
@@ -150,8 +154,10 @@ def train_and_test(combined, np_a, np_b):
     elif type(np_a) == list:
         for num in np_a:
             a = a.append(combined[(combined.np == num)], ignore_index=True)
+    # Set training data to everything but last col, test data is last col
     X_a = a.iloc[:, :-2]
     y_a = a.iloc[:, -1]
+    # Create splits in data using stratified k-fold
     for train_index, test_index in skf.split(X_a, y_a):
         X_a_train.append(X_a.values[train_index])
         X_a_test.append(X_a.values[test_index])
@@ -159,7 +165,7 @@ def train_and_test(combined, np_a, np_b):
         y_a_test.append(y_a.values[test_index])
         i_a += 1
 
-
+    # Repeat for the second set of data
     b = pd.DataFrame()
     if type(np_b) == str and np_b == "all":
         b = combined[(combined.np != np_b)]
@@ -218,6 +224,8 @@ def compute_metrics(clf_name, smp_name, y_test, y_pred):
 
 
 def compute_roc(combined, np_a, np_b, graph=False):
+    """Computes the roc and auc for each split in the two datasets.
+    np_a is used as the training data, np_b is used as the testing data"""
     i_a = 0
     i_b = 0
     X_a_train, X_a_test = [], []
@@ -225,6 +233,7 @@ def compute_roc(combined, np_a, np_b, graph=False):
     y_a_train, y_a_test = [], []
     y_b_train, y_b_test = [], []
 
+    # Create two data frames (a,b) which each contain the datasets for their np number
     a = pd.DataFrame()
     if type(np_a) == str and np_a == "all":
         a = combined[(combined.np != np_a)]
@@ -233,9 +242,10 @@ def compute_roc(combined, np_a, np_b, graph=False):
     elif type(np_a) == list:
         for num in np_a:
             a = a.append(combined[(combined.np == num)], ignore_index=True)
-    # print(a.info())
+    # Set training data to everything but last col, test data is last col
     X_a = a.iloc[:, :-2]
     y_a = a.iloc[:, -1]
+    # Create splits in data using stratified k-fold
     for train_index, test_index in skf.split(X_a, y_a):
         X_a_train.append(X_a.values[train_index])
         X_a_test.append(X_a.values[test_index])
@@ -243,6 +253,7 @@ def compute_roc(combined, np_a, np_b, graph=False):
         y_a_test.append(y_a.values[test_index])
         i_a += 1
 
+    # Repeat for the second set of data
     b = pd.DataFrame()
     if type(np_b) == str and np_b == "all":
         b = combined[(combined.np != np_b)]
@@ -251,7 +262,6 @@ def compute_roc(combined, np_a, np_b, graph=False):
     elif type(np_b) == list:
         for num in np_b:
             b = b.append(combined[(combined.np == num)], ignore_index=True)
-    # print(b.info())
     X_b = b.iloc[:, :-2]
     y_b = b.iloc[:, -1]
     for train_index, test_index in skf.split(X_b, y_b):
@@ -260,6 +270,12 @@ def compute_roc(combined, np_a, np_b, graph=False):
         y_b_train.append(y_b.values[train_index])
         y_b_test.append(y_b.values[test_index])
         i_b += 1
+    i_a = 0
+    i_b = 0
+    X_a_train, X_a_test = [], []
+    X_b_train, X_b_test = [], []
+    y_a_train, y_a_test = [], []
+    y_b_train, y_b_test = [], []
 
     # Permute over the classifiers, samplers, and splits of the data
     best_classifier = ""
@@ -275,7 +291,7 @@ def compute_roc(combined, np_a, np_b, graph=False):
                 start_time = time.time()
                 # Fit model to a's training data and attempt to predict b's test data
                 y_b_score = pipeline.fit(X_a_train[split],
-                                       y_a_train[split]).predict_proba(X_b_test[split])[:,1]
+                                         y_a_train[split]).predict_proba(X_b_test[split])[:, 1]
                 # Compute ROC curve and ROC area for each class
                 fpr, tpr, _ = roc_curve(y_b_test[split], y_b_score)
                 roc_auc = auc(fpr, tpr)
@@ -283,14 +299,18 @@ def compute_roc(combined, np_a, np_b, graph=False):
                 if graph:
                     plt.plot(fpr, tpr, label='ROC curve - %d (AUC = %0.3f)' % (split, roc_auc))
                 total += roc_auc
-                print(clf_name, smp_name, str(np_a), str(np_b), split, round(roc_auc,3),  round(wall_time,3), sep=',')
+                print(clf_name, smp_name, str(np_a), str(np_b), split, round(roc_auc, 3), round(wall_time, 3), sep=',')
 
-            avg = round(total/float(i_a), 3)
+            avg = round(total / float(i_a), 3)
             print(clf_name, smp_name, str(np_a), str(np_b), "avg", avg, sep=',')
+
+            # Keep track of best results
             if avg > best_avg:
                 best_avg = avg
                 best_sampler = smp_name
                 best_classifier = clf_name
+
+            # Create and save roc graph if desired
             if graph:
                 plt.plot([0, 1], [0, 1], 'k--')
                 plt.xlim([0.0, 1.0])
@@ -303,7 +323,8 @@ def compute_roc(combined, np_a, np_b, graph=False):
                 plt.savefig(str(clf_name) + '_' + str(smp_name) + '_' + str(np_a) + ' ' +
                             str(np_b) + '.svg', bbox_inches='tight')
                 plt.close()
-    print (best_classifier, best_sampler, np_a, np_b, "best_avg", best_avg, sep=',')
+    print(best_classifier, best_sampler, np_a, np_b, "best_avg", best_avg, sep=',')
+
 
 def show_confusion_matrix(C, class_labels=['-1', '1']):
     """Draws confusion matrix with associated metrics"""
@@ -439,16 +460,16 @@ def main():
     """
 
     all = [1, 2, 4, 6, 8, 10, 12]
-    #compute_roc(combined, 1, 1)
-    #compute_roc(combined, 1, 12)
-    #compute_roc(combined, 12, 1)
-    #compute_roc(combined, 12, 12)
-    #compute_roc(combined, 1, [2,4,6,8,10,12])
+    # compute_roc(combined, 1, 1)
+    # compute_roc(combined, 1, 12)
+    # compute_roc(combined, 12, 1)
+    # compute_roc(combined, 12, 12)
+    # compute_roc(combined, 1, [2,4,6,8,10,12])
     compute_roc(combined, all, all)
     compute_roc(combined, all, 1)
     compute_roc(combined, all, 12)
-    #compute_roc(combined, 1, all)
-    #compute_roc(combined, 12, all)
+    # compute_roc(combined, 1, all)
+    # compute_roc(combined, 12, all)
 
     # print(classification_report_imbalanced(y_test, pipeline.predict(X_test[split])))
 
