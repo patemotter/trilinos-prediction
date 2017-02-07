@@ -78,7 +78,7 @@ samplers_list = [['DummySampler', DummySampler()],
                  ['SMOTE', SMOTE()],
                  ['SMOTEENN', SMOTEENN()],
                  ['SMOTETomek', SMOTETomek()],
-                 # ['ADASYN', ADASYN()],
+                 ['ADASYN', ADASYN()],
                  ['RandomOverSampler', RandomOverSampler()]]
 
 
@@ -123,7 +123,10 @@ def compute_features_rfe(X, y, col_names):
 
 
 def train_and_test(combined, np_a, np_b):
-    """Trains classifiers on the data in np_a while performing the testing on np_b"""
+    """
+    Trains classifiers on the data in np_a while performing the testing on np_b
+    outputs the resulting precision, recall, specificity, f1, geometric mean, and iba
+    """
     i_a = 0
     i_b = 0
     X_a_train, X_a_test = [], []
@@ -390,8 +393,19 @@ def main():
     processed_matrix_properties = processed_matrix_properties.drop('matrix', axis=1)
     processed_timings = processed_timings.drop('matrix', axis=1)
     combined = pd.merge(processed_matrix_properties, processed_timings, on='matrix_id')
+
+    # Dropping details that would not be known via testing
     combined = combined.drop(['new_time', 'matrix_id', 'status_id'], axis=1)
 
+    # Dropping features that were rejected from Pandas-Profile
+    combined = combined.drop(['abs_trace', 'antisymm_frob_norm', 'antisymm_inf_norm',
+                              'col_diag_dom', 'col_log_val_spread', 'col_var',
+                              'cols', 'diag_avg', 'diag_nnz', 'diag_var', 'frob_norm',
+                              'inf_norm', 'min_nnz_row.1', 'nnz_pattern_symm_1',
+                              'nnz_pattern_symm_2', 'one_norm', 'symm', 'symm_frob_norm',
+                              'symm_inf_norm', 'trace'], axis=1)
+
+    combined = combined.drop_duplicates()
     """
     train_and_test(combined, 1, 1)
     train_and_test(combined, 2, 2)
