@@ -217,7 +217,7 @@ def compute_metrics(clf_name, smp_name, y_test, y_pred):
     return my_str
 
 
-def compute_roc(combined, np_a, np_b):
+def compute_roc(combined, np_a, np_b, graph=False):
     i_a = 0
     i_b = 0
     X_a_train, X_a_test = [], []
@@ -268,7 +268,8 @@ def compute_roc(combined, np_a, np_b):
     for clf_name, clf in classifier_list:
         for smp_name, smp in samplers_list:
             total = 0
-            plt.figure()
+            if graph:
+                plt.figure()
             pipeline = pl.make_pipeline(smp, clf)
             for split in range(0, i_a):
                 start_time = time.time()
@@ -279,7 +280,8 @@ def compute_roc(combined, np_a, np_b):
                 fpr, tpr, _ = roc_curve(y_b_test[split], y_b_score)
                 roc_auc = auc(fpr, tpr)
                 wall_time = time.time() - start_time
-                plt.plot(fpr, tpr, label='ROC curve - %d (AUC = %0.3f)' % (split, roc_auc))
+                if graph:
+                    plt.plot(fpr, tpr, label='ROC curve - %d (AUC = %0.3f)' % (split, roc_auc))
                 total += roc_auc
                 print(clf_name, smp_name, str(np_a), str(np_b), split, round(roc_auc,3),  round(wall_time,3), sep=',')
 
@@ -289,17 +291,18 @@ def compute_roc(combined, np_a, np_b):
                 best_avg = avg
                 best_sampler = smp_name
                 best_classifier = clf_name
-            plt.plot([0, 1], [0, 1], 'k--')
-            plt.xlim([0.0, 1.0])
-            plt.ylim([0.0, 1.05])
-            plt.xlabel('False Positive Rate')
-            plt.ylabel('True Positive Rate')
-            plt.title('ROC Curve ' + str(clf_name) + " + " + str(smp_name) + "\n" +
-                      "Train: " + str(np_a) + "   Test: " + str(np_b))
-            plt.legend(loc="lower right")
-            plt.savefig(str(clf_name) + '_' + str(smp_name) + '_' + str(np_a) + ' ' +
-                        str(np_b) + '.svg', bbox_inches='tight')
-            plt.close()
+            if graph:
+                plt.plot([0, 1], [0, 1], 'k--')
+                plt.xlim([0.0, 1.0])
+                plt.ylim([0.0, 1.05])
+                plt.xlabel('False Positive Rate')
+                plt.ylabel('True Positive Rate')
+                plt.title('ROC Curve ' + str(clf_name) + " + " + str(smp_name) + "\n" +
+                          "Train: " + str(np_a) + "   Test: " + str(np_b))
+                plt.legend(loc="lower right")
+                plt.savefig(str(clf_name) + '_' + str(smp_name) + '_' + str(np_a) + ' ' +
+                            str(np_b) + '.svg', bbox_inches='tight')
+                plt.close()
     print (best_classifier, best_sampler, np_a, np_b, "best_avg", best_avg, sep=',')
 
 def show_confusion_matrix(C, class_labels=['-1', '1']):
