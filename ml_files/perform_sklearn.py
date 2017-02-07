@@ -78,15 +78,15 @@ classifier_list = [#['GaussianNB', GaussianNB()],
                    #['MLP', MLPClassifier()],
                    #['SVC', SVC(probability=True)],
                    #['QDA', QuadraticDiscriminantAnalysis()],
-                   ['RandomForest', RandomForestClassifier()],
-                   ['AdaBoost', AdaBoostClassifier()]]
+                   ['RandomForest', RandomForestClassifier()]]
+                   #['AdaBoost', AdaBoostClassifier()]]
                    #['KNN', KNeighborsClassifier()]]
 
-samplers_list = [['DummySampler', DummySampler()],
+samplers_list = [#['DummySampler', DummySampler()],
                  ['SMOTE', SMOTE()],
-                 ['SMOTEENN', SMOTEENN()],
-                 ['SMOTETomek', SMOTETomek()],
-                 ['ADASYN', ADASYN()],
+                 #['SMOTEENN', SMOTEENN()],
+                 #['SMOTETomek', SMOTETomek()],
+                 #['ADASYN', ADASYN()],
                  ['RandomOverSampler', RandomOverSampler()]]
 
 
@@ -233,6 +233,7 @@ def compute_roc(combined, np_a, np_b):
     elif type(np_a) == list:
         for num in np_a:
             a = a.append(combined[(combined.np == num)], ignore_index=True)
+    # print(a.info())
     X_a = a.iloc[:, :-2]
     y_a = a.iloc[:, -1]
     for train_index, test_index in skf.split(X_a, y_a):
@@ -250,6 +251,7 @@ def compute_roc(combined, np_a, np_b):
     elif type(np_b) == list:
         for num in np_b:
             b = b.append(combined[(combined.np == num)], ignore_index=True)
+    # print(b.info())
     X_b = b.iloc[:, :-2]
     y_b = b.iloc[:, -1]
     for train_index, test_index in skf.split(X_b, y_b):
@@ -260,6 +262,9 @@ def compute_roc(combined, np_a, np_b):
         i_b += 1
 
     # Permute over the classifiers, samplers, and splits of the data
+    best_classifier = ""
+    best_sampler = ""
+    best_avg = 0.0
     for clf_name, clf in classifier_list:
         for smp_name, smp in samplers_list:
             total = 0
@@ -267,6 +272,7 @@ def compute_roc(combined, np_a, np_b):
             pipeline = pl.make_pipeline(smp, clf)
             for split in range(0, i_a):
                 start_time = time.time()
+                # Fit model to a's training data and attempt to predict b's test data
                 y_b_score = pipeline.fit(X_a_train[split],
                                        y_a_train[split]).predict_proba(X_b_test[split])[:,1]
                 # Compute ROC curve and ROC area for each class
@@ -277,7 +283,12 @@ def compute_roc(combined, np_a, np_b):
                 total += roc_auc
                 print(clf_name, smp_name, str(np_a), str(np_b), split, round(roc_auc,3),  round(wall_time,3), sep=',')
 
-            print(clf_name, smp_name, str(np_a), str(np_b), "avg", round(total/float(i_a), 3), sep=',')
+            avg = round(total/float(i_a), 3)
+            print(clf_name, smp_name, str(np_a), str(np_b), "avg", avg, sep=',')
+            if avg > best_avg:
+                best_avg = avg
+                best_sampler = smp_name
+                best_classifier = clf_name
             plt.plot([0, 1], [0, 1], 'k--')
             plt.xlim([0.0, 1.0])
             plt.ylim([0.0, 1.05])
@@ -289,7 +300,7 @@ def compute_roc(combined, np_a, np_b):
             plt.savefig(str(clf_name) + '_' + str(smp_name) + '_' + str(np_a) + ' ' +
                         str(np_b) + '.svg', bbox_inches='tight')
             plt.close()
-
+    print (best_classifier, best_sampler, np_a, np_b, "best_avg", best_avg, sep=',')
 
 def show_confusion_matrix(C, class_labels=['-1', '1']):
     """Draws confusion matrix with associated metrics"""
@@ -425,16 +436,16 @@ def main():
     """
 
     all = [1, 2, 4, 6, 8, 10, 12]
-    compute_roc(combined, 1, 1)
+    #compute_roc(combined, 1, 1)
+    #compute_roc(combined, 1, 12)
+    #compute_roc(combined, 12, 1)
+    #compute_roc(combined, 12, 12)
     #compute_roc(combined, 1, [2,4,6,8,10,12])
-    #compute_roc(combined, all, all)
-    #compute_roc(combined, all, 1)
-    #compute_roc(combined, all, 12)
+    compute_roc(combined, all, all)
+    compute_roc(combined, all, 1)
+    compute_roc(combined, all, 12)
     #compute_roc(combined, 1, all)
     #compute_roc(combined, 12, all)
-    compute_roc(combined, 1, 12)
-    compute_roc(combined, 12, 1)
-    compute_roc(combined, 12, 12)
 
     # print(classification_report_imbalanced(y_test, pipeline.predict(X_test[split])))
 
