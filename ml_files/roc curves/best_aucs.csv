@@ -1,0 +1,11 @@
+np_a,np_b,best_classifier,best_sampler,best_avg_auc
+all,1,RandomForest,RandomOverSampler,0.97
+all,12,RandomForest,RandomOverSampler,0.954
+all,all,GradientBoost,RandomOverSampler,0.937
+1,others,GradientBoost,RandomOverSampler,0.885
+12,all,GradientBoost,RandomOverSampler,0.884
+1,all,GradientBoost,RandomOverSampler,0.883
+1,1,GradientBoost,RandomOverSampler,0.83
+12,1,GradientBoost,SMOTE,0.827
+1,12,GradientBoost,RandomOverSampler,0.785
+12,12,GradientBoost,SMOTETomek,0.766

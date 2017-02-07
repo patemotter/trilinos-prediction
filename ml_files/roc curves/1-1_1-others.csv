@@ -1,0 +1,121 @@
+classifier,sampler,np_a,np_b,fold,AUC,time
+GradientBoosting,DummySampler,1,1,0,0.804,3.82
+GradientBoosting,DummySampler,1,1,1,0.699,3.912
+GradientBoosting,DummySampler,1,1,2,0.777,3.794
+GradientBoosting,DummySampler,1,1,avg,0.76
+GradientBoosting,SMOTE,1,1,0,0.815,12.673
+GradientBoosting,SMOTE,1,1,1,0.818,13.068
+GradientBoosting,SMOTE,1,1,2,0.812,11.721
+GradientBoosting,SMOTE,1,1,avg,0.815
+GradientBoosting,SMOTEENN,1,1,0,0.817,13.686
+GradientBoosting,SMOTEENN,1,1,1,0.821,13.038
+GradientBoosting,SMOTEENN,1,1,2,0.817,13.409
+GradientBoosting,SMOTEENN,1,1,avg,0.818
+GradientBoosting,SMOTETomek,1,1,0,0.809,16.119
+GradientBoosting,SMOTETomek,1,1,1,0.82,17.091
+GradientBoosting,SMOTETomek,1,1,2,0.805,15.221
+GradientBoosting,SMOTETomek,1,1,avg,0.811
+GradientBoosting,RandomOverSampler,1,1,0,0.835,17.503
+GradientBoosting,RandomOverSampler,1,1,1,0.82,11.176
+GradientBoosting,RandomOverSampler,1,1,2,0.836,16.274
+GradientBoosting,RandomOverSampler,1,1,avg,0.83
+RandomForest,DummySampler,1,1,0,0.608,0.196
+RandomForest,DummySampler,1,1,1,0.562,0.264
+RandomForest,DummySampler,1,1,2,0.713,0.237
+RandomForest,DummySampler,1,1,avg,0.628
+RandomForest,SMOTE,1,1,0,0.542,1.162
+RandomForest,SMOTE,1,1,1,0.647,1.095
+RandomForest,SMOTE,1,1,2,0.687,0.986
+RandomForest,SMOTE,1,1,avg,0.625
+RandomForest,SMOTEENN,1,1,0,0.517,1.964
+RandomForest,SMOTEENN,1,1,1,0.683,1.644
+RandomForest,SMOTEENN,1,1,2,0.738,1.678
+RandomForest,SMOTEENN,1,1,avg,0.646
+RandomForest,SMOTETomek,1,1,0,0.524,3.516
+RandomForest,SMOTETomek,1,1,1,0.672,2.626
+RandomForest,SMOTETomek,1,1,2,0.669,3.485
+RandomForest,SMOTETomek,1,1,avg,0.622
+RandomForest,RandomOverSampler,1,1,0,0.656,0.491
+RandomForest,RandomOverSampler,1,1,1,0.641,0.498
+RandomForest,RandomOverSampler,1,1,2,0.682,0.408
+RandomForest,RandomOverSampler,1,1,avg,0.66
+AdaBoost,DummySampler,1,1,0,0.755,1.785
+AdaBoost,DummySampler,1,1,1,0.746,1.7
+AdaBoost,DummySampler,1,1,2,0.809,1.599
+AdaBoost,DummySampler,1,1,avg,0.77
+AdaBoost,SMOTE,1,1,0,0.83,5.485
+AdaBoost,SMOTE,1,1,1,0.767,5.71
+AdaBoost,SMOTE,1,1,2,0.739,5.233
+AdaBoost,SMOTE,1,1,avg,0.779
+AdaBoost,SMOTEENN,1,1,0,0.805,6.272
+AdaBoost,SMOTEENN,1,1,1,0.758,6.733
+AdaBoost,SMOTEENN,1,1,2,0.727,5.835
+AdaBoost,SMOTEENN,1,1,avg,0.764
+AdaBoost,SMOTETomek,1,1,0,0.8,7.539
+AdaBoost,SMOTETomek,1,1,1,0.765,6.887
+AdaBoost,SMOTETomek,1,1,2,0.718,7.62
+AdaBoost,SMOTETomek,1,1,avg,0.761
+AdaBoost,RandomOverSampler,1,1,0,0.755,3.208
+AdaBoost,RandomOverSampler,1,1,1,0.734,3.284
+AdaBoost,RandomOverSampler,1,1,2,0.811,3.704
+AdaBoost,RandomOverSampler,1,1,avg,0.767
+GradientBoosting,DummySampler,1,[2 4 6 8 10 12],0,0.86,4.091
+GradientBoosting,DummySampler,1,[2 4 6 8 10 12],1,0.842,3.984
+GradientBoosting,DummySampler,1,[2 4 6 8 10 12],2,0.848,5.213
+GradientBoosting,DummySampler,1,[2 4 6 8 10 12],avg,0.85
+GradientBoosting,SMOTE,1,[2 4 6 8 10 12],0,0.862,14.642
+GradientBoosting,SMOTE,1,[2 4 6 8 10 12],1,0.868,14.137
+GradientBoosting,SMOTE,1,[2 4 6 8 10 12],2,0.87,15.679
+GradientBoosting,SMOTE,1,[2 4 6 8 10 12],avg,0.866
+GradientBoosting,SMOTEENN,1,[2 4 6 8 10 12],0,0.864,13.533
+GradientBoosting,SMOTEENN,1,[2 4 6 8 10 12],1,0.87,17.538
+GradientBoosting,SMOTEENN,1,[2 4 6 8 10 12],2,0.869,21.765
+GradientBoosting,SMOTEENN,1,[2 4 6 8 10 12],avg,0.868
+GradientBoosting,SMOTETomek,1,[2 4 6 8 10 12],0,0.857,16.156
+GradientBoosting,SMOTETomek,1,[2 4 6 8 10 12],1,0.867,17.214
+GradientBoosting,SMOTETomek,1,[2 4 6 8 10 12],2,0.872,17.37
+GradientBoosting,SMOTETomek,1,[2 4 6 8 10 12],avg,0.865
+GradientBoosting,RandomOverSampler,1,[2 4 6 8 10 12],0,0.876,10.897
+GradientBoosting,RandomOverSampler,1,[2 4 6 8 10 12],1,0.886,11.531
+GradientBoosting,RandomOverSampler,1,[2 4 6 8 10 12],2,0.894,12.417
+GradientBoosting,RandomOverSampler,1,[2 4 6 8 10 12],avg,0.885
+RandomForest,DummySampler,1,[2 4 6 8 10 12],0,0.816,0.345
+RandomForest,DummySampler,1,[2 4 6 8 10 12],1,0.784,0.395
+RandomForest,DummySampler,1,[2 4 6 8 10 12],2,0.836,0.322
+RandomForest,DummySampler,1,[2 4 6 8 10 12],avg,0.812
+RandomForest,SMOTE,1,[2 4 6 8 10 12],0,0.776,1.442
+RandomForest,SMOTE,1,[2 4 6 8 10 12],1,0.834,1.265
+RandomForest,SMOTE,1,[2 4 6 8 10 12],2,0.83,1.142
+RandomForest,SMOTE,1,[2 4 6 8 10 12],avg,0.813
+RandomForest,SMOTEENN,1,[2 4 6 8 10 12],0,0.835,1.986
+RandomForest,SMOTEENN,1,[2 4 6 8 10 12],1,0.861,1.766
+RandomForest,SMOTEENN,1,[2 4 6 8 10 12],2,0.865,1.833
+RandomForest,SMOTEENN,1,[2 4 6 8 10 12],avg,0.854
+RandomForest,SMOTETomek,1,[2 4 6 8 10 12],0,0.787,3.888
+RandomForest,SMOTETomek,1,[2 4 6 8 10 12],1,0.819,2.72
+RandomForest,SMOTETomek,1,[2 4 6 8 10 12],2,0.836,4.231
+RandomForest,SMOTETomek,1,[2 4 6 8 10 12],avg,0.814
+RandomForest,RandomOverSampler,1,[2 4 6 8 10 12],0,0.829,0.56
+RandomForest,RandomOverSampler,1,[2 4 6 8 10 12],1,0.841,0.499
+RandomForest,RandomOverSampler,1,[2 4 6 8 10 12],2,0.848,0.505
+RandomForest,RandomOverSampler,1,[2 4 6 8 10 12],avg,0.839
+AdaBoost,DummySampler,1,[2 4 6 8 10 12],0,0.829,2.166
+AdaBoost,DummySampler,1,[2 4 6 8 10 12],1,0.843,2.139
+AdaBoost,DummySampler,1,[2 4 6 8 10 12],2,0.864,2.125
+AdaBoost,DummySampler,1,[2 4 6 8 10 12],avg,0.845
+AdaBoost,SMOTE,1,[2 4 6 8 10 12],0,0.836,6.611
+AdaBoost,SMOTE,1,[2 4 6 8 10 12],1,0.825,7.168
+AdaBoost,SMOTE,1,[2 4 6 8 10 12],2,0.807,6.419
+AdaBoost,SMOTE,1,[2 4 6 8 10 12],avg,0.823
+AdaBoost,SMOTEENN,1,[2 4 6 8 10 12],0,0.828,7.985
+AdaBoost,SMOTEENN,1,[2 4 6 8 10 12],1,0.827,7.475
+AdaBoost,SMOTEENN,1,[2 4 6 8 10 12],2,0.816,8.218
+AdaBoost,SMOTEENN,1,[2 4 6 8 10 12],avg,0.824
+AdaBoost,SMOTETomek,1,[2 4 6 8 10 12],0,0.834,9.607
+AdaBoost,SMOTETomek,1,[2 4 6 8 10 12],1,0.819,10.028
+AdaBoost,SMOTETomek,1,[2 4 6 8 10 12],2,0.814,9.826
+AdaBoost,SMOTETomek,1,[2 4 6 8 10 12],avg,0.822
+AdaBoost,RandomOverSampler,1,[2 4 6 8 10 12],0,0.824,5.925
+AdaBoost,RandomOverSampler,1,[2 4 6 8 10 12],1,0.84,5.297
+AdaBoost,RandomOverSampler,1,[2 4 6 8 10 12],2,0.85,5.226
+AdaBoost,RandomOverSampler,1,[2 4 6 8 10 12],avg,0.838

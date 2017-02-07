@@ -12,23 +12,24 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import random
-import time
 import matplotlib.colors as colors
+import autosklearn.classification
 
 from imblearn.metrics import *
-from sklearn.model_selection import GridSearchCV
+#from sklearn.model_selection import GridSearchCV
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import precision_recall_fscore_support
 from sklearn import svm
-from sklearn.model_selection import train_test_split
-from sklearn import model_selection
+#from sklearn.model_selection import train_test_split
+#from sklearn import model_selection
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.feature_selection import RFE
 from sklearn.linear_model import LogisticRegression, RandomizedLasso, LinearRegression, Ridge
 from sklearn import preprocessing
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import KFold, StratifiedKFold, StratifiedShuffleSplit
+#from sklearn.model_selection import cross_val_score
+#from sklearn.model_selection import KFold, StratifiedKFold, StratifiedShuffleSplit
+from sklearn.cross_validation import KFold, StratifiedKFold, StratifiedShuffleSplit
 from sklearn.metrics import confusion_matrix, roc_curve, auc
 from sklearn.metrics import classification_report
 from sklearn.tree import DecisionTreeClassifier
@@ -47,8 +48,6 @@ from sklearn.feature_selection import SelectKBest, SelectPercentile
 from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import VarianceThreshold, GenericUnivariateSelect, SelectPercentile, SelectKBest, RFECV
-from sklearn.neural_network import MLPClassifier
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 
 
 # Printing options
@@ -74,12 +73,7 @@ class DummySampler(object):
 classifier_list = [#['GaussianNB', GaussianNB()],
                    #['DecisionTree', DecisionTreeClassifier()],
                    #['LogisticRegression', LogisticRegression()],
-                   ['GradientBoosting', GradientBoostingClassifier()],
-                   #['MLP', MLPClassifier()],
-                   #['SVC', SVC(probability=True)],
-                   #['QDA', QuadraticDiscriminantAnalysis()],
-                   ['RandomForest', RandomForestClassifier()],
-                   ['AdaBoost', AdaBoostClassifier()]]
+                   ['GradientBoosting', GradientBoostingClassifier()]]
                    #['KNN', KNeighborsClassifier()]]
 
 samplers_list = [['DummySampler', DummySampler()],
@@ -239,6 +233,7 @@ def compute_roc(combined, np_a, np_b):
         y_a_test.append(y_a.values[test_index])
         i_a += 1
 
+
     b = pd.DataFrame()
     if type(np_b) == str and np_b == "all":
         b = combined[(combined.np != np_b)]
@@ -259,22 +254,20 @@ def compute_roc(combined, np_a, np_b):
     # Permute over the classifiers, samplers, and splits of the data
     for clf_name, clf in classifier_list:
         for smp_name, smp in samplers_list:
-            total = 0
             plt.figure()
-            pipeline = pl.make_pipeline(smp, clf)
+            fpr = tpr = 0
+            temp_fpr = temp_tpr = 0
+            automl = autosklearn.classification.AutoSklearnClassifier()
+            pipeline = pl.make_pipeline(smp, automl)
             for split in range(0, i_a):
-                start_time = time.time()
                 y_b_score = pipeline.fit(X_a_train[split],
                                        y_a_train[split]).predict_proba(X_b_test[split])[:,1]
                 # Compute ROC curve and ROC area for each class
                 fpr, tpr, _ = roc_curve(y_b_test[split], y_b_score)
                 roc_auc = auc(fpr, tpr)
-                wall_time = time.time() - start_time
-                plt.plot(fpr, tpr, label='ROC curve - %d (AUC = %0.3f)' % (split, roc_auc))
-                total += roc_auc
-                print(clf_name, smp_name, str(np_a), str(np_b), split, round(roc_auc,3),  round(wall_time,3), sep=',')
+                plt.plot(fpr, tpr, label='ROC curve - %d (area = %0.2f)' % (split, roc_auc))
+                print(clf_name, smp_name, split, roc_auc)
 
-            print(clf_name, smp_name, str(np_a), str(np_b), "avg", round(total/float(i_a), 3), sep=',')
             plt.plot([0, 1], [0, 1], 'k--')
             plt.xlim([0.0, 1.0])
             plt.ylim([0.0, 1.05])
@@ -285,11 +278,13 @@ def compute_roc(combined, np_a, np_b):
             plt.legend(loc="lower right")
             plt.savefig(str(clf_name) + '_' + str(smp_name) + '_' + str(np_a) + ' ' +
                         str(np_b) + '.svg', bbox_inches='tight')
-            plt.close()
+
 
 
 def show_confusion_matrix(C, class_labels=['-1', '1']):
     """Draws confusion matrix with associated metrics"""
+    import matplotlib.pyplot as plt
+    import numpy as np
 
     assert C.shape == (2, 2), "Confusion matrix should be from binary classification only."
 
@@ -410,17 +405,8 @@ def main():
     train_and_test(combined, 12, 12)
     """
 
-    all = [1, 2, 4, 6, 8, 10, 12]
     compute_roc(combined, 1, 1)
-    #compute_roc(combined, 1, [2,4,6,8,10,12])
-    #compute_roc(combined, all, all)
-    #compute_roc(combined, all, 1)
-    #compute_roc(combined, all, 12)
-    #compute_roc(combined, 1, all)
-    #compute_roc(combined, 12, all)
-    compute_roc(combined, 1, 12)
-    compute_roc(combined, 12, 1)
-    compute_roc(combined, 12, 12)
+    # show_roc(clf, clf_name, X_train[split], y_train[split], X_test[split], y_test[split])
 
     # print(classification_report_imbalanced(y_test, pipeline.predict(X_test[split])))
 
