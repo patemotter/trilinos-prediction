@@ -227,7 +227,6 @@ def compute_roc(combined, np_a, np_b, graph=False):
     """Computes the roc and auc for each split in the two datasets.
     np_a is used as the training data, np_b is used as the testing data"""
     i_a = 0
-    i_b = 0
     X_a_train, X_a_test = [], []
     X_b_train, X_b_test = [], []
     y_a_train, y_a_test = [], []
@@ -269,13 +268,6 @@ def compute_roc(combined, np_a, np_b, graph=False):
         X_b_test.append(X_b.values[test_index])
         y_b_train.append(y_b.values[train_index])
         y_b_test.append(y_b.values[test_index])
-        i_b += 1
-    i_a = 0
-    i_b = 0
-    X_a_train, X_a_test = [], []
-    X_b_train, X_b_test = [], []
-    y_a_train, y_a_test = [], []
-    y_b_train, y_b_test = [], []
 
     # Permute over the classifiers, samplers, and splits of the data
     best_classifier = ""
