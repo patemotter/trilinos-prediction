@@ -5,11 +5,11 @@ int symm = 0;
 int main(int argc, char *argv[]) {
     if (argc == 1 || strcmp(argv[1], "-h") == 0) {
         std::cout << "Usage:\n mpirun tpetra_solver <mtx_file> <-d> <output_dir>\n";
-        std::cout << "Preconditioner choices:\nRILUK, ILUT, DIAGONAL, CHEBYSHEV, "
+        std::cout << "Preconditioner choices:\nRILUK, ILUT, CHEBYSHEV, "
                      "BLOCK_RELAXATION, RELAXATION, and SCHWARZ\n";
         std::cout << "Solver choices:\nMINRES, PSEUDOBLOCK_CG, "
                      "PSEUDOBLOCK_STOCHASTIC_CG,"
-                     "FIXED_POINT, PSEUDOBLOCK_TFQMR, TFQMR, BICGSTAB, LSQR, "
+                     "FIXED_POINT, PSEUDOBLOCK_TFQMR, BICGSTAB, LSQR, "
                      "PSEUDOBLOCK_GMRES\n";
         exit(0);
     }

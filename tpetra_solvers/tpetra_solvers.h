@@ -50,10 +50,11 @@ RCP<Teuchos::FancyOStream> fos;
 RCP<const Teuchos::Comm<int>> comm;
 std::vector<std::string> belosSolvers;
 
-//  5 "precs", 7 solvers, 35 combinations
+//  6 preconditioners, 7 solvers, 42 combinations
 STRINGS ifpack2Precs = {"ILUT", 
                         "RILUK", 
                         "RELAXATION", 
+                        "BLOCK_RELAXATION", 
                         "CHEBYSHEV",
                         "NONE"}; 
 
@@ -62,10 +63,10 @@ STRINGS ifpack2Precs = {"ILUT",
 STRINGS belos_all = {"FIXED POINT",
                      "BICGSTAB",
                      "MINRES",
-                     "PSEUDOBLOCK CG",
-                     "PSEUDOBLOCK TFQMR",
+                     "PSEUDOBLOCK_CG",
+                     "PSEUDOBLOCK_TFQMR",
                      "LSQR",
-                     "PSEUDOBLOCK GMRES"};
+                     "PSEUDOBLOCK_GMRES"};
 
 //                   "TFQMR",
 //                   "PSEUDOBLOCK STOCHASTIC CG",
