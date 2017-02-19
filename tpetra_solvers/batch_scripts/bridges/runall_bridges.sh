@@ -1,0 +1,9 @@
+#!/bin/bash
+./runall_bridges_np1.sh
+./runall_bridges_np4.sh
+./runall_bridges_np8.sh
+./runall_bridges_np12.sh
+./runall_bridges_np16.sh
+./runall_bridges_np20.sh
+./runall_bridges_np24.sh
+./runall_bridges_np28.sh
