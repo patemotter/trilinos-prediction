@@ -50,42 +50,28 @@ RCP<Teuchos::FancyOStream> fos;
 RCP<const Teuchos::Comm<int>> comm;
 std::vector<std::string> belosSolvers;
 
-//  4 precs, 8 solvers, 32 combinations
-STRINGS ifpack2Precs = {"ILUT", "RILUK", /* "DIAGONAL",*/ "RELAXATION", "CHEBYSHEV",
-                        "NONE"}; // None
+//  5 "precs", 7 solvers, 35 combinations
+STRINGS ifpack2Precs = {"ILUT", 
+                        "RILUK", 
+                        "RELAXATION", 
+                        "CHEBYSHEV",
+                        "NONE"}; 
 
-STRINGS belos_sq = {
-    "PSEUDOBLOCK TFQMR",  "TFQMR", "BICGSTAB", "BLOCK GMRES", "PSEUDOBLOCK GMRES",
-    "HYBRID BLOCK GMRES", "GCRODR"}; //, "LSQR"};
-
-/*
-STRINGS belos_all = {"PSEUDOBLOCK TFQMR", "BICGSTAB", "BLOCK GMRES",
-                     "PSEUDOBLOCK GMRES", "GCRODR", //"LSQR",
-                     "BLOCK CG", "PSEUDOBLOCK CG", "PSEUDOBLOCK STOCHASTIC CG",
-                     "RCG", "TFQMR", "PCPG", "MINRES", "HYBRID BLOCK GMRES"};
-                */
+//                      "DIAGONAL"
 
 STRINGS belos_all = {"FIXED POINT",
                      "BICGSTAB",
                      "MINRES",
                      "PSEUDOBLOCK CG",
-                     "PSEUDOBLOCK STOCHASTIC CG",
                      "PSEUDOBLOCK TFQMR",
-                     "TFQMR",
                      "LSQR",
                      "PSEUDOBLOCK GMRES"};
 
-//                   "FIXED POINT",
-//                   "MINRES",
-//                   "PSEUDOBLOCK CG",
-//                   "PSEUDOBLOCK GMRES",
-//                   "PSEUDOBLOCK STOCHASTIC CG",
-//                   "PSEUDOBLOCK TFQMR",
 //                   "TFQMR",
+//                   "PSEUDOBLOCK STOCHASTIC CG",
 //                   "BICGSTAB",
 //                   "BLOCK GMRES",
 //                   "FLEXIBLE GMRES",
-//                   "LSQR",
 //                   "RECYCLING CG",
 //                   "RECYCLING GMRES",
 //                   "SEED CG",

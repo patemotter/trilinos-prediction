@@ -88,6 +88,7 @@ all_timing_data = all_timing_data.assign(matrix_id=pd.Series(name_hash_series))
 cleaned_timing_data = all_timing_data[['np', 'matrix', 'matrix_id', 'solver_id', 'prec_id',
                                        'status_id', 'new_time', 'good_or_bad']]
 cleaned_timing_data.to_csv('processed_timings.csv')
+all_timing_data.to_csv('unprocessed_timings.csv')
 
 """
 nps = cleaned_timing_data.np.unique()
