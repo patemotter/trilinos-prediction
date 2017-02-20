@@ -54,19 +54,19 @@ std::vector<std::string> belosSolvers;
 STRINGS ifpack2Precs = {"ILUT", 
                         "RILUK", 
                         "RELAXATION", 
-                        "BLOCK_RELAXATION", 
                         "CHEBYSHEV",
                         "NONE"}; 
 
+//                      "BLOCK RELAXATION", 
 //                      "DIAGONAL"
 
 STRINGS belos_all = {"FIXED POINT",
                      "BICGSTAB",
                      "MINRES",
-                     "PSEUDOBLOCK_CG",
-                     "PSEUDOBLOCK_TFQMR",
+                     "PSEUDOBLOCK CG",
+                     "PSEUDOBLOCK TFQMR",
                      "LSQR",
-                     "PSEUDOBLOCK_GMRES"};
+                     "PSEUDOBLOCK GMRES"};
 
 //                   "TFQMR",
 //                   "PSEUDOBLOCK STOCHASTIC CG",
