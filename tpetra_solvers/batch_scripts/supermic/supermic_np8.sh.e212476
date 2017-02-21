@@ -1,0 +1,1021 @@
+Ifpack2::ILUT::Compute: zero pivot encountered! Replacing with rownorm and continuing...(You may need to set the parameter 'fact: absolute threshold'.)
+Ifpack2::ILUT::Compute: zero pivot encountered! Replacing with rownorm and continuing...(You may need to set the parameter 'fact: absolute threshold'.)
+/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 1
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 1
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 1
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 1
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 1
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 1
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 1
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 1
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 2
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 2
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 2
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 2
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 2
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 2
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 2
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 2
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 3
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 3
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 3
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 3
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 3
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 3
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 3
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 3
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected.Ifpack2::ILUT::Compute: zero pivot encountered! Replacing with rownorm and continuing...(You may need to set the parameter 'fact: absolute threshold'.)
+Ifpack2::ILUT::Compute: zero pivot encountered! Replacing with rownorm and continuing...(You may need to set the parameter 'fact: absolute threshold'.)
+/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 4
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 4
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 4
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 4
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 4
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 4
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 4
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 4
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 5
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 5
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 5
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 5
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 5
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 5
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 5
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 5
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 6
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 6
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 6
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 6
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 6
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 6
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 6
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 6
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 7
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 7
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 7
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 7
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 7
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 7
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 7
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 7
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 8
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 8
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 8
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 8
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 8
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 8
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 8
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 8
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected.Ifpack2::ILUT::Compute: zero pivot encountered! Replacing with rownorm and continuing...(You may need to set the parameter 'fact: absolute threshold'.)
+Ifpack2::ILUT::Compute: zero pivot encountered! Replacing with rownorm and continuing...(You may need to set the parameter 'fact: absolute threshold'.)
+Ifpack2::ILUT::Compute: zero pivot encountered! Replacing with rownorm and continuing...(You may need to set the parameter 'fact: absolute threshold'.)
+Ifpack2::ILUT::Compute: zero pivot encountered! Replacing with rownorm and continuing...(You may need to set the parameter 'fact: absolute threshold'.)
+/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:460:
+
+Throw number = 9
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:460:
+
+Throw number = 9
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:460:
+
+Throw number = 9
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:460:
+
+Throw number = 9
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:460:
+
+Throw number = 9
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:460:
+
+Throw number = 9
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:460:
+
+Throw number = 9
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:460:
+
+Throw number = 9
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 10
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 10
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 10
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 10
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 10
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 10
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 10
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 10
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:439:
+
+Throw number = 11
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:439:
+
+Throw number = 11
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:439:
+
+Throw number = 11
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:439:
+
+Throw number = 11
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:439:
+
+Throw number = 11
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:439:
+
+Throw number = 11
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:439:
+
+Throw number = 11
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:439:
+
+Throw number = 11
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:439:
+
+Throw number = 12
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:439:
+
+Throw number = 12
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:439:
+
+Throw number = 12
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:439:
+
+Throw number = 12
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:439:
+
+Throw number = 12
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:439:
+
+Throw number = 12
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:439:
+
+Throw number = 12
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:439:
+
+Throw number = 12
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:460:
+
+Throw number = 13
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:460:
+
+Throw number = 13
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:460:
+
+Throw number = 13
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:460:
+
+Throw number = 13
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:460:
+
+Throw number = 13
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:460:
+
+Throw number = 13
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:460:
+
+Throw number = 13
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockCGIter.hpp:460:
+
+Throw number = 13
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockCGIter::iterate(): non-positive value for p^H*A*p encountered!Ifpack2::ILUT::Compute: zero pivot encountered! Replacing with rownorm and continuing...(You may need to set the parameter 'fact: absolute threshold'.)
+Ifpack2::ILUT::Compute: zero pivot encountered! Replacing with rownorm and continuing...(You may need to set the parameter 'fact: absolute threshold'.)
+/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:460:
+
+Throw number = 14
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:460:
+
+Throw number = 14
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:460:
+
+Throw number = 14
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:460:
+
+Throw number = 14
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:460:
+
+Throw number = 14
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:460:
+
+Throw number = 14
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:460:
+
+Throw number = 14
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:460:
+
+Throw number = 14
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 15
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 15
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 15
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 15
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 15
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 15
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 15
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 15
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:439:
+
+Throw number = 16
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:439:
+
+Throw number = 16
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:439:
+
+Throw number = 16
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:439:
+
+Throw number = 16
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:439:
+
+Throw number = 16
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:439:
+
+Throw number = 16
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:439:
+
+Throw number = 16
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:439:
+
+Throw number = 16
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:439:
+
+Throw number = 17
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:439:
+
+Throw number = 17
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:439:
+
+Throw number = 17
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:439:
+
+Throw number = 17
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:439:
+
+Throw number = 17
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:439:
+
+Throw number = 17
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:439:
+
+Throw number = 17
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:439:
+
+Throw number = 17
+
+Throw test that evaluated to true: SCT::real(rHz[i]) < zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): negative value for r^H*M*r encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:460:
+
+Throw number = 18
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:460:
+
+Throw number = 18
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:460:
+
+Throw number = 18
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:460:
+
+Throw number = 18
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:460:
+
+Throw number = 18
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:460:
+
+Throw number = 18
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:460:
+
+Throw number = 18
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): non-positive value for p^H*A*p encountered!/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosPseudoBlockStochasticCGIter.hpp:460:
+
+Throw number = 18
+
+Throw test that evaluated to true: SCT::real(pAp[i]) <= zero
+
+Belos::PseudoBlockStochasticCGIter::iterate(): non-positive value for p^H*A*p encountered!Ifpack2::ILUT::Compute: zero pivot encountered! Replacing with rownorm and continuing...(You may need to set the parameter 'fact: absolute threshold'.)
+Ifpack2::ILUT::Compute: zero pivot encountered! Replacing with rownorm and continuing...(You may need to set the parameter 'fact: absolute threshold'.)
+/home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 19
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 19
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 19
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 19
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 19
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 19
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 19
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 19
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 20
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 20
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 20
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 20
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 20
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 20
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 20
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 20
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 21
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 21
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 21
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 21
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 21
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 21
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 21
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected./home/pmotter/work/trilinos-petsc-testbed/trilinos-install/include/BelosStatusTestGenResNorm.hpp:576:
+
+Throw number = 21
+
+Throw test that evaluated to true: true
+
+StatusTestGenResNorm::checkStatus(): NaN has been detected.

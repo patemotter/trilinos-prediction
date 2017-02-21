@@ -2,7 +2,7 @@
 
 #PBS -q workq
 #PBS -l nodes=1:ppn=20
-#PBS -l walltime=12:00:00
+#PBS -l walltime=12:05:00
 
 export OMP_NUM_THREADS=1
 
@@ -27,7 +27,7 @@ do
     then
         echo "$COUNT solving $matrix"
         sed -i "s/${matrix}, 0/${matrix}, -1/g" "$A"
-        mpirun -np 12 ${EXEDIR}/tpetra_solvers ${MATDIR}/${matrix} -d ${OUTDIR} && 
+        mpirun -np 8 ${EXEDIR}/tpetra_solvers ${MATDIR}/${matrix} -d ${OUTDIR} && 
             sed -i "s/${matrix}, -1/${matrix}, 1/g" "$A"
     else
         echo "$COUNT : skipping $matrix"

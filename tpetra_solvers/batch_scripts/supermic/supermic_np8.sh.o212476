@@ -1,0 +1,610 @@
+--------------------------------------
+Running PBS prologue script
+--------------------------------------
+User and Job Data:
+--------------------------------------
+Job ID:    212476.smic3
+Username:  pmotter
+Group:     xsede
+Date:      21-Feb-2017 11:25
+Node:      smic251 (44599)
+--------------------------------------
+PBS has allocated the following nodes:
+
+smic251
+
+A total of 20 processors on 1 nodes allocated
+---------------------------------------------
+Check nodes and clean them of stray processes
+---------------------------------------------
+Checking node smic251 11:25:33 
+Done clearing all the allocated nodes
+------------------------------------------------------
+Concluding PBS prologue script - 21-Feb-2017 11:25:33
+------------------------------------------------------
+/home/pmotter/work/trilinos-prediction/matrix_lists/supermic/np8/UF_1000_split.aa
+/home/pmotter/work/results/np8_results_aa
+/home/pmotter/work/UF_Collection_Matrix-Market
+/home/pmotter/work/trilinos-prediction/tpetra_solvers
+1 solving saylr3.mtx
+Teuchos::GlobalMPISession::GlobalMPISession(): started processor with name smic251 and rank 0!
+Teuchos::GlobalMPISession::GlobalMPISession(): started processor with name smic251 and rank 1!
+Teuchos::GlobalMPISession::GlobalMPISession(): started processor with name smic251 and rank 2!
+Teuchos::GlobalMPISession::GlobalMPISession(): started processor with name smic251 and rank 3!
+Teuchos::GlobalMPISession::GlobalMPISession(): started processor with name smic251 and rank 4!
+Teuchos::GlobalMPISession::GlobalMPISession(): started processor with name smic251 and rank 5!
+Teuchos::GlobalMPISession::GlobalMPISession(): started processor with name smic251 and rank 6!
+Teuchos::GlobalMPISession::GlobalMPISession(): started processor with name smic251 and rank 7!
+
+Working on: saylr3.mtx	FIXED POINT	ILUT
+
+Belos::StatusTestGeneralOutput: Passed
+  (Num calls,Mod test,State test): (10001, 1, Passed)
+   Passed.......OR Combination -> 
+     Failed.......Number of Iterations = 10000 == 10000
+     Unconverged..(2-Norm Imp Res Vec) / (2-Norm Res0)
+                  residual [ 0 ] = 0.260768 > 1e-06
+
+========================================================================================================================
+
+                                         TimeMonitor results over 8 processors
+
+Timer Name                                  MinOverProcs      MeanOverProcs     MaxOverProcs      MeanOverCallCounts    
+------------------------------------------------------------------------------------------------------------------------
+Belos: FixedPointSolMgr total solve time    0.6904 (1)        0.6905 (1)        0.6905 (1)        0.6905 (1)            
+Belos: Operation Op*x                       0.3062 (1e+04)    0.3216 (1e+04)    0.3301 (1e+04)    3.215e-05 (1e+04)     
+Belos: Operation Prec*x                     0.1934 (1e+04)    0.1992 (1e+04)    0.2051 (1e+04)    1.991e-05 (1e+04)     
+========================================================================================================================
+
+Working on: saylr3.mtx	FIXED POINT	RILUK
+========================================================================================================================
+
+                                         TimeMonitor results over 8 processors
+
+Timer Name                                  MinOverProcs     MeanOverProcs    MaxOverProcs    MeanOverCallCounts    
+------------------------------------------------------------------------------------------------------------------------
+Belos: FixedPointSolMgr total solve time    0.007799 (1)     0.007808 (1)     0.007815 (1)    0.007808 (1)          
+Belos: Operation Op*x                       8.202e-05 (2)    0.0001156 (2)    0.000212 (2)    5.78e-05 (2)          
+Belos: Operation Prec*x                     0.001099 (2)     0.001183 (2)     0.001237 (2)    0.0005916 (2)         
+========================================================================================================================
+
+Working on: saylr3.mtx	FIXED POINT	RELAXATION
+
+Belos::StatusTestGeneralOutput: Passed
+  (Num calls,Mod test,State test): (10001, 1, Passed)
+   Passed.......OR Combination -> 
+     Failed.......Number of Iterations = 10000 == 10000
+     Unconverged..(2-Norm Imp Res Vec) / (2-Norm Res0)
+                  residual [ 0 ] = 0.0634735 > 1e-06
+
+===========================================================================================================================
+
+                                           TimeMonitor results over 8 processors
+
+Timer Name                                  MinOverProcs       MeanOverProcs      MaxOverProcs       MeanOverCallCounts    
+---------------------------------------------------------------------------------------------------------------------------
+Belos: FixedPointSolMgr total solve time    0.503 (1)          0.503 (1)          0.503 (1)          0.503 (1)             
+Belos: Operation Op*x                       0.2896 (1e+04)     0.3034 (1e+04)     0.3119 (1e+04)     3.034e-05 (1e+04)     
+Belos: Operation Prec*x                     0.03308 (1e+04)    0.03527 (1e+04)    0.03647 (1e+04)    3.527e-06 (1e+04)     
+===========================================================================================================================
+
+Working on: saylr3.mtx	FIXED POINT	CHEBYSHEV
+===========================================================================================================================
+
+                                           TimeMonitor results over 8 processors
+
+Timer Name                                  MinOverProcs      MeanOverProcs     MaxOverProcs      MeanOverCallCounts    
+---------------------------------------------------------------------------------------------------------------------------
+Belos: FixedPointSolMgr total solve time    0.009205 (1)      0.009212 (1)      0.009218 (1)      0.009212 (1)          
+Belos: Operation Op*x                       0.005188 (175)    0.005379 (175)    0.005501 (175)    3.074e-05 (175)       
+Belos: Operation Prec*x                     0.001438 (175)    0.001482 (175)    0.001518 (175)    8.471e-06 (175)       
+Ifpack2::Chebyshev::apply                   0.001073 (175)    0.001115 (175)    0.001168 (175)    6.369e-06 (175)       
+Ifpack2::Chebyshev::compute                 0.005561 (1)      0.005588 (1)      0.005595 (1)      0.005588 (1)          
+Ifpack2::Chebyshev::initialize              0 (0)             0 (0)             0 (0)             0 (0)                 
+===========================================================================================================================
+
+Working on: saylr3.mtx	FIXED POINT	NONE
+===========================================================================================================================
+
+                                           TimeMonitor results over 8 processors
+
+Timer Name                                  MinOverProcs     MeanOverProcs    MaxOverProcs     MeanOverCallCounts    
+---------------------------------------------------------------------------------------------------------------------------
+Belos: FixedPointSolMgr total solve time    0.01897 (1)      0.01918 (1)      0.01925 (1)      0.01918 (1)           
+Belos: Operation Op*x                       0.01184 (411)    0.01233 (411)    0.01266 (411)    3e-05 (411)           
+Belos: Operation Prec*x                     0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::apply                   0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::compute                 0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::initialize              0 (0)            0 (0)            0 (0)            0 (0)                 
+===========================================================================================================================
+
+Working on: saylr3.mtx	BICGSTAB	ILUT
+===========================================================================================================================
+
+                                           TimeMonitor results over 8 processors
+
+Timer Name                                  MinOverProcs      MeanOverProcs     MaxOverProcs      MeanOverCallCounts    
+---------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time      0.26 (1)          0.26 (1)          0.26 (1)          0.26 (1)              
+Belos: FixedPointSolMgr total solve time    0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: Operation Op*x                       0.0539 (1717)     0.0559 (1717)     0.05743 (1717)    3.256e-05 (1717)      
+Belos: Operation Prec*x                     0.03249 (1716)    0.03378 (1716)    0.03542 (1716)    1.968e-05 (1716)      
+Ifpack2::Chebyshev::apply                   0 (0)             0 (0)             0 (0)             0 (0)                 
+Ifpack2::Chebyshev::compute                 0 (0)             0 (0)             0 (0)             0 (0)                 
+Ifpack2::Chebyshev::initialize              0 (0)             0 (0)             0 (0)             0 (0)                 
+===========================================================================================================================
+
+Working on: saylr3.mtx	BICGSTAB	RILUK
+===========================================================================================================================
+
+                                           TimeMonitor results over 8 processors
+
+Timer Name                                  MinOverProcs     MeanOverProcs    MaxOverProcs     MeanOverCallCounts    
+---------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time      0.0005369 (1)    0.0007963 (1)    0.00089 (1)      0.0007963 (1)         
+Belos: FixedPointSolMgr total solve time    0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: Operation Op*x                       0.0001087 (3)    0.0001605 (3)    0.0004568 (3)    5.351e-05 (3)         
+Belos: Operation Prec*x                     4.387e-05 (2)    4.566e-05 (2)    4.721e-05 (2)    2.283e-05 (2)         
+Ifpack2::Chebyshev::apply                   0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::compute                 0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::initialize              0 (0)            0 (0)            0 (0)            0 (0)                 
+===========================================================================================================================
+
+Working on: saylr3.mtx	BICGSTAB	RELAXATION
+===========================================================================================================================
+
+                                           TimeMonitor results over 8 processors
+
+Timer Name                                  MinOverProcs      MeanOverProcs     MaxOverProcs      MeanOverCallCounts    
+---------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time      0.9664 (1)        0.9667 (1)        0.9668 (1)        0.9667 (1)            
+Belos: FixedPointSolMgr total solve time    0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: Operation Op*x                       0.2142 (7319)     0.2288 (7319)     0.2354 (7319)     3.126e-05 (7319)      
+Belos: Operation Prec*x                     0.02258 (7318)    0.02305 (7318)    0.02333 (7318)    3.15e-06 (7318)       
+Ifpack2::Chebyshev::apply                   0 (0)             0 (0)             0 (0)             0 (0)                 
+Ifpack2::Chebyshev::compute                 0 (0)             0 (0)             0 (0)             0 (0)                 
+Ifpack2::Chebyshev::initialize              0 (0)             0 (0)             0 (0)             0 (0)                 
+===========================================================================================================================
+
+Working on: saylr3.mtx	BICGSTAB	CHEBYSHEV
+===========================================================================================================================
+
+                                           TimeMonitor results over 8 processors
+
+Timer Name                                  MinOverProcs      MeanOverProcs     MaxOverProcs      MeanOverCallCounts    
+---------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time      0.3278 (1)        0.3278 (1)        0.3278 (1)        0.3278 (1)            
+Belos: FixedPointSolMgr total solve time    0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: Operation Op*x                       0.07123 (2431)    0.076 (2431)      0.07891 (2431)    3.126e-05 (2431)      
+Belos: Operation Prec*x                     0.01237 (2430)    0.01277 (2430)    0.01317 (2430)    5.256e-06 (2430)      
+Ifpack2::Chebyshev::apply                   0.01089 (2430)    0.01117 (2430)    0.01164 (2430)    4.598e-06 (2430)      
+Ifpack2::Chebyshev::compute                 0.000701 (1)      0.0009926 (1)     0.001048 (1)      0.0009926 (1)         
+Ifpack2::Chebyshev::initialize              0 (0)             0 (0)             0 (0)             0 (0)                 
+===========================================================================================================================
+
+Working on: saylr3.mtx	BICGSTAB	NONE
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                  MinOverProcs          MeanOverProcs         MaxOverProcs          MeanOverCallCounts      
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time      2.06 (1)              2.06 (1)              2.06 (1)              2.06 (1)                
+Belos: FixedPointSolMgr total solve time    0 (0)                 0 (0)                 0 (0)                 0 (0)                   
+Belos: Operation Op*x                       0.4714 (1.632e+04)    0.4978 (1.632e+04)    0.5119 (1.632e+04)    3.05e-05 (1.632e+04)    
+Belos: Operation Prec*x                     0 (0)                 0 (0)                 0 (0)                 0 (0)                   
+Ifpack2::Chebyshev::apply                   0 (0)                 0 (0)                 0 (0)                 0 (0)                   
+Ifpack2::Chebyshev::compute                 0 (0)                 0 (0)                 0 (0)                 0 (0)                   
+Ifpack2::Chebyshev::initialize              0 (0)                 0 (0)                 0 (0)                 0 (0)                   
+======================================================================================================================================
+
+Working on: saylr3.mtx	MINRES	ILUT
+
+Belos::StatusTestGeneralOutput: Passed
+  (Num calls,Mod test,State test): (10001, 1, Passed)
+   Passed.......OR Combination -> 
+     Failed.......Number of Iterations = 10000 == 10000
+     Failed.......SEQ Combination -> 
+       Unconverged..(2-Norm Imp Res Vec) / (2-Norm Res0)
+                    residual [ 0 ] = 0.00522394 > 1e-06
+
+       **...........(2-Norm Exp Res Vec) / (2-Norm Res0), tol = 1e-06
+
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                  MinOverProcs      MeanOverProcs     MaxOverProcs      MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time      0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: FixedPointSolMgr total solve time    0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: MinresSolMgr total solve time        0.6421 (1)        0.6421 (1)        0.6422 (1)        0.6421 (1)            
+Belos: Operation Op*x                       0.2752 (1e+04)    0.3006 (1e+04)    0.3144 (1e+04)    3.005e-05 (1e+04)     
+Belos: Operation Prec*x                     0 (0)             0 (0)             0 (0)             0 (0)                 
+Ifpack2::Chebyshev::apply                   0 (0)             0 (0)             0 (0)             0 (0)                 
+Ifpack2::Chebyshev::compute                 0 (0)             0 (0)             0 (0)             0 (0)                 
+Ifpack2::Chebyshev::initialize              0 (0)             0 (0)             0 (0)             0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	MINRES	RILUK
+
+Belos::StatusTestGeneralOutput: Passed
+  (Num calls,Mod test,State test): (10001, 1, Passed)
+   Passed.......OR Combination -> 
+     Failed.......Number of Iterations = 10000 == 10000
+     Failed.......SEQ Combination -> 
+       Unconverged..(2-Norm Imp Res Vec) / (2-Norm Res0)
+                    residual [ 0 ] = 0.00522394 > 1e-06
+
+       **...........(2-Norm Exp Res Vec) / (2-Norm Res0), tol = 1e-06
+
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                  MinOverProcs      MeanOverProcs     MaxOverProcs      MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time      0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: FixedPointSolMgr total solve time    0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: MinresSolMgr total solve time        0.626 (1)         0.6263 (1)        0.6264 (1)        0.6263 (1)            
+Belos: Operation Op*x                       0.2735 (1e+04)    0.2939 (1e+04)    0.3029 (1e+04)    2.939e-05 (1e+04)     
+Belos: Operation Prec*x                     0 (0)             0 (0)             0 (0)             0 (0)                 
+Ifpack2::Chebyshev::apply                   0 (0)             0 (0)             0 (0)             0 (0)                 
+Ifpack2::Chebyshev::compute                 0 (0)             0 (0)             0 (0)             0 (0)                 
+Ifpack2::Chebyshev::initialize              0 (0)             0 (0)             0 (0)             0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	MINRES	RELAXATION
+
+Belos::StatusTestGeneralOutput: Passed
+  (Num calls,Mod test,State test): (10001, 1, Passed)
+   Passed.......OR Combination -> 
+     Failed.......Number of Iterations = 10000 == 10000
+     Failed.......SEQ Combination -> 
+       Unconverged..(2-Norm Imp Res Vec) / (2-Norm Res0)
+                    residual [ 0 ] = 0.00522394 > 1e-06
+
+       **...........(2-Norm Exp Res Vec) / (2-Norm Res0), tol = 1e-06
+
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                  MinOverProcs      MeanOverProcs     MaxOverProcs      MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time      0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: FixedPointSolMgr total solve time    0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: MinresSolMgr total solve time        0.6298 (1)        0.6301 (1)        0.6302 (1)        0.6301 (1)            
+Belos: Operation Op*x                       0.2729 (1e+04)    0.2942 (1e+04)    0.3057 (1e+04)    2.941e-05 (1e+04)     
+Belos: Operation Prec*x                     0 (0)             0 (0)             0 (0)             0 (0)                 
+Ifpack2::Chebyshev::apply                   0 (0)             0 (0)             0 (0)             0 (0)                 
+Ifpack2::Chebyshev::compute                 0 (0)             0 (0)             0 (0)             0 (0)                 
+Ifpack2::Chebyshev::initialize              0 (0)             0 (0)             0 (0)             0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	MINRES	CHEBYSHEV
+
+Belos::StatusTestGeneralOutput: Passed
+  (Num calls,Mod test,State test): (10001, 1, Passed)
+   Passed.......OR Combination -> 
+     Failed.......Number of Iterations = 10000 == 10000
+     Failed.......SEQ Combination -> 
+       Unconverged..(2-Norm Imp Res Vec) / (2-Norm Res0)
+                    residual [ 0 ] = 0.00522394 > 1e-06
+
+       **...........(2-Norm Exp Res Vec) / (2-Norm Res0), tol = 1e-06
+
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                  MinOverProcs      MeanOverProcs     MaxOverProcs      MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time      0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: FixedPointSolMgr total solve time    0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: MinresSolMgr total solve time        0.6283 (1)        0.6283 (1)        0.6284 (1)        0.6283 (1)            
+Belos: Operation Op*x                       0.2747 (1e+04)    0.2941 (1e+04)    0.3023 (1e+04)    2.941e-05 (1e+04)     
+Belos: Operation Prec*x                     0 (0)             0 (0)             0 (0)             0 (0)                 
+Ifpack2::Chebyshev::apply                   0 (0)             0 (0)             0 (0)             0 (0)                 
+Ifpack2::Chebyshev::compute                 0.00069 (1)       0.001048 (1)      0.001108 (1)      0.001048 (1)          
+Ifpack2::Chebyshev::initialize              0 (0)             0 (0)             0 (0)             0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	MINRES	NONE
+
+Belos::StatusTestGeneralOutput: Passed
+  (Num calls,Mod test,State test): (10001, 1, Passed)
+   Passed.......OR Combination -> 
+     Failed.......Number of Iterations = 10000 == 10000
+     Failed.......SEQ Combination -> 
+       Unconverged..(2-Norm Imp Res Vec) / (2-Norm Res0)
+                    residual [ 0 ] = 0.00522394 > 1e-06
+
+       **...........(2-Norm Exp Res Vec) / (2-Norm Res0), tol = 1e-06
+
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                  MinOverProcs      MeanOverProcs     MaxOverProcs    MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time      0 (0)             0 (0)             0 (0)           0 (0)                 
+Belos: FixedPointSolMgr total solve time    0 (0)             0 (0)             0 (0)           0 (0)                 
+Belos: MinresSolMgr total solve time        0.6252 (1)        0.6255 (1)        0.6256 (1)      0.6255 (1)            
+Belos: Operation Op*x                       0.2746 (1e+04)    0.2925 (1e+04)    0.3 (1e+04)     2.925e-05 (1e+04)     
+Belos: Operation Prec*x                     0 (0)             0 (0)             0 (0)           0 (0)                 
+Ifpack2::Chebyshev::apply                   0 (0)             0 (0)             0 (0)           0 (0)                 
+Ifpack2::Chebyshev::compute                 0 (0)             0 (0)             0 (0)           0 (0)                 
+Ifpack2::Chebyshev::initialize              0 (0)             0 (0)             0 (0)           0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	PSEUDOBLOCK CG	ILUT
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                     MinOverProcs     MeanOverProcs    MaxOverProcs     MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time         0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: FixedPointSolMgr total solve time       0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: MinresSolMgr total solve time           0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: Operation Op*x                          7.725e-05 (2)    9.438e-05 (2)    0.0001111 (2)    4.719e-05 (2)         
+Belos: Operation Prec*x                        2.885e-05 (1)    3.162e-05 (1)    3.409e-05 (1)    3.162e-05 (1)         
+Belos: PseudoBlockCGSolMgr total solve time    0.00165 (1)      0.001654 (1)     0.001662 (1)     0.001654 (1)          
+Ifpack2::Chebyshev::apply                      0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::compute                    0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::initialize                 0 (0)            0 (0)            0 (0)            0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	PSEUDOBLOCK CG	RILUK
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                     MinOverProcs     MeanOverProcs    MaxOverProcs     MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time         0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: FixedPointSolMgr total solve time       0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: MinresSolMgr total solve time           0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: Operation Op*x                          7.415e-05 (2)    0.0001374 (2)    0.000499 (2)     6.869e-05 (2)         
+Belos: Operation Prec*x                        4.506e-05 (2)    4.637e-05 (2)    4.792e-05 (2)    2.319e-05 (2)         
+Belos: PseudoBlockCGSolMgr total solve time    0.0006342 (1)    0.0009525 (1)    0.001073 (1)     0.0009525 (1)         
+Ifpack2::Chebyshev::apply                      0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::compute                    0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::initialize                 0 (0)            0 (0)            0 (0)            0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	PSEUDOBLOCK CG	RELAXATION
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                     MinOverProcs     MeanOverProcs    MaxOverProcs     MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time         0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: FixedPointSolMgr total solve time       0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: MinresSolMgr total solve time           0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: Operation Op*x                          3.719e-05 (1)    9.212e-05 (1)    0.000448 (1)     9.212e-05 (1)         
+Belos: Operation Prec*x                        2.861e-06 (1)    3.606e-06 (1)    4.053e-06 (1)    3.606e-06 (1)         
+Belos: PseudoBlockCGSolMgr total solve time    0.0001299 (1)    0.0004422 (1)    0.0005488 (1)    0.0004422 (1)         
+Ifpack2::Chebyshev::apply                      0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::compute                    0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::initialize                 0 (0)            0 (0)            0 (0)            0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	PSEUDOBLOCK CG	CHEBYSHEV
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                     MinOverProcs     MeanOverProcs    MaxOverProcs     MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time         0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: FixedPointSolMgr total solve time       0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: MinresSolMgr total solve time           0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: Operation Op*x                          3.004e-05 (1)    3.198e-05 (1)    3.314e-05 (1)    3.198e-05 (1)         
+Belos: Operation Prec*x                        3.195e-05 (1)    3.272e-05 (1)    3.409e-05 (1)    3.272e-05 (1)         
+Belos: PseudoBlockCGSolMgr total solve time    0.00014 (1)      0.0001429 (1)    0.0001459 (1)    0.0001429 (1)         
+Ifpack2::Chebyshev::apply                      3.099e-05 (1)    3.195e-05 (1)    3.29e-05 (1)     3.195e-05 (1)         
+Ifpack2::Chebyshev::compute                    0.0007219 (1)    0.001082 (1)     0.001142 (1)     0.001082 (1)          
+Ifpack2::Chebyshev::initialize                 0 (0)            0 (0)            0 (0)            0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	PSEUDOBLOCK CG	NONE
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                     MinOverProcs    MeanOverProcs    MaxOverProcs     MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time         0 (0)           0 (0)            0 (0)            0 (0)                 
+Belos: FixedPointSolMgr total solve time       0 (0)           0 (0)            0 (0)            0 (0)                 
+Belos: MinresSolMgr total solve time           0 (0)           0 (0)            0 (0)            0 (0)                 
+Belos: Operation Op*x                          7.2e-05 (2)     0.0001272 (2)    0.0004671 (2)    6.358e-05 (2)         
+Belos: Operation Prec*x                        0 (0)           0 (0)            0 (0)            0 (0)                 
+Belos: PseudoBlockCGSolMgr total solve time    0.000181 (1)    0.0004767 (1)    0.0005801 (1)    0.0004767 (1)         
+Ifpack2::Chebyshev::apply                      0 (0)           0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::compute                    0 (0)           0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::initialize                 0 (0)           0 (0)            0 (0)            0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	PSEUDOBLOCK STOCHASTIC CG	ILUT
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                               MinOverProcs     MeanOverProcs    MaxOverProcs     MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time                   0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: FixedPointSolMgr total solve time                 0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: MinresSolMgr total solve time                     0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: Operation Op*x                                    7.51e-05 (2)     8.854e-05 (2)    0.0001128 (2)    4.427e-05 (2)         
+Belos: Operation Prec*x                                  2.098e-05 (1)    2.328e-05 (1)    2.813e-05 (1)    2.328e-05 (1)         
+Belos: PseudoBlockCGSolMgr total solve time              0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: PseudoBlockStochasticCGSolMgr total solve time    0.000716 (1)     0.0007269 (1)    0.0007372 (1)    0.0007269 (1)         
+Ifpack2::Chebyshev::apply                                0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::compute                              0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::initialize                           0 (0)            0 (0)            0 (0)            0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	PSEUDOBLOCK STOCHASTIC CG	RILUK
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                               MinOverProcs     MeanOverProcs    MaxOverProcs     MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time                   0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: FixedPointSolMgr total solve time                 0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: MinresSolMgr total solve time                     0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: Operation Op*x                                    7.868e-05 (2)    0.0001445 (2)    0.0005651 (2)    7.227e-05 (2)         
+Belos: Operation Prec*x                                  4.387e-05 (2)    4.467e-05 (2)    4.578e-05 (2)    2.234e-05 (2)         
+Belos: PseudoBlockCGSolMgr total solve time              0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: PseudoBlockStochasticCGSolMgr total solve time    0.000345 (1)     0.0007175 (1)    0.0008481 (1)    0.0007175 (1)         
+Ifpack2::Chebyshev::apply                                0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::compute                              0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::initialize                           0 (0)            0 (0)            0 (0)            0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	PSEUDOBLOCK STOCHASTIC CG	RELAXATION
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                               MinOverProcs     MeanOverProcs    MaxOverProcs     MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time                   0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: FixedPointSolMgr total solve time                 0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: MinresSolMgr total solve time                     0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: Operation Op*x                                    3.791e-05 (1)    9.921e-05 (1)    0.0005071 (1)    9.921e-05 (1)         
+Belos: Operation Prec*x                                  2.861e-06 (1)    3.636e-06 (1)    4.053e-06 (1)    3.636e-06 (1)         
+Belos: PseudoBlockCGSolMgr total solve time              0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: PseudoBlockStochasticCGSolMgr total solve time    0.000139 (1)     0.0005034 (1)    0.0006299 (1)    0.0005034 (1)         
+Ifpack2::Chebyshev::apply                                0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::compute                              0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::initialize                           0 (0)            0 (0)            0 (0)            0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	PSEUDOBLOCK STOCHASTIC CG	CHEBYSHEV
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                               MinOverProcs     MeanOverProcs    MaxOverProcs     MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time                   0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: FixedPointSolMgr total solve time                 0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: MinresSolMgr total solve time                     0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: Operation Op*x                                    3.099e-05 (1)    3.293e-05 (1)    3.386e-05 (1)    3.293e-05 (1)         
+Belos: Operation Prec*x                                  3.195e-05 (1)    3.341e-05 (1)    3.505e-05 (1)    3.341e-05 (1)         
+Belos: PseudoBlockCGSolMgr total solve time              0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: PseudoBlockStochasticCGSolMgr total solve time    0.0001578 (1)    0.0001653 (1)    0.0001738 (1)    0.0001653 (1)         
+Ifpack2::Chebyshev::apply                                3.099e-05 (1)    3.263e-05 (1)    3.409e-05 (1)    3.263e-05 (1)         
+Ifpack2::Chebyshev::compute                              0.0007231 (1)    0.001151 (1)     0.001221 (1)     0.001151 (1)          
+Ifpack2::Chebyshev::initialize                           0 (0)            0 (0)            0 (0)            0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	PSEUDOBLOCK STOCHASTIC CG	NONE
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                               MinOverProcs    MeanOverProcs    MaxOverProcs     MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time                   0 (0)           0 (0)            0 (0)            0 (0)                 
+Belos: FixedPointSolMgr total solve time                 0 (0)           0 (0)            0 (0)            0 (0)                 
+Belos: MinresSolMgr total solve time                     0 (0)           0 (0)            0 (0)            0 (0)                 
+Belos: Operation Op*x                                    7.2e-05 (2)     0.0001326 (2)    0.0005319 (2)    6.628e-05 (2)         
+Belos: Operation Prec*x                                  0 (0)           0 (0)            0 (0)            0 (0)                 
+Belos: PseudoBlockCGSolMgr total solve time              0 (0)           0 (0)            0 (0)            0 (0)                 
+Belos: PseudoBlockStochasticCGSolMgr total solve time    0.000196 (1)    0.0005481 (1)    0.0006678 (1)    0.0005481 (1)         
+Ifpack2::Chebyshev::apply                                0 (0)           0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::compute                              0 (0)           0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::initialize                           0 (0)           0 (0)            0 (0)            0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	PSEUDOBLOCK TFQMR	ILUT
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                               MinOverProcs      MeanOverProcs     MaxOverProcs      MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time                   0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: FixedPointSolMgr total solve time                 0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: MinresSolMgr total solve time                     0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: Operation Op*x                                    0.04055 (1312)    0.04317 (1312)    0.04486 (1312)    3.29e-05 (1312)       
+Belos: Operation Prec*x                                  0.02293 (1311)    0.02364 (1311)    0.02438 (1311)    1.803e-05 (1311)      
+Belos: PseudoBlockCGSolMgr total solve time              0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: PseudoBlockStochasticCGSolMgr total solve time    0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: PseudoBlockTFQMRSolMgr total solve time           0.2319 (1)        0.2319 (1)        0.2319 (1)        0.2319 (1)            
+Ifpack2::Chebyshev::apply                                0 (0)             0 (0)             0 (0)             0 (0)                 
+Ifpack2::Chebyshev::compute                              0 (0)             0 (0)             0 (0)             0 (0)                 
+--------------------------------------------------------------------------------------------------------------------------------------
+Ifpack2::Chebyshev::initialize                           0 (0)             0 (0)             0 (0)             0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	PSEUDOBLOCK TFQMR	RILUK
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                               MinOverProcs     MeanOverProcs    MaxOverProcs     MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time                   0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: FixedPointSolMgr total solve time                 0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: MinresSolMgr total solve time                     0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: Operation Op*x                                    0.0001543 (4)    0.0003123 (4)    0.000746 (4)     7.807e-05 (4)         
+Belos: Operation Prec*x                                  6.104e-05 (3)    6.288e-05 (3)    6.533e-05 (3)    2.096e-05 (3)         
+Belos: PseudoBlockCGSolMgr total solve time              0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: PseudoBlockStochasticCGSolMgr total solve time    0 (0)            0 (0)            0 (0)            0 (0)                 
+Belos: PseudoBlockTFQMRSolMgr total solve time           0.0006859 (1)    0.001103 (1)     0.00125 (1)      0.001103 (1)          
+Ifpack2::Chebyshev::apply                                0 (0)            0 (0)            0 (0)            0 (0)                 
+Ifpack2::Chebyshev::compute                              0 (0)            0 (0)            0 (0)            0 (0)                 
+--------------------------------------------------------------------------------------------------------------------------------------
+Ifpack2::Chebyshev::initialize                           0 (0)            0 (0)            0 (0)            0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	PSEUDOBLOCK TFQMR	RELAXATION
+======================================================================================================================================
+
+                                                TimeMonitor results over 8 processors
+
+Timer Name                                               MinOverProcs      MeanOverProcs     MaxOverProcs      MeanOverCallCounts    
+--------------------------------------------------------------------------------------------------------------------------------------
+Belos: BiCGStabSolMgr total solve time                   0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: FixedPointSolMgr total solve time                 0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: MinresSolMgr total solve time                     0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: Operation Op*x                                    0.2173 (7558)     0.2354 (7558)     0.245 (7558)      3.114e-05 (7558)      
+Belos: Operation Prec*x                                  0.02291 (7557)    0.02362 (7557)    0.02449 (7557)    3.125e-06 (7557)      
+Belos: PseudoBlockCGSolMgr total solve time              0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: PseudoBlockStochasticCGSolMgr total solve time    0 (0)             0 (0)             0 (0)             0 (0)                 
+Belos: PseudoBlockTFQMRSolMgr total solve time           1.171 (1)         1.171 (1)         1.171 (1)         1.171 (1)             
+Ifpack2::Chebyshev::apply                                0 (0)             0 (0)             0 (0)             0 (0)                 
+Ifpack2::Chebyshev::compute                              0 (0)             0 (0)             0 (0)             0 (0)                 
+--------------------------------------------------------------------------------------------------------------------------------------
+Ifpack2::Chebyshev::initialize                           0 (0)             0 (0)             0 (0)             0 (0)                 
+======================================================================================================================================
+
+Working on: saylr3.mtx	PSEUDOBLOCK TFQMR	CHEBYSHEV
+------------------------------------------------------
+Running PBS epilogue script    - 21-Feb-2017 11:25:46
+------------------------------------------------------
+Checking node smic251 (MS)
+Checking node smic251 ok
+------------------------------------------------------
+Concluding PBS epilogue script - 21-Feb-2017 11:25:49
+------------------------------------------------------
+Exit Status:     271
+Job ID:          212476.smic3
+Username:        pmotter
+Group:           xsede
+Job Name:        supermic_np8.sh
+Session Id:      44598
+Resource Limits: ncpus=1,neednodes=1:ppn=20,nodes=1:ppn=20,walltime=12:05:00
+Resources Used:  cput=00:00:00,mem=1268kb,vmem=20052kb,walltime=00:00:16
+Queue Used:      workq
+Account String:  TG-CCR160019
+Node:            smic251
+Process id:      45179
+------------------------------------------------------
