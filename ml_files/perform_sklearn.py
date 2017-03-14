@@ -421,8 +421,8 @@ def show_confusion_matrix(C, class_labels=['-1', '1']):
 
 def main():
     # Read files
-    processed_matrix_properties = pd.read_csv('processed_properties.csv', index_col=0)
-    processed_timings = pd.read_csv('processed_timings.csv', index_col=0)
+    processed_matrix_properties = pd.read_csv('../data/processed_properties.csv', index_col=0)
+    processed_timings = pd.read_csv('../data/bridges/bridges_processed_timings.csv', index_col=0)
 
     # Remove string-based cols
     processed_matrix_properties = processed_matrix_properties.drop('matrix', axis=1)
@@ -441,6 +441,7 @@ def main():
                               'symm_inf_norm', 'trace'], axis=1)
 
     combined = combined.drop_duplicates()
+    combined.to_csv('../data/bridges/bridges_combined')
     """
     train_and_test(combined, 1, 1)
     train_and_test(combined, 2, 2)
@@ -451,19 +452,22 @@ def main():
     train_and_test(combined, 12, 12)
     """
 
-    all = [1, 2, 4, 6, 8, 10, 12]
-    # compute_roc(combined, 1, 1)
-    # compute_roc(combined, 1, 12)
-    # compute_roc(combined, 12, 1)
-    # compute_roc(combined, 12, 12)
-    # compute_roc(combined, 1, [2,4,6,8,10,12])
-    compute_roc(combined, all, all)
-    compute_roc(combined, all, 1)
-    compute_roc(combined, all, 12)
-    # compute_roc(combined, 1, all)
-    # compute_roc(combined, 12, all)
+    #print(clf_name, smp_name, str(np_a), str(np_b), split, round(roc_auc, 3), round(wall_time, 3), sep=',')
 
-    # print(classification_report_imbalanced(y_test, pipeline.predict(X_test[split])))
+    # Print classifier, sampler, training_np, testing_np, which split, the auc, time to compute
+    """
+    all = [1, 2, 4, 6, 8, 10, 12]
+    compute_roc(combined, 1, 1)
+    #compute_roc(combined, 1, 12)
+    #compute_roc(combined, 12, 1)
+    #compute_roc(combined, 12, 12)
+    #compute_roc(combined, 1, [2,4,6,8,10,12])
+    #compute_roc(combined, all, all)
+    #compute_roc(combined, all, 1)
+    #compute_roc(combined, all, 12)
+    #compute_roc(combined, 1, all)
+    #compute_roc(combined, 12, all)
+    """
 
     # cnf = confusion_matrix(y_true=y_test[split], y_pred=pipeline.predict(X_test[split]))
     # show_confusion_matrix(cnf)
