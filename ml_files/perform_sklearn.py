@@ -289,10 +289,10 @@ def compute_roc(combined, np_a, np_b, system_name, graph=False):
                 roc_auc = auc(fpr, tpr)
                 wall_time = time.time() - start_time
                 if graph:
-                    plt.plot(fpr, tpr, label= system_name + 'ROC curve - %d (AUC = %0.3f)'
+                    plt.plot(fpr, tpr, label= 'ROC curve - %d (AUC = %0.3f)'
                                                        % (split, roc_auc))
                 total += roc_auc
-                print(clf_name, smp_name, str(np_a), str(np_b), split,
+                print(rystem_name, clf_name, smp_name, str(np_a), str(np_b), split,
                       round(roc_auc, 3), round(wall_time, 3), sep=',')
 
             avg = round(total / float(i_a), 3)
