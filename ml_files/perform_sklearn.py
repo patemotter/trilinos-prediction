@@ -223,7 +223,7 @@ def compute_metrics(clf_name, smp_name, y_test, y_pred):
     return my_str
 
 
-def compute_roc(combined, np_a, np_b, system_name, graph=False):
+def compute_roc(combined, np_a, np_b, system_name, output, graph=False):
     """Computes the roc and auc for each split in the two datasets.
     np_a is used as the training data, np_b is used as the testing data"""
     i_a = 0
@@ -292,11 +292,16 @@ def compute_roc(combined, np_a, np_b, system_name, graph=False):
                     plt.plot(fpr, tpr, label= 'ROC curve - %d (AUC = %0.3f)'
                                                        % (split, roc_auc))
                 total += roc_auc
-                print(rystem_name, clf_name, smp_name, str(np_a), str(np_b), split,
-                      round(roc_auc, 3), round(wall_time, 3), sep=',')
+                print(system_name, clf_name, smp_name, str(np_a), 
+                        str(np_b), split, round(roc_auc, 3), round(wall_time, 3), sep='\t')
+                output.write(system_name + '\t' + clf_name + '\t' + smp_name + '\t' + 
+                        str(np_a) + '\t' + str(np_b) + '\t' + str(split) + '\t' + 
+                        str(round(roc_auc, 3)) + '\t' + str(round(wall_time, 3)) + '\n') 
 
             avg = round(total / float(i_a), 3)
-            print(clf_name, smp_name, str(np_a), str(np_b), "avg", avg, sep=',')
+            print(system_name, clf_name, smp_name, str(np_a), str(np_b), "avg", avg, sep='\t')
+            output.write(system_name + '\t' + clf_name + '\t' + smp_name + '\t' + 
+                    str(np_a) + '\t' + str(np_b) + '\tavg\t' + str(avg) + '\n') 
 
             # Keep track of best results
             if avg > best_avg:
@@ -318,7 +323,9 @@ def compute_roc(combined, np_a, np_b, system_name, graph=False):
                             str(clf_name) + '_' + str(smp_name) + '_' + str(np_a) +
                             '_' + str(np_b) + '.svg', bbox_inches='tight')
                 plt.close()
-    print(best_classifier, best_sampler, np_a, np_b, "best_avg", best_avg, sep=',')
+    print(system_name, best_classifier, best_sampler, str(np_a), str(np_b), "best_avg", best_avg, sep='\t')
+    output.write(system_name + '\t' + best_classifier + '\t' +  best_sampler + '\t' + 
+            str(np_a) + '\t' + str(np_b)  + "\tbest_avg\t" + str(best_avg) + '\n')
 
 
 def show_confusion_matrix(C, class_labels=['-1', '1']):
@@ -424,7 +431,7 @@ def show_confusion_matrix(C, class_labels=['-1', '1']):
 
 def main():
     # Read files
-    name = "bridges"
+    name = "janus"
     loc = "../data/" + name + "/" + name
     processed_matrix_properties = pd.read_csv('../data/processed_properties.csv', index_col=0)
     processed_timings = pd.read_csv(loc + '_processed_timings.csv', header=0, index_col=0)
@@ -460,20 +467,27 @@ def main():
     # round(wall_time, 3), sep=',')
 
     # Print classifier, sampler, training_np, testing_np, which split, the auc, time to compute
-    np_all = [1, 4, 8, 12, 16, 20, 24, 28]
+    filename = name + '_roc-auc.csv'
+    output = open(filename, 'w')
+
+    #np_all = [1, 4, 8, 12, 16, 20, 24]
+    np_all = [1,2,4,6,8,10,12]
     np_max = np_all[-1]
     np_min = np_all[0]
-    compute_roc(combined, np_min, np_min,       name, True)
-    compute_roc(combined, np_min, np_max,       name, True)
-    compute_roc(combined, np_min, np_all[1:],   name, True)
-    compute_roc(combined, np_min, np_all,       name, True)
-    compute_roc(combined, np_max, np_min,       name, True)
-    compute_roc(combined, np_max, np_max,       name, True)
-    compute_roc(combined, np_max, np_all,       name, True)
-    compute_roc(combined, np_max, np_all[:-1],  name, True)
-    compute_roc(combined, np_all, np_all,       name, True)
-    compute_roc(combined, np_all, np_min,       name, True)
-    compute_roc(combined, np_all, np_max,       name, True)
+
+    compute_roc(combined, np_min, np_min,       name, output, True)
+    compute_roc(combined, np_min, np_max,       name, output, True)
+    compute_roc(combined, np_min, np_all[1:],   name, output, True)
+    compute_roc(combined, np_min, np_all,       name, output, True)
+    compute_roc(combined, np_max, np_min,       name, output, True)
+    compute_roc(combined, np_max, np_max,       name, output, True)
+    compute_roc(combined, np_max, np_all,       name, output, True)
+    compute_roc(combined, np_max, np_all[:-1],  name, output, True)
+    compute_roc(combined, np_all, np_all,       name, output, True)
+    compute_roc(combined, np_all, np_min,       name, output, True)
+    compute_roc(combined, np_all, np_max,       name, output, True)
+
+    output.close()
 
     # cnf = confusion_matrix(y_true=y_test[split], y_pred=pipeline.predict(X_test[split]))
     # show_confusion_matrix(cnf)

@@ -1,0 +1,187 @@
+bridges	GradientBoosting	SMOTE	1	1	0	0.753	3.223
+bridges	GradientBoosting	SMOTE	1	1	1	0.799	3.349
+bridges	GradientBoosting	SMOTE	1	1	2	0.786	3.1
+bridges	GradientBoosting	SMOTE	1	1	avg	0.779
+bridges	GradientBoosting	RandomOverSampler	1	1	0	0.768	2.458
+bridges	GradientBoosting	RandomOverSampler	1	1	1	0.79	2.439
+bridges	GradientBoosting	RandomOverSampler	1	1	2	0.776	2.415
+bridges	GradientBoosting	RandomOverSampler	1	1	avg	0.778
+bridges	RandomForest	SMOTE	1	1	0	0.513	0.441
+bridges	RandomForest	SMOTE	1	1	1	0.686	0.456
+bridges	RandomForest	SMOTE	1	1	2	0.694	0.434
+bridges	RandomForest	SMOTE	1	1	avg	0.631
+bridges	RandomForest	RandomOverSampler	1	1	0	0.602	0.192
+bridges	RandomForest	RandomOverSampler	1	1	1	0.697	0.191
+bridges	RandomForest	RandomOverSampler	1	1	2	0.669	0.169
+bridges	RandomForest	RandomOverSampler	1	1	avg	0.656
+bridges	GradientBoosting	SMOTE	1	1	best_avg	0.779
+bridges	GradientBoosting	SMOTE	1	28	0	0.75	3.199
+bridges	GradientBoosting	SMOTE	1	28	1	0.754	3.376
+bridges	GradientBoosting	SMOTE	1	28	2	0.753	3.127
+bridges	GradientBoosting	SMOTE	1	28	avg	0.753
+bridges	GradientBoosting	RandomOverSampler	1	28	0	0.748	2.594
+bridges	GradientBoosting	RandomOverSampler	1	28	1	0.713	2.582
+bridges	GradientBoosting	RandomOverSampler	1	28	2	0.764	2.551
+bridges	GradientBoosting	RandomOverSampler	1	28	avg	0.742
+bridges	RandomForest	SMOTE	1	28	0	0.498	0.447
+bridges	RandomForest	SMOTE	1	28	1	0.579	0.46
+bridges	RandomForest	SMOTE	1	28	2	0.697	0.413
+bridges	RandomForest	SMOTE	1	28	avg	0.591
+bridges	RandomForest	RandomOverSampler	1	28	0	0.55	0.196
+bridges	RandomForest	RandomOverSampler	1	28	1	0.608	0.188
+bridges	RandomForest	RandomOverSampler	1	28	2	0.596	0.186
+bridges	RandomForest	RandomOverSampler	1	28	avg	0.585
+bridges	GradientBoosting	SMOTE	1	28	best_avg	0.753
+bridges	GradientBoosting	SMOTE	1	[4, 8, 12, 16, 20, 24, 28]	0	0.825	3.254
+bridges	GradientBoosting	SMOTE	1	[4, 8, 12, 16, 20, 24, 28]	1	0.832	3.429
+bridges	GradientBoosting	SMOTE	1	[4, 8, 12, 16, 20, 24, 28]	2	0.832	3.224
+bridges	GradientBoosting	SMOTE	1	[4, 8, 12, 16, 20, 24, 28]	avg	0.829
+bridges	GradientBoosting	RandomOverSampler	1	[4, 8, 12, 16, 20, 24, 28]	0	0.843	2.677
+bridges	GradientBoosting	RandomOverSampler	1	[4, 8, 12, 16, 20, 24, 28]	1	0.843	2.59
+bridges	GradientBoosting	RandomOverSampler	1	[4, 8, 12, 16, 20, 24, 28]	2	0.834	2.53
+bridges	GradientBoosting	RandomOverSampler	1	[4, 8, 12, 16, 20, 24, 28]	avg	0.84
+bridges	RandomForest	SMOTE	1	[4, 8, 12, 16, 20, 24, 28]	0	0.729	0.48
+bridges	RandomForest	SMOTE	1	[4, 8, 12, 16, 20, 24, 28]	1	0.761	0.516
+bridges	RandomForest	SMOTE	1	[4, 8, 12, 16, 20, 24, 28]	2	0.773	0.463
+bridges	RandomForest	SMOTE	1	[4, 8, 12, 16, 20, 24, 28]	avg	0.754
+bridges	RandomForest	RandomOverSampler	1	[4, 8, 12, 16, 20, 24, 28]	0	0.764	0.224
+bridges	RandomForest	RandomOverSampler	1	[4, 8, 12, 16, 20, 24, 28]	1	0.784	0.233
+bridges	RandomForest	RandomOverSampler	1	[4, 8, 12, 16, 20, 24, 28]	2	0.78	0.218
+bridges	RandomForest	RandomOverSampler	1	[4, 8, 12, 16, 20, 24, 28]	avg	0.776
+bridges	GradientBoosting	RandomOverSampler	1	[4, 8, 12, 16, 20, 24, 28]	best_avg	0.84
+bridges	GradientBoosting	SMOTE	1	[1, 4, 8, 12, 16, 20, 24, 28]	0	0.849	3.226
+bridges	GradientBoosting	SMOTE	1	[1, 4, 8, 12, 16, 20, 24, 28]	1	0.862	3.41
+bridges	GradientBoosting	SMOTE	1	[1, 4, 8, 12, 16, 20, 24, 28]	2	0.831	3.152
+bridges	GradientBoosting	SMOTE	1	[1, 4, 8, 12, 16, 20, 24, 28]	avg	0.847
+bridges	GradientBoosting	RandomOverSampler	1	[1, 4, 8, 12, 16, 20, 24, 28]	0	0.862	2.65
+bridges	GradientBoosting	RandomOverSampler	1	[1, 4, 8, 12, 16, 20, 24, 28]	1	0.872	2.668
+bridges	GradientBoosting	RandomOverSampler	1	[1, 4, 8, 12, 16, 20, 24, 28]	2	0.837	2.611
+bridges	GradientBoosting	RandomOverSampler	1	[1, 4, 8, 12, 16, 20, 24, 28]	avg	0.857
+bridges	RandomForest	SMOTE	1	[1, 4, 8, 12, 16, 20, 24, 28]	0	0.796	0.491
+bridges	RandomForest	SMOTE	1	[1, 4, 8, 12, 16, 20, 24, 28]	1	0.827	0.521
+bridges	RandomForest	SMOTE	1	[1, 4, 8, 12, 16, 20, 24, 28]	2	0.803	0.473
+bridges	RandomForest	SMOTE	1	[1, 4, 8, 12, 16, 20, 24, 28]	avg	0.809
+bridges	RandomForest	RandomOverSampler	1	[1, 4, 8, 12, 16, 20, 24, 28]	0	0.809	0.232
+bridges	RandomForest	RandomOverSampler	1	[1, 4, 8, 12, 16, 20, 24, 28]	1	0.831	0.233
+bridges	RandomForest	RandomOverSampler	1	[1, 4, 8, 12, 16, 20, 24, 28]	2	0.806	0.226
+bridges	RandomForest	RandomOverSampler	1	[1, 4, 8, 12, 16, 20, 24, 28]	avg	0.815
+bridges	GradientBoosting	RandomOverSampler	1	[1, 4, 8, 12, 16, 20, 24, 28]	best_avg	0.857
+bridges	GradientBoosting	SMOTE	28	1	0	0.768	3.178
+bridges	GradientBoosting	SMOTE	28	1	1	0.804	3.326
+bridges	GradientBoosting	SMOTE	28	1	2	0.744	3.161
+bridges	GradientBoosting	SMOTE	28	1	avg	0.772
+bridges	GradientBoosting	RandomOverSampler	28	1	0	0.76	2.554
+bridges	GradientBoosting	RandomOverSampler	28	1	1	0.765	2.559
+bridges	GradientBoosting	RandomOverSampler	28	1	2	0.781	2.536
+bridges	GradientBoosting	RandomOverSampler	28	1	avg	0.768
+bridges	RandomForest	SMOTE	28	1	0	0.47	0.449
+bridges	RandomForest	SMOTE	28	1	1	0.68	0.522
+bridges	RandomForest	SMOTE	28	1	2	0.72	0.466
+bridges	RandomForest	SMOTE	28	1	avg	0.624
+bridges	RandomForest	RandomOverSampler	28	1	0	0.534	0.206
+bridges	RandomForest	RandomOverSampler	28	1	1	0.612	0.219
+bridges	RandomForest	RandomOverSampler	28	1	2	0.701	0.214
+bridges	RandomForest	RandomOverSampler	28	1	avg	0.616
+bridges	GradientBoosting	SMOTE	28	1	best_avg	0.772
+bridges	GradientBoosting	SMOTE	28	28	0	0.793	3.257
+bridges	GradientBoosting	SMOTE	28	28	1	0.813	3.355
+bridges	GradientBoosting	SMOTE	28	28	2	0.757	3.104
+bridges	GradientBoosting	SMOTE	28	28	avg	0.788
+bridges	GradientBoosting	RandomOverSampler	28	28	0	0.787	2.508
+bridges	GradientBoosting	RandomOverSampler	28	28	1	0.782	2.599
+bridges	GradientBoosting	RandomOverSampler	28	28	2	0.803	2.586
+bridges	GradientBoosting	RandomOverSampler	28	28	avg	0.791
+bridges	RandomForest	SMOTE	28	28	0	0.55	0.454
+bridges	RandomForest	SMOTE	28	28	1	0.665	0.472
+bridges	RandomForest	SMOTE	28	28	2	0.733	0.437
+bridges	RandomForest	SMOTE	28	28	avg	0.649
+bridges	RandomForest	RandomOverSampler	28	28	0	0.581	0.209
+bridges	RandomForest	RandomOverSampler	28	28	1	0.593	0.199
+bridges	RandomForest	RandomOverSampler	28	28	2	0.692	0.199
+bridges	RandomForest	RandomOverSampler	28	28	avg	0.622
+bridges	GradientBoosting	RandomOverSampler	28	28	best_avg	0.791
+bridges	GradientBoosting	SMOTE	28	[1, 4, 8, 12, 16, 20, 24, 28]	0	0.853	3.257
+bridges	GradientBoosting	SMOTE	28	[1, 4, 8, 12, 16, 20, 24, 28]	1	0.881	3.339
+bridges	GradientBoosting	SMOTE	28	[1, 4, 8, 12, 16, 20, 24, 28]	2	0.853	3.171
+bridges	GradientBoosting	SMOTE	28	[1, 4, 8, 12, 16, 20, 24, 28]	avg	0.862
+bridges	GradientBoosting	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24, 28]	0	0.869	2.58
+bridges	GradientBoosting	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24, 28]	1	0.908	2.589
+bridges	GradientBoosting	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24, 28]	2	0.888	2.598
+bridges	GradientBoosting	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24, 28]	avg	0.889
+bridges	RandomForest	SMOTE	28	[1, 4, 8, 12, 16, 20, 24, 28]	0	0.792	0.494
+bridges	RandomForest	SMOTE	28	[1, 4, 8, 12, 16, 20, 24, 28]	1	0.89	0.51
+bridges	RandomForest	SMOTE	28	[1, 4, 8, 12, 16, 20, 24, 28]	2	0.872	0.526
+bridges	RandomForest	SMOTE	28	[1, 4, 8, 12, 16, 20, 24, 28]	avg	0.851
+bridges	RandomForest	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24, 28]	0	0.838	0.246
+bridges	RandomForest	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24, 28]	1	0.904	0.232
+bridges	RandomForest	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24, 28]	2	0.895	0.236
+bridges	RandomForest	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24, 28]	avg	0.879
+bridges	GradientBoosting	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24, 28]	best_avg	0.889
+bridges	GradientBoosting	SMOTE	28	[1, 4, 8, 12, 16, 20, 24]	0	0.848	3.211
+bridges	GradientBoosting	SMOTE	28	[1, 4, 8, 12, 16, 20, 24]	1	0.86	3.328
+bridges	GradientBoosting	SMOTE	28	[1, 4, 8, 12, 16, 20, 24]	2	0.846	3.128
+bridges	GradientBoosting	SMOTE	28	[1, 4, 8, 12, 16, 20, 24]	avg	0.851
+bridges	GradientBoosting	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24]	0	0.861	2.591
+bridges	GradientBoosting	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24]	1	0.887	2.613
+bridges	GradientBoosting	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24]	2	0.888	2.559
+bridges	GradientBoosting	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24]	avg	0.879
+bridges	RandomForest	SMOTE	28	[1, 4, 8, 12, 16, 20, 24]	0	0.773	0.503
+bridges	RandomForest	SMOTE	28	[1, 4, 8, 12, 16, 20, 24]	1	0.817	0.489
+bridges	RandomForest	SMOTE	28	[1, 4, 8, 12, 16, 20, 24]	2	0.852	0.474
+bridges	RandomForest	SMOTE	28	[1, 4, 8, 12, 16, 20, 24]	avg	0.814
+bridges	RandomForest	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24]	0	0.815	0.24
+bridges	RandomForest	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24]	1	0.867	0.226
+bridges	RandomForest	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24]	2	0.89	0.232
+bridges	RandomForest	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24]	avg	0.857
+bridges	GradientBoosting	RandomOverSampler	28	[1, 4, 8, 12, 16, 20, 24]	best_avg	0.879
+bridges	GradientBoosting	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	[1, 4, 8, 12, 16, 20, 24, 28]	0	0.895	38.846
+bridges	GradientBoosting	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	[1, 4, 8, 12, 16, 20, 24, 28]	1	0.863	39.935
+bridges	GradientBoosting	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	[1, 4, 8, 12, 16, 20, 24, 28]	2	0.881	38.432
+bridges	GradientBoosting	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	[1, 4, 8, 12, 16, 20, 24, 28]	avg	0.88
+bridges	GradientBoosting	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	[1, 4, 8, 12, 16, 20, 24, 28]	0	0.898	35.815
+bridges	GradientBoosting	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	[1, 4, 8, 12, 16, 20, 24, 28]	1	0.924	35.141
+bridges	GradientBoosting	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	[1, 4, 8, 12, 16, 20, 24, 28]	2	0.9	36.225
+bridges	GradientBoosting	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	[1, 4, 8, 12, 16, 20, 24, 28]	avg	0.907
+bridges	RandomForest	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	[1, 4, 8, 12, 16, 20, 24, 28]	0	0.711	4.026
+bridges	RandomForest	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	[1, 4, 8, 12, 16, 20, 24, 28]	1	0.898	3.888
+bridges	RandomForest	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	[1, 4, 8, 12, 16, 20, 24, 28]	2	0.912	3.959
+bridges	RandomForest	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	[1, 4, 8, 12, 16, 20, 24, 28]	avg	0.84
+bridges	RandomForest	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	[1, 4, 8, 12, 16, 20, 24, 28]	0	0.787	2.504
+bridges	RandomForest	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	[1, 4, 8, 12, 16, 20, 24, 28]	1	0.858	2.544
+bridges	RandomForest	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	[1, 4, 8, 12, 16, 20, 24, 28]	2	0.928	2.435
+bridges	RandomForest	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	[1, 4, 8, 12, 16, 20, 24, 28]	avg	0.858
+bridges	GradientBoosting	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	[1, 4, 8, 12, 16, 20, 24, 28]	best_avg	0.907
+bridges	GradientBoosting	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	1	0	0.94	39.704
+bridges	GradientBoosting	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	1	1	0.912	39.881
+bridges	GradientBoosting	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	1	2	0.891	39.979
+bridges	GradientBoosting	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	1	avg	0.914
+bridges	GradientBoosting	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	1	0	0.952	35.836
+bridges	GradientBoosting	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	1	1	0.932	36.326
+bridges	GradientBoosting	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	1	2	0.921	36.586
+bridges	GradientBoosting	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	1	avg	0.935
+bridges	RandomForest	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	1	0	0.871	4.201
+bridges	RandomForest	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	1	1	0.97	4.083
+bridges	RandomForest	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	1	2	0.982	3.859
+bridges	RandomForest	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	1	avg	0.941
+bridges	RandomForest	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	1	0	0.889	2.361
+bridges	RandomForest	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	1	1	0.975	2.377
+bridges	RandomForest	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	1	2	0.983	2.383
+bridges	RandomForest	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	1	avg	0.949
+bridges	RandomForest	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	1	best_avg	0.949
+bridges	GradientBoosting	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	28	0	0.931	38.084
+bridges	GradientBoosting	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	28	1	0.887	38.423
+bridges	GradientBoosting	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	28	2	0.867	48.491
+bridges	GradientBoosting	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	28	avg	0.895
+bridges	GradientBoosting	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	28	0	0.962	40.448
+bridges	GradientBoosting	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	28	1	0.913	39.139
+bridges	GradientBoosting	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	28	2	0.888	49.54
+bridges	GradientBoosting	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	28	avg	0.921
+bridges	RandomForest	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	28	0	0.989	4.901
+bridges	RandomForest	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	28	1	0.944	4.702
+bridges	RandomForest	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	28	2	0.949	4.58
+bridges	RandomForest	SMOTE	[1, 4, 8, 12, 16, 20, 24, 28]	28	avg	0.961
+bridges	RandomForest	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	28	0	0.988	3.067
+bridges	RandomForest	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	28	1	0.962	2.942
+bridges	RandomForest	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	28	2	0.952	2.994
+bridges	RandomForest	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	28	avg	0.967
+bridges	RandomForest	RandomOverSampler	[1, 4, 8, 12, 16, 20, 24, 28]	28	best_avg	0.967
