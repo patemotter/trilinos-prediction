@@ -223,7 +223,7 @@ def compute_metrics(clf_name, smp_name, y_test, y_pred):
     return my_str
 
 
-def compute_roc(combined, np_a, np_b, system_name, output, graph=False):
+def compute_roc(combined, np_a, system_a, np_b, system_b, output, graph=False):
     """Computes the roc and auc for each split in the two datasets.
     np_a is used as the training data, np_b is used as the testing data"""
     i_a = 0
@@ -234,16 +234,62 @@ def compute_roc(combined, np_a, np_b, system_name, output, graph=False):
 
     # Create two data frames (a,b) which each contain the datasets for their np number
     a = pd.DataFrame()
+    b = pd.DataFrame()
+
+    # process np first
     if type(np_a) == str and np_a == "all":
-        a = combined[(combined.np != np_a)]
+        a = combined
     elif type(np_a) == int:
         a = combined[(combined.np == np_a)]
     elif type(np_a) == list:
         for num in np_a:
             a = a.append(combined[(combined.np == num)], ignore_index=True)
+
+    if type(np_b) == str and np_b == "all":
+        b = combined
+    elif type(np_b) == int:
+        b = combined[(combined.np == np_b)]
+    elif type(np_b) == list:
+        for num in np_b:
+            b = b.append(combined[(combined.np == num)], ignore_index=True)
+
+
+    # now process systems
+    if type(system_a) == str and system_a == "all":
+        a = a
+    elif type(system_a) == int:
+        a = a[(a.system_id == system_a)]
+    elif type(system_a) == list:
+        temp = pd.DataFrame()
+        for num in system_a:
+            temp = temp.append(a[(a.system_id == num)], ignore_index=True)
+        a = temp
+
+    if type(system_b) == str and system_b == "all":
+        b = b
+    elif type(system_b) == int:
+        b = b[(b.system_id == system_b)]
+    elif type(system_b) == list:
+        temp = pd.DataFrame()
+        for num in system_b:
+            temp = temp.append(b[(b.system_id == num)], ignore_index=True)
+        b = temp
+
+
     # Set training data to everything but last col, test data is last col
+    a_col_list = list(a.columns)
+    if a_col_list[-1] != "good_or_bad":
+        raise ValueError('Last element in "a" is not good_or_bad')
     X_a = a.iloc[:, :-2]
     y_a = a.iloc[:, -1]
+
+    b_col_list = list(b.columns)
+    if b_col_list[-1] != "good_or_bad":
+        raise ValueError('Last element in "b" is not good_or_bad')
+    X_b = b.iloc[:, :-2]
+    y_b = b.iloc[:, -1]
+
+
     # Create splits in data using stratified k-fold
     for train_index, test_index in skf.split(X_a, y_a):
         X_a_train.append(X_a.values[train_index])
@@ -252,17 +298,6 @@ def compute_roc(combined, np_a, np_b, system_name, output, graph=False):
         y_a_test.append(y_a.values[test_index])
         i_a += 1
 
-    # Repeat for the second set of data
-    b = pd.DataFrame()
-    if type(np_b) == str and np_b == "all":
-        b = combined[(combined.np != np_b)]
-    elif type(np_b) == int:
-        b = combined[(combined.np == np_b)]
-    elif type(np_b) == list:
-        for num in np_b:
-            b = b.append(combined[(combined.np == num)], ignore_index=True)
-    X_b = b.iloc[:, :-2]
-    y_b = b.iloc[:, -1]
     for train_index, test_index in skf.split(X_b, y_b):
         X_b_train.append(X_b.values[train_index])
         X_b_test.append(X_b.values[test_index])
@@ -282,8 +317,12 @@ def compute_roc(combined, np_a, np_b, system_name, output, graph=False):
             for split in range(0, i_a):
                 start_time = time.time()
                 # Fit model to a's training data and attempt to predict b's test data
-                y_b_score = pipeline.fit(X_a_train[split],
-                                         y_a_train[split]).predict_proba(X_b_test[split])[:, 1]
+                pate1 = X_a_train[split]
+                pate2 = y_a_train[split]
+                pate3 = X_b_test[split]
+                y_b_score = pipeline.fit(pate1, pate2)
+                y_b_score =y_b_score.predict_proba(pate3)
+                y_b_score = y_b_score[:, 1]
                 # Compute ROC curve and ROC area for each class
                 fpr, tpr, _ = roc_curve(y_b_test[split], y_b_score)
                 roc_auc = auc(fpr, tpr)
@@ -292,16 +331,16 @@ def compute_roc(combined, np_a, np_b, system_name, output, graph=False):
                     plt.plot(fpr, tpr, label= 'ROC curve - %d (AUC = %0.3f)'
                                                        % (split, roc_auc))
                 total += roc_auc
-                print(system_name, clf_name, smp_name, str(np_a), 
-                        str(np_b), split, round(roc_auc, 3), round(wall_time, 3), sep='\t')
-                output.write(system_name + '\t' + clf_name + '\t' + smp_name + '\t' + 
-                        str(np_a) + '\t' + str(np_b) + '\t' + str(split) + '\t' + 
-                        str(round(roc_auc, 3)) + '\t' + str(round(wall_time, 3)) + '\n') 
+                print(str(system_a), str(np_a), str(system_b), str(np_b), clf_name, smp_name,
+                        split, round(roc_auc, 3), round(wall_time, 3), sep='\t')
+                output.write(str(system_a) + '\t' + str(np_a) + '\t' + str(system_b) + '\t' + str(np_b) + '\t' +
+                             clf_name + '\t' + smp_name + '\t' + str(split) + '\t' + str(round(roc_auc, 3)) +
+                             '\t' + str(round(wall_time, 3)) + '\n')
 
             avg = round(total / float(i_a), 3)
-            print(system_name, clf_name, smp_name, str(np_a), str(np_b), "avg", avg, sep='\t')
-            output.write(system_name + '\t' + clf_name + '\t' + smp_name + '\t' + 
-                    str(np_a) + '\t' + str(np_b) + '\tavg\t' + str(avg) + '\n') 
+            print(str(system_a), str(np_a), str(system_b), str(np_b), clf_name, smp_name, "avg", avg, sep='\t')
+            output.write(str(system_a) + '\t' + str(np_a) + '\t' + str(system_b) + '\t' + str(np_b) + '\t' +
+                         clf_name + '\t' + smp_name + '\t' + 'avg' + '\t' + str(avg) + '\n')
 
             # Keep track of best results
             if avg > best_avg:
@@ -319,13 +358,13 @@ def compute_roc(combined, np_a, np_b, system_name, output, graph=False):
                 plt.title('ROC Curve ' + str(clf_name) + " + " + str(smp_name) + "\n" +
                           "Train: " + str(np_a) + "   Test: " + str(np_b))
                 plt.legend(loc="lower right")
-                plt.savefig('../data/' + system_name + '/roc_curves/' + system_name + '_' +
-                            str(clf_name) + '_' + str(smp_name) + '_' + str(np_a) +
-                            '_' + str(np_b) + '.svg', bbox_inches='tight')
+                plt.savefig('../data/roc_curves/' + str(system_a) + '_' + str(np_a) + '_' + str(system_b) + '_' +
+                            str(np_b) + '_' + str(clf_name) + '_' +
+                            str(smp_name) + '.svg', bbox_inches='tight')
                 plt.close()
-    print(system_name, best_classifier, best_sampler, str(np_a), str(np_b), "best_avg", best_avg, sep='\t')
-    output.write(system_name + '\t' + best_classifier + '\t' +  best_sampler + '\t' + 
-            str(np_a) + '\t' + str(np_b)  + "\tbest_avg\t" + str(best_avg) + '\n')
+    print(str(system_a), str(np_a), str(system_b), str(np_b), best_classifier, best_sampler, "best_avg", best_avg, sep='\t')
+    output.write(str(system_a) + '\t' + str(np_a) + '\t' + str(system_b) + '\t' + str(np_b) + '\t' + best_classifier + '\t' +
+                 best_sampler + "\tbest_avg\t" + str(best_avg) + '\n')
 
 
 def show_confusion_matrix(C, class_labels=['-1', '1']):
@@ -430,52 +469,64 @@ def show_confusion_matrix(C, class_labels=['-1', '1']):
 
 
 def main():
-    # Read files
-    name = "janus"
-    loc = "../data/" + name + "/" + name
-    processed_matrix_properties = pd.read_csv('../data/processed_properties.csv', index_col=0)
-    processed_timings = pd.read_csv(loc + '_processed_timings.csv', header=0, index_col=0)
+    # Read in and process properties
+    properties_file = '../data/processed_properties.csv'
+    properties = pd.read_csv(properties_file, header=0, index_col=0)
 
-    # Remove string-based cols
-    processed_matrix_properties = processed_matrix_properties.drop('matrix', axis=1)
-    processed_timings = processed_timings.drop('matrix', axis=1)
-    combined = pd.merge(processed_matrix_properties, processed_timings, on='matrix_id')
-
-    # Dropping details that would not be known via testing
-    combined = combined.drop(['new_time', 'matrix_id', 'status_id'], axis=1)
-
-    # Dropping features that were rejected from Pandas-Profile
-    combined = combined.drop(['abs_trace', 'antisymm_frob_norm', 'antisymm_inf_norm',
+    properties = properties.drop(['abs_trace', 'antisymm_frob_norm', 'antisymm_inf_norm',
                               'col_diag_dom', 'col_log_val_spread', 'col_var',
                               'cols', 'diag_avg', 'diag_nnz', 'diag_var', 'frob_norm',
                               'inf_norm', 'min_nnz_row.1', 'nnz_pattern_symm_1',
                               'nnz_pattern_symm_2', 'one_norm', 'symm', 'symm_frob_norm',
                               'symm_inf_norm', 'trace'], axis=1)
 
+
+    # Read in and process system timings
+    janus_timefile = '../data/janus/janus_processed_timings.csv'
+    bridges_timefile = '../data/bridges/bridges_processed_timings.csv'
+    comet_timefile = '../data/comet/comet_processed_timings.csv'
+
+    janus_times = pd.read_csv(janus_timefile, header=0, index_col=0)
+    bridges_times = pd.read_csv(bridges_timefile, header=0, index_col=0)
+    comet_times = pd.read_csv(comet_timefile, header=0, index_col=0)
+    times = [janus_times, bridges_times, comet_times]
+    combined_times = pd.concat(times)
+    combined_times.columns = ['system_id', 'np', 'matrix_str', 'matrix_id', 'solver_id', 
+                           'prec_id', 'status_id', 'new_time', 'good_or_bad']
+
+    # Combine properties and timings
+    combined_times = combined_times.dropna()
+    combined = pd.merge(properties, combined_times, on='matrix_id')
+    combined = combined.drop(labels=['matrix','matrix_str',
+        'matrix_id', 'status_id', 'new_time'], axis=1)
     combined = combined.drop_duplicates()
-    """
-    train_and_test(combined, 1, 1)
-    train_and_test(combined, 2, 2)
-    train_and_test(combined, 4, 4)
-    train_and_test(combined, 6, 6)
-    train_and_test(combined, 8, 8)
-    train_and_test(combined, 10, 10)
-    train_and_test(combined, 12, 12)
-    """
+
+    #train_and_test(combined, 1, 1)
 
     #print(clf_name, smp_name, str(np_a), str(np_b), split, round(roc_auc, 3),
     # round(wall_time, 3), sep=',')
 
     # Print classifier, sampler, training_np, testing_np, which split, the auc, time to compute
-    filename = name + '_roc-auc.csv'
-    output = open(filename, 'w')
 
     #np_all = [1, 4, 8, 12, 16, 20, 24]
-    np_all = [1,2,4,6,8,10,12]
-    np_max = np_all[-1]
-    np_min = np_all[0]
+    #np_all = [1,2,4,6,8,10,12]
+    #np_max = np_all[-1]
+    #np_min = np_all[0]
 
-    compute_roc(combined, np_min, np_min,       name, output, True)
+    # E.g. see how single threaded on Janus performs on 24 cores of Comet
+    # see how all 1-12 cores on janus predict single threaded comet, etc.
+    # Combined_df, system_a, np_a, system_b, np_b, output(?), True (to plot)
+
+    #'janus': 0, 'bridges': 1, 'comet': 2
+    np_a = 1
+    system_a = 0
+    np_b = "all"
+    system_b = 2
+    filename = str(system_a) + '_' + str(np_a) + '_' + str(system_b) + '_' + str(np_b) + '_roc-auc.csv'
+    output = open(filename, 'w')
+    compute_roc(combined, np_a, system_a, np_b, system_b, output, True)
+
+    """
     compute_roc(combined, np_min, np_max,       name, output, True)
     compute_roc(combined, np_min, np_all[1:],   name, output, True)
     compute_roc(combined, np_min, np_all,       name, output, True)
@@ -486,7 +537,7 @@ def main():
     compute_roc(combined, np_all, np_all,       name, output, True)
     compute_roc(combined, np_all, np_min,       name, output, True)
     compute_roc(combined, np_all, np_max,       name, output, True)
-
+    """
     output.close()
 
     # cnf = confusion_matrix(y_true=y_test[split], y_pred=pipeline.predict(X_test[split]))
