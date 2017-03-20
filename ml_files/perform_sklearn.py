@@ -224,18 +224,15 @@ def compute_metrics(clf_name, smp_name, y_test, y_pred):
     return my_str
 
 
-def compute_roc(combined, numprocs_a, system_a, numprocs_b, system_b, output, graph=False):
+def compute_roc(a, numprocs_a, system_a, b, numprocs_b, system_b, output, graph=False):
     """Computes the roc and auc for each split in the two datasets.
     np_a is used as the training data, np_b is used as the testing data"""
+    a.to_csv('./pate_test.csv')
     i_a = 0
     X_a_train, X_a_test = [], []
     X_b_train, X_b_test = [], []
     y_a_train, y_a_test = [], []
     y_b_train, y_b_test = [], []
-
-    # Create two data frames (a,b) which each contain the datasets for their np number
-    a = pd.DataFrame()
-    b = pd.DataFrame()
 
     # Set training data to everything but last col, test data is last col
     a_col_list = list(a.columns)
@@ -280,6 +277,12 @@ def compute_roc(combined, numprocs_a, system_a, numprocs_b, system_b, output, gr
                 pate1 = X_a_train[split]
                 pate2 = y_a_train[split]
                 pate3 = X_b_test[split]
+
+                brap1 = pd.DataFrame(pate1)
+                brap2 = pd.DataFrame(pate2)
+                brap1.to_csv('brap1.csv')
+                brap2.to_csv('brap2.csv')
+
                 y_b_score = pipeline.fit(pate1, pate2)
                 y_b_score = y_b_score.predict_proba(pate3)
                 y_b_score = y_b_score[:, 1]
@@ -441,6 +444,7 @@ def remove_bad_properties(properties):
 
 def classify_good_bad(combined, numprocs, system):
     # process np first
+    combined.to_csv('test1.csv')
     if type(numprocs) == str and numprocs == "all":
         a = combined
     elif type(numprocs) == int:
@@ -460,6 +464,7 @@ def classify_good_bad(combined, numprocs, system):
             temp = temp.append(a[(a.system_id == num)], ignore_index=True)
         a = temp
 
+    a.to_csv('test2.csv')
     # Determine the best times for each matrix
     good_bad_list = []
     new_time_list = []
@@ -471,9 +476,10 @@ def classify_good_bad(combined, numprocs, system):
         matrix_name = row['matrix_id']
 
         # Check for matrices which never converged
-        try:
+
+        if matrix_name in best_times:
             matrix_min_time = best_times[matrix_name][1]  # 1 indicates converged
-        except:
+        else:
             matrix_min_time = np.inf
 
         # Error or unconverged runs = max float time
@@ -494,8 +500,8 @@ def classify_good_bad(combined, numprocs, system):
     new_time_series = pd.Series(new_time_list)
 
     # Add the series to the dataframe as columns
-    a = a.assign(good_or_bad=pd.Series(good_bad_series))
     a = a.assign(new_time=pd.Series(new_time_series))
+    a = a.assign(good_or_bad=pd.Series(good_bad_series))
     return a
 
 
@@ -520,26 +526,9 @@ def main():
     #combined_times.columns = ['system_id', 'np', 'matrix_str', 'matrix_id', 'solver_id',
     #                          'prec_id', 'status_id', 'new_time', 'good_or_bad']
 
-    combined_times = combined_times.drop(labels=['new_time', 'good_or_bad'], axis=1)
-    combined_times = combined_times.dropna()
+    combined_times = combined_times.drop(labels=['system', 'matrix', 'solver', 'prec', 'status',
+                                                 'new_time', 'good_or_bad', 'resid'], axis=1)
     combined_times = combined_times.drop_duplicates()
-
-    # Decide what params to compare to each other
-    numprocs_a = 1
-    system_a = 0
-    numprocs_b = "all"
-    system_b = 2
-
-    # Create good/bad designation for times depending on the params used
-    a = classify_good_bad(combined_times, numprocs_a, system_a)
-    b = classify_good_bad(combined_times, numprocs_b, system_b)
-
-    # Combine properties and timings
-    a = pd.merge(properties, a, on='matrix_id')
-    b = pd.merge(properties, b, on='matrix_id')
-
-
-
 
     # Systems: 'janus': 0, 'bridges': 1, 'comet': 2
     # Solvers: FIXED_POINT': 0, 'BICGSTAB': 1, 'MINRES': 2, 'PSEUDOBLOCK_CG': 3, 'PSEUDOBLOCK_STOCHASTIC_CG': 4,
@@ -547,13 +536,35 @@ def main():
     # Preconditioners: 'ILUT': 0, 'RILUK': 1, 'RELAXATION': 2, 'CHEBYSHEV': 3, 'NONE': 4
     # Status: 'error': -1, 'unconverged': 0, 'converged': 1
 
+    # Decide what params to compare to each other
+    numprocs_a = 1
+    system_a = 0
+    numprocs_b = 1
+    system_b = 0
 
+    # Create good/bad designation for times depending on the params used
+    a = classify_good_bad(combined_times, numprocs_a, system_a)
+    b = classify_good_bad(combined_times, numprocs_b, system_b)
+    strA = str(numprocs_a) + '_' + str(system_a) + '.csv'
+    strB = str(numprocs_b) + '_' + str(system_b) + '.csv'
+    a.to_csv(strA)
+    b.to_csv(strB)
 
+    # Combine properties and timings
+    a = pd.merge(properties, a, on='matrix_id')
+    b = pd.merge(properties, b, on='matrix_id')
+
+    # Compute the prediction ROC
+    filename = str(system_a) + '_' + str(numprocs_a) + '_' + str(system_b) + '_' + str(numprocs_b) + '_roc-auc.csv'
+    output = open(filename, 'w')
+    a = b.dropna()
+    b = b.dropna()
+    a = a.drop(labels=['matrix', 'status_id', 'time', 'new_time', 'matrix_id'], axis=1)
+    b = b.drop(labels=['matrix', 'status_id', 'time', 'new_time', 'matrix_id'], axis=1)
+    compute_roc(a, numprocs_a, system_a, b, numprocs_b, system_b, output, True)
 
     #combined = combined.drop(labels=['matrix', 'matrix_str', 'status_id', 'matrix_id'], axis=1)
 
-    #filename = str(system_a) + '_' + str(np_a) + '_' + str(system_b) + '_' + str(np_b) + '_roc-auc.csv'
-    #output = open(filename, 'w')
     #compute_roc(combined, np_a, system_a, np_b, system_b, output, True)
 
     """
