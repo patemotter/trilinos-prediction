@@ -87,7 +87,7 @@ all_timing_data = all_timing_data.assign(new_time=pd.Series(new_time_series))
 all_timing_data = all_timing_data.assign(matrix_id=pd.Series(name_hash_series))
 
 # Select which columns to keep and output to file
-cleaned_timing_data = all_timing_data[['system_id', 'np', 'matrix', 'matrix_id', 'solver_id', 'prec_id',
+cleaned_timing_data = all_timing_data[['system_id', 'numprocs', 'matrix', 'matrix_id', 'solver_id', 'prec_id',
                                        'status_id', 'new_time', 'good_or_bad']]
 cleaned_timing_data.to_csv('janus_processed_timings.csv')
 all_timing_data.to_csv('janus_unprocessed_timings.csv')
