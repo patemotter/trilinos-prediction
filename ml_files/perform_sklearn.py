@@ -227,12 +227,11 @@ def compute_metrics(clf_name, smp_name, y_test, y_pred):
 def compute_roc(a, numprocs_a, system_a, b, numprocs_b, system_b, output, graph=False):
     """Computes the roc and auc for each split in the two datasets.
     np_a is used as the training data, np_b is used as the testing data"""
-    a.to_csv('./pate_test.csv')
     i_a = 0
+
+    # Training and testing data from a
     X_a_train, X_a_test = [], []
-    X_b_train, X_b_test = [], []
     y_a_train, y_a_test = [], []
-    y_b_train, y_b_test = [], []
 
     # Set training data to everything but last col, test data is last col
     a_col_list = list(a.columns)
@@ -241,12 +240,6 @@ def compute_roc(a, numprocs_a, system_a, b, numprocs_b, system_b, output, graph=
     X_a = a.iloc[:, :-2]
     y_a = a.iloc[:, -1]
 
-    b_col_list = list(b.columns)
-    if b_col_list[-1] != "good_or_bad":
-        raise ValueError('Last element in "b" is not good_or_bad')
-    X_b = b.iloc[:, :-2]
-    y_b = b.iloc[:, -1]
-
     # Create splits in data using stratified k-fold
     for train_index, test_index in skf.split(X_a, y_a):
         X_a_train.append(X_a.values[train_index])
@@ -254,6 +247,17 @@ def compute_roc(a, numprocs_a, system_a, b, numprocs_b, system_b, output, graph=
         y_a_train.append(y_a.values[train_index])
         y_a_test.append(y_a.values[test_index])
         i_a += 1
+
+
+    # Training and testing data from b
+    X_b_train, X_b_test = [], []
+    y_b_train, y_b_test = [], []
+
+    b_col_list = list(b.columns)
+    if b_col_list[-1] != "good_or_bad":
+        raise ValueError('Last element in "b" is not good_or_bad')
+    X_b = b.iloc[:, :-2]
+    y_b = b.iloc[:, -1]
 
     for train_index, test_index in skf.split(X_b, y_b):
         X_b_train.append(X_b.values[train_index])
@@ -271,21 +275,14 @@ def compute_roc(a, numprocs_a, system_a, b, numprocs_b, system_b, output, graph=
             if graph:
                 plt.figure()
             pipeline = pl.make_pipeline(smp, clf)
+
             for split in range(0, i_a):
                 start_time = time.time()
-                # Fit model to a's training data and attempt to predict b's test data
-                pate1 = X_a_train[split]
-                pate2 = y_a_train[split]
-                pate3 = X_b_test[split]
 
-                brap1 = pd.DataFrame(pate1)
-                brap2 = pd.DataFrame(pate2)
-                brap1.to_csv('brap1.csv')
-                brap2.to_csv('brap2.csv')
+                # Fit model to a's training and testing data
+                # Compute success of predicting b's testing data using the model
+                y_b_score = pipeline.fit(X_a_train[split], y_a_train[split]).predict_proba(X_b_test[split])[:,1]
 
-                y_b_score = pipeline.fit(pate1, pate2)
-                y_b_score = y_b_score.predict_proba(pate3)
-                y_b_score = y_b_score[:, 1]
                 # Compute ROC curve and ROC area for each class
                 fpr, tpr, _ = roc_curve(y_b_test[split], y_b_score)
                 roc_auc = auc(fpr, tpr)
@@ -483,7 +480,7 @@ def classify_good_bad(combined, numprocs, system):
             matrix_min_time = np.inf
 
         # Error or unconverged runs = max float time
-        if row['status_id'] != 1:
+        if row['status_id'] != 1 or matrix_min_time == np.inf:
             good_bad_list.append(-1)
             new_time_list.append(np.inf)
         # Good = anything within 25% of the fastest run for that matrix
@@ -496,8 +493,8 @@ def classify_good_bad(combined, numprocs, system):
             new_time_list.append(current_matrix_time)
 
     # Create Pandas series from the lists which used to contain strings
-    good_bad_series = pd.Series(good_bad_list)
     new_time_series = pd.Series(new_time_list)
+    good_bad_series = pd.Series(good_bad_list)
 
     # Add the series to the dataframe as columns
     a = a.assign(new_time=pd.Series(new_time_series))
