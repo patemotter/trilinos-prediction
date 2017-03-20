@@ -72,8 +72,8 @@ class DummySampler(object):
 
 
 classifier_list = [
-    ['GradientBoosting', GradientBoostingClassifier()],
-    ['RandomForest', RandomForestClassifier()]]
+    ['GradientBoosting', GradientBoostingClassifier()]]
+#    ['RandomForest', RandomForestClassifier()]]
 # ['GaussianNB', GaussianNB()],
 # ['DecisionTree', DecisionTreeClassifier()],
 # ['LogisticRegression', LogisticRegression()],
@@ -86,8 +86,6 @@ classifier_list = [
 samplers_list = [
     ['SMOTE', SMOTE()],
     ['RandomOverSampler', RandomOverSampler()]]
-
-
 # ['DummySampler', DummySampler()],
 # ['SMOTEENN', SMOTEENN()],
 # ['SMOTETomek', SMOTETomek()],
@@ -232,6 +230,8 @@ def compute_roc(a, numprocs_a, system_a, b, numprocs_b, system_b, output, graph=
     # Training and testing data from a
     X_a_train, X_a_test = [], []
     y_a_train, y_a_test = [], []
+    X_b_train, X_b_test = [], []
+    y_b_train, y_b_test = [], []
 
     # Set training data to everything but last col, test data is last col
     a_col_list = list(a.columns)
@@ -240,6 +240,12 @@ def compute_roc(a, numprocs_a, system_a, b, numprocs_b, system_b, output, graph=
     X_a = a.iloc[:, :-2]
     y_a = a.iloc[:, -1]
 
+    b_col_list = list(b.columns)
+    if b_col_list[-1] != "good_or_bad":
+        raise ValueError('Last element in "b" is not good_or_bad')
+    X_b = b.iloc[:, :-2]
+    y_b = b.iloc[:, -1]
+
     # Create splits in data using stratified k-fold
     for train_index, test_index in skf.split(X_a, y_a):
         X_a_train.append(X_a.values[train_index])
@@ -247,17 +253,6 @@ def compute_roc(a, numprocs_a, system_a, b, numprocs_b, system_b, output, graph=
         y_a_train.append(y_a.values[train_index])
         y_a_test.append(y_a.values[test_index])
         i_a += 1
-
-
-    # Training and testing data from b
-    X_b_train, X_b_test = [], []
-    y_b_train, y_b_test = [], []
-
-    b_col_list = list(b.columns)
-    if b_col_list[-1] != "good_or_bad":
-        raise ValueError('Last element in "b" is not good_or_bad')
-    X_b = b.iloc[:, :-2]
-    y_b = b.iloc[:, -1]
 
     for train_index, test_index in skf.split(X_b, y_b):
         X_b_train.append(X_b.values[train_index])
@@ -281,10 +276,11 @@ def compute_roc(a, numprocs_a, system_a, b, numprocs_b, system_b, output, graph=
 
                 # Fit model to a's training and testing data
                 # Compute success of predicting b's testing data using the model
-                y_b_score = pipeline.fit(X_a_train[split], y_a_train[split]).predict_proba(X_b_test[split])[:,1]
+                model = pipeline.fit(X_a_train[split], y_a_train[split])
+                model_prediction_results = model.predict_proba(X_b_test[split])[:, 1]
 
                 # Compute ROC curve and ROC area for each class
-                fpr, tpr, _ = roc_curve(y_b_test[split], y_b_score)
+                fpr, tpr, _ = roc_curve(y_b_test[split], model_prediction_results)
                 roc_auc = auc(fpr, tpr)
                 wall_time = time.time() - start_time
                 if graph:
@@ -293,12 +289,14 @@ def compute_roc(a, numprocs_a, system_a, b, numprocs_b, system_b, output, graph=
                 total += roc_auc
                 print(str(system_a), str(numprocs_a), str(system_b), str(numprocs_b), clf_name, smp_name,
                       split, round(roc_auc, 3), round(wall_time, 3), sep='\t')
-                output.write(str(system_a) + '\t' + str(numprocs_a) + '\t' + str(system_b) + '\t' + str(numprocs_b) + '\t' +
-                             clf_name + '\t' + smp_name + '\t' + str(split) + '\t' + str(round(roc_auc, 3)) +
-                             '\t' + str(round(wall_time, 3)) + '\n')
+                output.write(
+                    str(system_a) + '\t' + str(numprocs_a) + '\t' + str(system_b) + '\t' + str(numprocs_b) + '\t' +
+                    clf_name + '\t' + smp_name + '\t' + str(split) + '\t' + str(round(roc_auc, 3)) +
+                    '\t' + str(round(wall_time, 3)) + '\n')
 
             avg = round(total / float(i_a), 3)
-            print(str(system_a), str(numprocs_a), str(system_b), str(numprocs_b), clf_name, smp_name, "avg", avg, sep='\t')
+            print(str(system_a), str(numprocs_a), str(system_b), str(numprocs_b), clf_name, smp_name, "avg", avg,
+                  sep='\t')
             output.write(str(system_a) + '\t' + str(numprocs_a) + '\t' + str(system_b) + '\t' + str(numprocs_b) + '\t' +
                          clf_name + '\t' + smp_name + '\t' + 'avg' + '\t' + str(avg) + '\n')
 
@@ -322,10 +320,12 @@ def compute_roc(a, numprocs_a, system_a, b, numprocs_b, system_b, output, graph=
                             str(numprocs_b) + '_' + str(clf_name) + '_' +
                             str(smp_name) + '.svg', bbox_inches='tight')
                 plt.close()
-    print(str(system_a), str(numprocs_a), str(system_b), str(numprocs_b), best_classifier, best_sampler, "best_avg", best_avg,
+    print(str(system_a), str(numprocs_a), str(system_b), str(numprocs_b), best_classifier, best_sampler, "best_avg",
+          best_avg,
           sep='\t')
     output.write(
-        str(system_a) + '\t' + str(numprocs_a) + '\t' + str(system_b) + '\t' + str(numprocs_b) + '\t' + best_classifier + '\t' +
+        str(system_a) + '\t' + str(numprocs_a) + '\t' + str(system_b) + '\t' + str(
+            numprocs_b) + '\t' + best_classifier + '\t' +
         best_sampler + "\tbest_avg\t" + str(best_avg) + '\n')
 
 
@@ -429,6 +429,7 @@ def show_confusion_matrix(C, class_labels=['-1', '1']):
 
     plt.tight_layout()
 
+
 def remove_bad_properties(properties):
     properties = properties.drop(['abs_trace', 'antisymm_frob_norm', 'antisymm_inf_norm',
                                   'col_diag_dom', 'col_log_val_spread', 'col_var',
@@ -461,21 +462,22 @@ def classify_good_bad(combined, numprocs, system):
             temp = temp.append(a[(a.system_id == num)], ignore_index=True)
         a = temp
 
-    a.to_csv('test2.csv')
     # Determine the best times for each matrix
     good_bad_list = []
     new_time_list = []
-    grouped = a.groupby(['matrix_id', 'status_id'])
+    grouped = a.groupby(['matrix', 'status_id'])
     best_times = grouped['time'].aggregate(np.min)
 
     for index, row in a.iterrows():
         current_matrix_time = row['time']
-        matrix_name = row['matrix_id']
+        matrix_name = row['matrix']
 
         # Check for matrices which never converged
-
         if matrix_name in best_times:
-            matrix_min_time = best_times[matrix_name][1]  # 1 indicates converged
+            if 1 in best_times[matrix_name]:
+                matrix_min_time = best_times[matrix_name][1]  # 1 indicates converged
+            else:
+                matrix_min_time = np.inf
         else:
             matrix_min_time = np.inf
 
@@ -520,11 +522,11 @@ def main():
     # Concatenate time files together
     times = [janus_times, bridges_times, comet_times]
     combined_times = pd.concat(times)
-    #combined_times.columns = ['system_id', 'np', 'matrix_str', 'matrix_id', 'solver_id',
+    # combined_times.columns = ['system_id', 'np', 'matrix_str', 'matrix_id', 'solver_id',
     #                          'prec_id', 'status_id', 'new_time', 'good_or_bad']
 
-    combined_times = combined_times.drop(labels=['system', 'matrix', 'solver', 'prec', 'status',
-                                                 'new_time', 'good_or_bad', 'resid'], axis=1)
+    combined_times = combined_times.drop(labels=['system', 'solver', 'prec', 'status',
+                                                 'new_time', 'good_or_bad', 'resid', 'iters'], axis=1)
     combined_times = combined_times.drop_duplicates()
 
     # Systems: 'janus': 0, 'bridges': 1, 'comet': 2
@@ -542,10 +544,6 @@ def main():
     # Create good/bad designation for times depending on the params used
     a = classify_good_bad(combined_times, numprocs_a, system_a)
     b = classify_good_bad(combined_times, numprocs_b, system_b)
-    strA = str(numprocs_a) + '_' + str(system_a) + '.csv'
-    strB = str(numprocs_b) + '_' + str(system_b) + '.csv'
-    a.to_csv(strA)
-    b.to_csv(strB)
 
     # Combine properties and timings
     a = pd.merge(properties, a, on='matrix_id')
@@ -554,15 +552,18 @@ def main():
     # Compute the prediction ROC
     filename = str(system_a) + '_' + str(numprocs_a) + '_' + str(system_b) + '_' + str(numprocs_b) + '_roc-auc.csv'
     output = open(filename, 'w')
-    a = b.dropna()
+    a = a.dropna()
     b = b.dropna()
-    a = a.drop(labels=['matrix', 'status_id', 'time', 'new_time', 'matrix_id'], axis=1)
-    b = b.drop(labels=['matrix', 'status_id', 'time', 'new_time', 'matrix_id'], axis=1)
+    a = a.drop(labels=['matrix_y', 'matrix_x', 'status_id', 'time', 'new_time', 'matrix_id'], axis=1)
+    b = b.drop(labels=['matrix_y', 'matrix_x', 'status_id', 'time', 'new_time', 'matrix_id'], axis=1)
+
+    a.to_csv('a_' + str(numprocs_a) + '_' + str(system_a) + '.csv')
+    b.to_csv('b_' + str(numprocs_b) + '_' + str(system_b) + '.csv')
     compute_roc(a, numprocs_a, system_a, b, numprocs_b, system_b, output, True)
 
-    #combined = combined.drop(labels=['matrix', 'matrix_str', 'status_id', 'matrix_id'], axis=1)
+    # combined = combined.drop(labels=['matrix', 'matrix_str', 'status_id', 'matrix_id'], axis=1)
 
-    #compute_roc(combined, np_a, system_a, np_b, system_b, output, True)
+    # compute_roc(combined, np_a, system_a, np_b, system_b, output, True)
 
     """
     compute_roc(combined, np_min, np_max,       name, output, True)
@@ -576,7 +577,7 @@ def main():
     compute_roc(combined, np_all, np_min,       name, output, True)
     compute_roc(combined, np_all, np_max,       name, output, True)
     """
-    #output.close()
+    # output.close()
 
     # cnf = confusion_matrix(y_true=y_test[split], y_pred=pipeline.predict(X_test[split]))
     # show_confusion_matrix(cnf)
