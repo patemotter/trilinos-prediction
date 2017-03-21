@@ -36,6 +36,7 @@ from imblearn.combine import SMOTEENN, SMOTETomek
 from imblearn import over_sampling as os
 from sklearn.pipeline import FeatureUnion
 from imblearn import pipeline as pl
+from os import path as path
 from imblearn.metrics import classification_report_imbalanced
 from imblearn.over_sampling import ADASYN, SMOTE, RandomOverSampler
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier, AdaBoostClassifier
@@ -224,9 +225,14 @@ def compute_metrics(clf_name, smp_name, y_test, y_pred):
     return my_str
 
 
-def compute_roc(a, training_numprocs, training_systems, b, testing_numprocs, testing_systems, output, graph=False):
+def compute_roc(a, training_systems, training_numprocs, b, testing_systems, testing_numprocs, graph=False):
     """Computes the roc and auc for each split in the two datasets.
     np_a is used as the training data, np_b is used as the testing data"""
+    total_start_time = time.time()
+    output_filename = str(testing_systems) + '_' + str(training_numprocs) + '_' + str(testing_systems) + '_' + str(
+        testing_numprocs) + '_roc-auc.csv'
+    output = open(output_filename, 'w')
+
     i_a = 0
 
     # Training and testing data from a
@@ -336,6 +342,7 @@ def compute_roc(a, training_numprocs, training_systems, b, testing_numprocs, tes
         str(training_systems) + '\t' + str(training_numprocs) + '\t' + str(testing_systems) + '\t' + str(
             testing_numprocs) + '\t' + best_classifier + '\t' +
         best_sampler + "\tbest_avg\t" + str(best_avg) + '\n')
+    print("ROC time: ", round(time.time() - total_start_time, 3))
 
 
 def show_confusion_matrix(C, class_labels=['-1', '1']):
@@ -449,7 +456,7 @@ def remove_bad_properties(properties):
     return properties
 
 
-def classify_good_bad(combined, numprocs, system):
+def classify_good_bad(combined, system, numprocs):
     # process np first
     #    combined.to_csv('test1.csv')
     if type(numprocs) == str and numprocs == "all":
@@ -519,85 +526,72 @@ def classify_good_bad(combined, numprocs, system):
     return a
 
 
-def main():
-    # Read in and process properties
-    start_time = time.time()
-    properties_file = '../data/processed_properties.csv'
-    properties = pd.read_csv(properties_file, header=0, index_col=0)
+def get_properties(properties_filename):
+    properties = pd.read_csv(properties_filename, header=0, index_col=0)
     properties = remove_bad_properties(properties)
+    return properties
 
-    # Read in and process system timings
-    janus_timefile = '../data/janus/janus_unprocessed_timings.csv'
-    bridges_timefile = '../data/bridges/bridges_unprocessed_timings.csv'
-    comet_timefile = '../data/comet/comet_unprocessed_timings.csv'
-    janus_times = pd.read_csv(janus_timefile, header=0, index_col=0)
-    bridges_times = pd.read_csv(bridges_timefile, header=0, index_col=0)
-    comet_times = pd.read_csv(comet_timefile, header=0, index_col=0)
-    times = [janus_times, bridges_times, comet_times]
 
-    # Concatenate time files together
-    combined_times = pd.concat(times)
+def get_times(time_files):
+    times_array = []
+    for t in time_files:
+        times_array.append(pd.read_csv(t, header=0, index_col=0))
+    combined_times = pd.concat(times_array)
     combined_times = combined_times.drop(labels=['system', 'solver', 'prec', 'status',
                                                  'new_time', 'good_or_bad', 'resid', 'iters'], axis=1)
     combined_times = combined_times.drop_duplicates()
+    return combined_times
+
+
+def get_classification(combined_times, testing_systems, testing_numprocs):
+    start_time = time.time()
+    filename = 'classified_' + str(testing_systems) + '_' + str(testing_numprocs) + '.csv'
+    if not path.exists(filename):
+        testing_classified = classify_good_bad(combined_times, testing_systems, testing_numprocs)
+        testing_classified.to_csv(filename)
+        print("Saving classification to ", filename)
+        print("Classification time: ", round(time.time() - start_time, 3), '\n')
+    else:
+        print('Classification file exists, loading from ' + filename, '\n')
+        testing_classified = pd.read_csv(filename, header=0, index_col=0)
+    return testing_classified
+
+def merge_properties_and_times(properties_data, timing_data):
+    merged = pd.merge(properties_data, timing_data, on='matrix_id')
+    merged = merged.dropna()
+    merged = merged.drop(labels=['matrix_y', 'matrix_x', 'status_id', 'time', 'new_time', 'matrix_id'], axis=1)
+    return merged
+
+
+def main():
+    # Read in and process properties
+    start_time = time.time()
+    properties = get_properties('../data/processed_properties.csv')
+
+    # Read in and process system timings
+    time_files = ['../data/janus/janus_unprocessed_timings.csv',
+                  '../data/bridges/bridges_unprocessed_timings.csv',
+                  '../data/comet/comet_unprocessed_timings.csv']
+    combined_times = get_times(time_files)
 
     # Systems: 'janus': 0, 'bridges': 1, 'comet': 2
+    # Create training data
     training_systems = "all"
-    training_numprocs = 12
+    training_numprocs = 1
+    training_classified = get_classification(combined_times, training_systems, training_numprocs)
+    training_merged = merge_properties_and_times(properties, training_classified)
 
-    testing_systems = 0
-    testing_numprocs = 12
-
-    print("Testing: ", "\tTraining Systems: " + str(training_systems), "\tTraining NPs: " + str(training_numprocs),
-          "\tTesting Systems: " + str(testing_systems), "\tTesting NPs: " + str(testing_numprocs))
-
-    # Create good/bad designation for times depending on the params used
-    training_classified = classify_good_bad(combined_times, training_numprocs, training_systems)
-    training_classified.to_csv('training_classified_' + str(training_numprocs) + '_' + str(training_systems) + '.csv')
-    print("After training classification", time.time() - start_time)
-
-    start_time = time.time()
-    testing_classified = classify_good_bad(combined_times, testing_numprocs, testing_systems)
-    testing_classified.to_csv('testing_classified_' + str(testing_numprocs) + '_' + str(testing_systems) + '.csv')
-    print("After testing classification", time.time() - start_time)
-
-    # Merge properties and times
-    start_time = time.time()
-    training_merged = pd.merge(properties, training_classified, on='matrix_id')
-    testing_merged = pd.merge(properties, testing_classified, on='matrix_id')
-    training_merged = training_merged.dropna()
-    testing_merged = testing_merged.dropna()
-    training_merged = training_merged.drop(
-        labels=['matrix_y', 'matrix_x', 'status_id', 'time', 'new_time', 'matrix_id'], axis=1)
-    testing_merged = testing_merged.drop(labels=['matrix_y', 'matrix_x', 'status_id', 'time', 'new_time', 'matrix_id'],
-                                         axis=1)
+    # Create testing data
+    testing_systems = "all"
+    testing_numprocs = 1
+    testing_classified = get_classification(combined_times, testing_systems, testing_numprocs)
+    testing_merged = merge_properties_and_times(properties, testing_classified)
 
     # Compute the prediction ROC
-    filename = str(testing_systems) + '_' + str(training_numprocs) + '_' + str(testing_systems) + '_' + str(
-        testing_numprocs) + '_roc-auc.csv'
-    output = open(filename, 'w')
-    compute_roc(training_merged, training_numprocs, training_systems, testing_merged, testing_numprocs, testing_systems,
-                output, True)
-    print("After ROC", time.time() - start_time)
-
-    # combined = combined.drop(labels=['matrix', 'matrix_str', 'status_id', 'matrix_id'], axis=1)
-
-    # compute_roc(combined, np_a, testing_systems, np_b, testing_systems, output, True)
-
-    """
-    compute_roc(combined, np_min, np_max,       name, output, True)
-    compute_roc(combined, np_min, np_all[1:],   name, output, True)
-    compute_roc(combined, np_min, np_all,       name, output, True)
-    compute_roc(combined, np_max, np_min,       name, output, True)
-    compute_roc(combined, np_max, np_max,       name, output, True)
-    compute_roc(combined, np_max, np_all,       name, output, True)
-    compute_roc(combined, np_max, np_all[:-1],  name, output, True)
-    compute_roc(combined, np_all, np_all,       name, output, True)
-    compute_roc(combined, np_all, np_min,       name, output, True)
-    compute_roc(combined, np_all, np_max,       name, output, True)
-    """
-    # output.close()
-
+    print("training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\troc-auc\ttime")
+    compute_roc(training_merged, training_systems, training_numprocs, testing_merged, testing_systems, testing_numprocs,
+                True)
+    print("Total execution time: ", round(time.time()-start_time, 3))
     # cnf = confusion_matrix(y_true=y_test[split], y_pred=pipeline.predict(X_test[split]))
     # show_confusion_matrix(cnf)
 
