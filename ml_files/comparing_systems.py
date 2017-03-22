@@ -27,28 +27,30 @@ combined_times.info()
 combined_times.describe()
 
 
-# In[48]:
+# In[85]:
 
 converged = combined_times[combined_times['status_id'] == 1]
 grouped = converged.groupby(['system_id', 'numprocs', 'matrix'])
-grouped.describe()
 
 
-# In[63]:
+# In[22]:
 
 i = 0
-best_times = grouped.new_time.aggregate(np.min)
+file = open('good_bad_timings.csv', 'w') 
+best_times = grouped.time.aggregate(np.min)
+print(best_times[1][28]['nd6k.mtx'])
+#sys.exit()
+
 for sys_np_mat, group in grouped:
-    print(sys_np_mat, best_times[sys_np_mat])
-    for t in group.new_time:
+    for t in group.time:
+        file.write(str(sys_np_mat[0]) + '\t' + str(sys_np_mat[1]) + 
+                   '\t' + str(sys_np_mat[2]) + '\t' + str(t) + '\t' +
+                   '\t' + str(best_times[sys_np_mat]) + '\t')
         if t <= 1.25 * best_times[sys_np_mat]:
-            print('GOOD ', t) 
-        #print('b', best_times[sys_np_mat])
-        
-    i += 1
-    if i is 5:
-        sys.exit()
-    
+            file.write('GOOD\n') 
+        else:
+            file.write('BAD\n')
+        #print('b', best_times[sys_np_mat]    
 
 
 # In[54]:
