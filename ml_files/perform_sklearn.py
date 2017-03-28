@@ -46,9 +46,11 @@ from sklearn.svm import LinearSVC
 from sklearn.feature_selection import SelectKBest, SelectPercentile
 from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
-from sklearn.feature_selection import VarianceThreshold, GenericUnivariateSelect, SelectPercentile, SelectKBest, RFECV
+from sklearn.feature_selection import VarianceThreshold, GenericUnivariateSelect, SelectPercentile, \
+    SelectKBest, RFECV
 from sklearn.neural_network import MLPClassifier
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+
 
 # Printing options
 np.set_printoptions(precision=3)
@@ -56,6 +58,7 @@ rng = np.random.RandomState()
 
 # Number of splits for k-fold cross validation
 skf = StratifiedKFold(n_splits=3, random_state=rng)
+sss = StratifiedShuffleSplit(n_splits=3, random_state=rng)
 
 
 class DummySampler(object):
@@ -186,7 +189,8 @@ def train_and_test(combined, training_numprocs, testing_numprocs):
         i_b += 1
 
     # Permute over the classifiers, samplers, and splits of the data
-    output_file_name = "train_and_test_diff_" + str(training_numprocs) + "_" + str(testing_numprocs) + ".csv"
+    output_file_name = "train_and_test_diff_" + str(training_numprocs) + "_" + str(
+        testing_numprocs) + ".csv"
     output_file = open(output_file_name, 'w')
     header = "classifier,sampler,precision,recall,specificity,f1,geometric_mean,iba"
     print(header)
@@ -225,11 +229,13 @@ def compute_metrics(clf_name, smp_name, y_test, y_pred):
     return my_str
 
 
-def compute_roc(a, training_systems, training_numprocs, b, testing_systems, testing_numprocs, graph=False):
+def compute_roc(a, training_systems, training_numprocs, b, testing_systems, testing_numprocs,
+                graph=False):
     """Computes the roc and auc for each split in the two datasets.
     np_a is used as the training data, np_b is used as the testing data"""
     total_start_time = time.time()
-    output_filename = str(testing_systems) + '_' + str(training_numprocs) + '_' + str(testing_systems) + '_' + str(
+    output_filename = str(testing_systems) + '_' + str(training_numprocs) + '_' + str(
+        testing_systems) + '_' + str(
         testing_numprocs) + '_roc-auc.csv'
     output = open(output_filename, 'w')
 
@@ -255,14 +261,14 @@ def compute_roc(a, training_systems, training_numprocs, b, testing_systems, test
     y_b = b.iloc[:, -1]
 
     # Create splits in data using stratified k-fold
-    for train_index, test_index in skf.split(X_a, y_a):
+    for train_index, test_index in sss.split(X_a, y_a):
         X_a_train.append(X_a.values[train_index])
         X_a_test.append(X_a.values[test_index])
         y_a_train.append(y_a.values[train_index])
         y_a_test.append(y_a.values[test_index])
         i_a += 1
 
-    for train_index, test_index in skf.split(X_b, y_b):
+    for train_index, test_index in sss.split(X_b, y_b):
         X_b_train.append(X_b.values[train_index])
         X_b_test.append(X_b.values[test_index])
         y_b_train.append(y_b.values[train_index])
@@ -295,21 +301,25 @@ def compute_roc(a, training_systems, training_numprocs, b, testing_systems, test
                     plt.plot(fpr, tpr, label='ROC curve - %d (AUC = %0.3f)'
                                              % (split, roc_auc))
                 total += roc_auc
-                print(str(training_systems), str(training_numprocs), str(testing_systems), str(testing_numprocs),
+                print(str(training_systems), str(training_numprocs), str(testing_systems),
+                      str(testing_numprocs),
                       clf_name, smp_name,
                       split, round(roc_auc, 3), round(wall_time, 3), sep='\t')
                 output.write(
-                    str(training_systems) + '\t' + str(training_numprocs) + '\t' + str(testing_systems) + '\t' + str(
+                    str(training_systems) + '\t' + str(training_numprocs) + '\t' + str(
+                        testing_systems) + '\t' + str(
                         testing_numprocs) + '\t' +
                     clf_name + '\t' + smp_name + '\t' + str(split) + '\t' + str(round(roc_auc, 3)) +
                     '\t' + str(round(wall_time, 3)) + '\n')
 
             avg = round(total / float(i_a), 3)
-            print(str(training_systems), str(training_numprocs), str(testing_systems), str(testing_numprocs), clf_name,
+            print(str(training_systems), str(training_numprocs), str(testing_systems),
+                  str(testing_numprocs), clf_name,
                   smp_name, "avg", avg,
                   sep='\t')
             output.write(
-                str(training_systems) + '\t' + str(training_numprocs) + '\t' + str(testing_systems) + '\t' + str(
+                str(training_systems) + '\t' + str(training_numprocs) + '\t' + str(
+                    testing_systems) + '\t' + str(
                     testing_numprocs) + '\t' +
                 clf_name + '\t' + smp_name + '\t' + 'avg' + '\t' + str(avg) + '\n')
 
@@ -329,17 +339,20 @@ def compute_roc(a, training_systems, training_numprocs, b, testing_systems, test
                 plt.title('ROC Curve ' + str(clf_name) + " + " + str(smp_name) + "\n" +
                           "Train: " + str(training_numprocs) + "   Test: " + str(testing_numprocs))
                 plt.legend(loc="lower right")
-                plt.savefig('../data/roc_curves/' + str(testing_systems) + '_' + str(training_numprocs) + '_' + str(
+                plt.savefig('../data/roc_curves/' + str(testing_systems) + '_' + str(
+                    training_numprocs) + '_' + str(
                     testing_systems) + '_' +
                             str(testing_numprocs) + '_' + str(clf_name) + '_' +
                             str(smp_name) + '.svg', bbox_inches='tight')
                 plt.close()
-    print(str(training_systems), str(training_numprocs), str(testing_systems), str(testing_numprocs), best_classifier,
+    print(str(training_systems), str(training_numprocs), str(testing_systems),
+          str(testing_numprocs), best_classifier,
           best_sampler, "best_avg",
           best_avg,
           sep='\t')
     output.write(
-        str(training_systems) + '\t' + str(training_numprocs) + '\t' + str(testing_systems) + '\t' + str(
+        str(training_systems) + '\t' + str(training_numprocs) + '\t' + str(
+            testing_systems) + '\t' + str(
             testing_numprocs) + '\t' + best_classifier + '\t' +
         best_sampler + "\tbest_avg\t" + str(best_avg) + '\n')
     print("ROC time: ", round(time.time() - total_start_time, 3))
@@ -538,7 +551,8 @@ def get_times(time_files):
         times_array.append(pd.read_csv(t, header=0, index_col=0))
     combined_times = pd.concat(times_array)
     combined_times = combined_times.drop(labels=['system', 'solver', 'prec', 'status',
-                                                 'new_time', 'good_or_bad', 'resid', 'iters'], axis=1)
+                                                 'new_time', 'good_or_bad', 'resid', 'iters'],
+                                         axis=1)
     combined_times = combined_times.drop_duplicates()
     return combined_times
 
@@ -556,10 +570,12 @@ def get_classification(combined_times, testing_systems, testing_numprocs):
         testing_classified = pd.read_csv(filename, header=0, index_col=0)
     return testing_classified
 
+
 def merge_properties_and_times(properties_data, timing_data):
     merged = pd.merge(properties_data, timing_data, on='matrix_id')
     merged = merged.dropna()
-    merged = merged.drop(labels=['matrix_y', 'matrix_x', 'status_id', 'time', 'new_time', 'matrix_id'], axis=1)
+    merged = merged.drop(
+        labels=['matrix_y', 'matrix_x', 'status_id', 'time', 'new_time', 'matrix_id'], axis=1)
     return merged
 
 
@@ -576,22 +592,26 @@ def main():
 
     # Systems: 'janus': 0, 'bridges': 1, 'comet': 2
     # Create training data
-    training_systems = "all"
+    training_systems = 0
     training_numprocs = 1
     training_classified = get_classification(combined_times, training_systems, training_numprocs)
     training_merged = merge_properties_and_times(properties, training_classified)
 
     # Create testing data
-    testing_systems = "all"
+    testing_systems = 0
     testing_numprocs = 1
     testing_classified = get_classification(combined_times, testing_systems, testing_numprocs)
     testing_merged = merge_properties_and_times(properties, testing_classified)
 
     # Compute the prediction ROC
-    print("training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\troc-auc\ttime")
-    compute_roc(training_merged, training_systems, training_numprocs, testing_merged, testing_systems, testing_numprocs,
-                True)
-    print("Total execution time: ", round(time.time()-start_time, 3))
+    print(
+        "training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\troc-auc\ttime")
+    compute_roc(training_merged, training_systems, training_numprocs, testing_merged,
+                testing_systems, testing_numprocs, True)
+    print("Total execution time: ", round(time.time() - start_time, 3))
+
+
+
     # cnf = confusion_matrix(y_true=y_test[split], y_pred=pipeline.predict(X_test[split]))
     # show_confusion_matrix(cnf)
 
