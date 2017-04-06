@@ -51,7 +51,7 @@ RCP<const Teuchos::Comm<int>> comm;
 std::vector<std::string> belosSolvers;
 
 //  6 preconditioners, 7 solvers, 42 combinations
-STRINGS ifpack2Precs = {"ILUT", 
+STRINGS ifpack2Precs = {"ILUT",
                         "RILUK", 
                         "RELAXATION", 
                         "CHEBYSHEV",
@@ -60,13 +60,13 @@ STRINGS ifpack2Precs = {"ILUT",
 //                      "BLOCK RELAXATION", 
 //                      "DIAGONAL"
 
-STRINGS belos_all = {"FIXED POINT",
+STRINGS belos_all = {"FIXED POINT", 
                      "BICGSTAB",
                      "MINRES",
                      "PSEUDOBLOCK CG",
                      "PSEUDOBLOCK TFQMR",
                      "LSQR",
-                     "PSEUDOBLOCK GMRES"};
+                     "PSEUDOBLOCK GMRES"}; 
 
 //                   "TFQMR",
 //                   "PSEUDOBLOCK STOCHASTIC CG",

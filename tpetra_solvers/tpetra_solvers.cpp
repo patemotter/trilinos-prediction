@@ -97,6 +97,8 @@ int main(int argc, char *argv[]) {
     Teuchos::Time timer("timer",false);
     for (std::string solverChoice : belos_all) {
         for (std::string precChoice : ifpack2Precs) {
+            std::string pairName = solverChoice + "_" + precChoice;
+            MPI_Pcontrol(1,pairName.c_str());
             try {
                 timer.reset();
                 timer.start(true);
@@ -183,14 +185,15 @@ int main(int argc, char *argv[]) {
                                      << std::endl;
                     }
                 }
+            MPI_Pcontrol(-1,pairName.c_str());
             } catch (const std::exception &e) {
+            MPI_Pcontrol(-1,pairName.c_str());
                 std::cerr << e.what();
                 outputLocCSV << matrixName << "," << solverChoice << ","
                              << precChoice << ",error," << timer.totalElapsedTime()
                              << std::endl;
                 continue;
             }
-
         }
     }
     if (myRank == 0) {
