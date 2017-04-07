@@ -590,6 +590,26 @@ def main():
                   '../data/comet/comet_unprocessed_timings.csv']
     combined_times = get_times(time_files)
 
+    """
+    training_systems = 0
+    training_numprocs = 1
+    training_classified = get_classification(combined_times, training_systems, training_numprocs)
+    training = merge_properties_and_times(properties, training_classified)
+    print(training.head())
+    clf = RandomForestClassifier(n_estimators=1000)
+    X = training.iloc[:, :-2]
+    y = training.iloc[:, -1]
+    clf.fit(X, y)
+    importances = clf.feature_importances_
+    std = np.std([tree.feature_importances_ for tree in clf.estimators_], axis=0)
+    indices = np.argsort(importances)[::-1]
+    print("Feature ranking:")
+    for f in range(X.shape[1]):
+        print("%d. feature %d %s (%f)" % (f + 1, indices[f], X.columns[f], importances[indices[f]]))
+
+    exit()
+    """
+
     # Systems: 'janus': 0, 'bridges': 1, 'comet': 2
     # Create training data
     training_systems = 0
