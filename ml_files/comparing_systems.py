@@ -1,13 +1,5 @@
-
-# coding: utf-8
-
-# In[2]:
-
 import pandas as pd
 import numpy as np
-
-
-# In[3]:
 
 janus_timefile = '../data/janus/janus_unprocessed_timings.csv'
 bridges_timefile = '../data/bridges/bridges_unprocessed_timings.csv'
@@ -26,20 +18,13 @@ combined_times.drop_duplicates()
 combined_times.info()
 combined_times.describe()
 
-
-# In[85]:
-
 converged = combined_times[combined_times['status_id'] == 1]
 grouped = converged.groupby(['system_id', 'numprocs', 'matrix'])
-
-
-# In[22]:
 
 i = 0
 file = open('good_bad_timings.csv', 'w') 
 best_times = grouped.time.aggregate(np.min)
 print(best_times[1][28]['nd6k.mtx'])
-#sys.exit()
 
 for sys_np_mat, group in grouped:
     for t in group.time:
@@ -51,9 +36,6 @@ for sys_np_mat, group in grouped:
         else:
             file.write('BAD\n')
         #print('b', best_times[sys_np_mat]    
-
-
-# In[54]:
 
 i_a = 0
 X_a_train, X_a_test = [], []

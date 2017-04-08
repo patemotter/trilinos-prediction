@@ -54,3 +54,7 @@ ml_files/\.vscode/
 *.pyc
 
 *.stackdump
+
+tpetra_solvers/tpetra_solvers\.cbp
+
+tpetra_solvers/tpetra_solvers
