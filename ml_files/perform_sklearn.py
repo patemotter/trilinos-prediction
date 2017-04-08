@@ -76,7 +76,7 @@ class DummySampler(object):
 
 
 classifier_list = [
-    ['GradientBoosting', GradientBoostingClassifier()],
+#    ['GradientBoosting', GradientBoostingClassifier()],
     ['RandomForest', RandomForestClassifier()]]
 # ['GaussianNB', GaussianNB()],
 # ['DecisionTree', DecisionTreeClassifier()],
@@ -90,8 +90,6 @@ classifier_list = [
 samplers_list = [
     ['SMOTE', SMOTE()],
     ['RandomOverSampler', RandomOverSampler()]]
-
-
 # ['DummySampler', DummySampler()],
 # ['SMOTEENN', SMOTEENN()],
 # ['SMOTETomek', SMOTETomek()],
@@ -278,6 +276,7 @@ def compute_roc(a, training_systems, training_numprocs, b, testing_systems, test
     best_classifier = ""
     best_sampler = ""
     best_avg = 0.0
+    output.write("training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\troc-auc\ttime\n")
     for clf_name, clf in classifier_list:
         for smp_name, smp in samplers_list:
             total = 0
@@ -579,16 +578,25 @@ def merge_properties_and_times(properties_data, timing_data):
     return merged
 
 
-def main():
-    # Read in and process properties
-    start_time = time.time()
-    properties = get_properties('../data/processed_properties.csv')
+def createExperiments():
+    l = list()
+    l.append(Exp(training_sys= 0, training_nps= 1, testing_sys= 0, testing_nps= 1 ))
+    l.append(Exp(training_sys= 0, training_nps= 1, testing_sys= 0, testing_nps= 12 ))
+    l.append(Exp(training_sys= 0, training_nps= 12, testing_sys= 0, testing_nps= 1 ))
+    l.append(Exp(training_sys= 0, training_nps= 12, testing_sys= 0, testing_nps= 12 ))
+    return l
 
-    # Read in and process system timings
-    time_files = ['../data/janus/janus_unprocessed_timings.csv',
-                  '../data/bridges/bridges_unprocessed_timings.csv',
-                  '../data/comet/comet_unprocessed_timings.csv']
-    combined_times = get_times(time_files)
+
+class Exp:
+    def __init__(self, training_sys, training_nps,
+                 testing_sys, testing_nps):
+        self.training_sys = training_sys
+        self.training_nps = training_nps
+        self.testing_sys = testing_sys
+        self.testing_nps = testing_nps
+
+
+def main():
 
     """
     training_systems = 0
@@ -610,27 +618,34 @@ def main():
     exit()
     """
 
+    # Read in and process properties
+    start_time = time.time()
+    properties = get_properties('../data/processed_properties.csv')
+
+    # Read in and process system timings
+    time_files = ['../data/janus/janus_unprocessed_timings.csv',
+                  '../data/bridges/bridges_unprocessed_timings.csv',
+                  '../data/comet/comet_unprocessed_timings.csv']
+    combined_times = get_times(time_files)
+
     # Systems: 'janus': 0, 'bridges': 1, 'comet': 2
     # Create training data
-    training_systems = 0
-    training_numprocs = 1
-    training_classified = get_classification(combined_times, training_systems, training_numprocs)
-    training_merged = merge_properties_and_times(properties, training_classified)
+    experiments = createExperiments()
 
-    # Create testing data
-    testing_systems = 0
-    testing_numprocs = 1
-    testing_classified = get_classification(combined_times, testing_systems, testing_numprocs)
-    testing_merged = merge_properties_and_times(properties, testing_classified)
+    for exp in experiments:
+        training_classified = get_classification(combined_times, exp.training_sys, exp.training_nps)
+        training_merged = merge_properties_and_times(properties, training_classified)
 
-    # Compute the prediction ROC
-    print(
-        "training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\troc-auc\ttime")
-    compute_roc(training_merged, training_systems, training_numprocs, testing_merged,
-                testing_systems, testing_numprocs, True)
-    print("Total execution time: ", round(time.time() - start_time, 3))
+        # Create testing data
+        testing_classified = get_classification(combined_times, exp.testing_sys, exp.testing_nps)
+        testing_merged = merge_properties_and_times(properties, testing_classified)
 
-
+        # Compute the prediction ROC
+        print(
+            "training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\troc-auc\ttime")
+        compute_roc(training_merged, exp.training_sys, exp.training_nps,
+                    testing_merged, exp.testing_sys, exp.testing_nps, graph=True)
+        print("Total execution time: ", round(time.time() - start_time, 3))
 
     # cnf = confusion_matrix(y_true=y_test[split], y_pred=pipeline.predict(X_test[split]))
     # show_confusion_matrix(cnf)
