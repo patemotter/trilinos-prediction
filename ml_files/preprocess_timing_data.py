@@ -11,22 +11,22 @@ import pandas as pd
 import numpy as np
 
 # Read in the timings from each csv file, aliases for cols
-np1_timings = pd.read_csv('../data/janus/janus_np1_results.csv', header=0)
-np2_timings = pd.read_csv('../data/janus/janus_np2_results.csv', header=0)
-np4_timings = pd.read_csv('../data/janus/janus_np4_results.csv', header=0)
-np6_timings = pd.read_csv('../data/janus/janus_np6_results.csv', header=0)
-np8_timings = pd.read_csv('../data/janus/janus_np8_results.csv', header=0)
-np10_timings = pd.read_csv('../data/janus/janus_np10_results.csv', header=0)
-np12_timings = pd.read_csv('../data/janus/janus_np12_results.csv', header=0)
+timings = list()
+timings.append(pd.read_csv('../data/stampede/stampede_np1_omp1_results.csv', header=0))
+timings.append(pd.read_csv('../data/stampede/stampede_np4_omp1_results.csv', header=0))
+timings.append(pd.read_csv('../data/stampede/stampede_np8_omp1_results.csv', header=0))
+timings.append(pd.read_csv('../data/stampede/stampede_np12_omp1_results.csv', header=0))
+timings.append(pd.read_csv('../data/stampede/stampede_np16_omp1_results.csv', header=0))
+timings.append(pd.read_csv('../data/stampede/stampede_np12_omp1_results.csv', header=0))
+timings.append(pd.read_csv('../data/stampede/stampede_np16_omp1_results.csv', header=0))
 
 # Make a list of all the individual np dataframes and combine them
-timings = [np1_timings, np2_timings, np4_timings, np6_timings, np8_timings, np10_timings, np12_timings]
-all_timing_data = pd.concat(timings)
+all_timing_data = pd.concat(timings, ignore_index=True)
 all_timing_data.columns = ['system', 'np', 'matrix', 'solver', 'prec', 'status', 'time', 'iters', 'resid']
 
 # Change string entries into numerical (for SKLearn)
 all_timing_data['system_id'] = all_timing_data.system.map(
-    {'janus': 0, 'bridges': 1, 'comet': 2}).astype(int)
+    {'janus': 0, 'bridges': 1, 'comet': 2, 'summit': 3, 'stampede': 4}).astype(int)
 all_timing_data['solver_id'] = all_timing_data.solver.map(
     {'FIXED_POINT': 0, 'BICGSTAB': 1, 'MINRES': 2, 'PSEUDOBLOCK_CG': 3, 'PSEUDOBLOCK_STOCHASTIC_CG': 4,
      'PSEUDOBLOCK_TFQMR': 5, 'TFQMR': 6, 'LSQR': 7, 'PSEUDOBLOCK_GMRES': 8}).astype(int)
@@ -87,8 +87,8 @@ all_timing_data = all_timing_data.assign(new_time=pd.Series(new_time_series))
 all_timing_data = all_timing_data.assign(matrix_id=pd.Series(name_hash_series))
 
 # Select which columns to keep and output to file
-cleaned_timing_data = all_timing_data[['system_id', 'numprocs', 'matrix', 'matrix_id', 'solver_id', 'prec_id',
-                                       'status_id', 'new_time', 'good_or_bad']]
-cleaned_timing_data.to_csv('janus_processed_timings.csv')
-all_timing_data.to_csv('janus_unprocessed_timings.csv')
+all_timing_data.to_csv('stampede_unprocessed_timings.csv')
+#cleaned_timing_data = all_timing_data[['system_id', 'numprocs', 'matrix', 'matrix_id', 'solver_id', 'prec_id',
+#                                      'status_id', 'new_time', 'good_or_bad']]
+#cleaned_timing_data.to_csv('janus_processed_timings.csv')
 

@@ -628,7 +628,7 @@ def main():
                   '../data/comet/comet_unprocessed_timings.csv']
     combined_times = get_times(time_files)
 
-    # Systems: 'janus': 0, 'bridges': 1, 'comet': 2
+    # Systems: {'janus': 0, 'bridges': 1, 'comet': 2, 'summit': 3, 'stampede': 4}
     # Create training data
     experiments = createExperiments()
 
