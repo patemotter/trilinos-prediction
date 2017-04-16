@@ -82,19 +82,20 @@ classifier_list = [
     ['DecisionTree', DecisionTreeClassifier()],
     ['LogisticRegression', LogisticRegression()],
     ['MLP', MLPClassifier()],
-    ['SVC', SVC(probability=True)],
-    ['QDA', QuadraticDiscriminantAnalysis()],
     ['AdaBoost', AdaBoostClassifier()],
-    ['KNN', KNeighborsClassifier()]]
+    ['KNN', KNeighborsClassifier()]
+    #    ['SVC', SVC(probability=True)],
+    #    ['QDA', QuadraticDiscriminantAnalysis()],
+]
 
 samplers_list = [
-    ['SMOTE', SMOTE()],
     ['RandomOverSampler', RandomOverSampler()],
+    ['SMOTE', SMOTE()],
     ['DummySampler', DummySampler()],
     ['SMOTEENN', SMOTEENN()],
     ['SMOTETomek', SMOTETomek()],
-    ['ADASYN', ADASYN()]]
-
+    ['ADASYN', ADASYN()]
+]
 
 def compute_features_rfr(X, y, col_names):
     """Ranks the columns in order of importance based on Random Forest Regression"""
@@ -592,14 +593,27 @@ def createExperiments():
     #    for j in summit:
     #        expList.append(Exp(training_sys= systems['summit'], training_nps= i,
     #                           testing_sys= systems['summit'], testing_nps=j))
-    #expList.append(Exp(training_sys= systems['summit'], training_nps= 1,
-    #                   testing_sys= systems['summit'], testing_nps= 12))
-    #expList.append(Exp(training_sys= systems['summit'], training_nps= 1,
-    #                   testing_sys= systems['summit'], testing_nps= 1))
+
+    expList.append(Exp(training_sys= systems['summit'], training_nps= 1,
+                       testing_sys= systems['summit'], testing_nps= 1))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= 1,
+                       testing_sys= systems['summit'], testing_nps= 12))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= 1,
+                       testing_sys= systems['summit'], testing_nps= 24))
+
     expList.append(Exp(training_sys= systems['summit'], training_nps= 12,
                        testing_sys= systems['summit'], testing_nps= 1))
     expList.append(Exp(training_sys= systems['summit'], training_nps= 12,
                        testing_sys= systems['summit'], testing_nps= 12))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= 12,
+                       testing_sys= systems['summit'], testing_nps= 24))
+
+    expList.append(Exp(training_sys= systems['summit'], training_nps= 24,
+                       testing_sys= systems['summit'], testing_nps= 1))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= 24,
+                       testing_sys= systems['summit'], testing_nps= 12))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= 24,
+                       testing_sys= systems['summit'], testing_nps= 24))
     return expList
 
 

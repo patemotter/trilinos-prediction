@@ -1,0 +1,194 @@
+training_systems	training_numprocs	testing_systems	testing_numprocs	classifier	sampler	split	roc-auc	time
+3	24	3	12	GradientBoosting	RandomOverSampler	0	0.882	6.305
+3	24	3	12	GradientBoosting	RandomOverSampler	1	0.882	6.326
+3	24	3	12	GradientBoosting	RandomOverSampler	2	0.867	6.244
+3	24	3	12	GradientBoosting	RandomOverSampler	avg	0.877
+3	24	3	12	GradientBoosting	SMOTE	0	0.881	7.577
+3	24	3	12	GradientBoosting	SMOTE	1	0.874	7.929
+3	24	3	12	GradientBoosting	SMOTE	2	0.876	7.581
+3	24	3	12	GradientBoosting	SMOTE	avg	0.877
+3	24	3	12	GradientBoosting	DummySampler	0	0.869	2.329
+3	24	3	12	GradientBoosting	DummySampler	1	0.865	2.386
+3	24	3	12	GradientBoosting	DummySampler	2	0.861	2.353
+3	24	3	12	GradientBoosting	DummySampler	avg	0.865
+3	24	3	12	GradientBoosting	SMOTEENN	0	0.888	7.935
+3	24	3	12	GradientBoosting	SMOTEENN	1	0.88	7.822
+3	24	3	12	GradientBoosting	SMOTEENN	2	0.887	8.053
+3	24	3	12	GradientBoosting	SMOTEENN	avg	0.885
+3	24	3	12	GradientBoosting	SMOTETomek	0	0.881	8.884
+3	24	3	12	GradientBoosting	SMOTETomek	1	0.873	8.961
+3	24	3	12	GradientBoosting	SMOTETomek	2	0.883	9.01
+3	24	3	12	GradientBoosting	SMOTETomek	avg	0.879
+3	24	3	12	GradientBoosting	ADASYN	0	0.884	24.402
+3	24	3	12	GradientBoosting	ADASYN	1	0.884	24.455
+3	24	3	12	GradientBoosting	ADASYN	2	0.884	24.367
+3	24	3	12	GradientBoosting	ADASYN	avg	0.884
+3	24	3	12	RandomForest	RandomOverSampler	0	0.944	0.463
+3	24	3	12	RandomForest	RandomOverSampler	1	0.925	0.472
+3	24	3	12	RandomForest	RandomOverSampler	2	0.935	0.487
+3	24	3	12	RandomForest	RandomOverSampler	avg	0.935
+3	24	3	12	RandomForest	SMOTE	0	0.946	0.912
+3	24	3	12	RandomForest	SMOTE	1	0.923	0.966
+3	24	3	12	RandomForest	SMOTE	2	0.934	0.97
+3	24	3	12	RandomForest	SMOTE	avg	0.934
+3	24	3	12	RandomForest	DummySampler	0	0.95	0.226
+3	24	3	12	RandomForest	DummySampler	1	0.919	0.242
+3	24	3	12	RandomForest	DummySampler	2	0.933	0.245
+3	24	3	12	RandomForest	DummySampler	avg	0.934
+3	24	3	12	RandomForest	SMOTEENN	0	0.94	1.584
+3	24	3	12	RandomForest	SMOTEENN	1	0.918	1.652
+3	24	3	12	RandomForest	SMOTEENN	2	0.93	1.641
+3	24	3	12	RandomForest	SMOTEENN	avg	0.929
+3	24	3	12	RandomForest	SMOTETomek	0	0.941	2.228
+3	24	3	12	RandomForest	SMOTETomek	1	0.923	2.184
+3	24	3	12	RandomForest	SMOTETomek	2	0.934	2.134
+3	24	3	12	RandomForest	SMOTETomek	avg	0.933
+3	24	3	12	RandomForest	ADASYN	0	0.947	18.946
+3	24	3	12	RandomForest	ADASYN	1	0.927	19.023
+3	24	3	12	RandomForest	ADASYN	2	0.938	18.875
+3	24	3	12	RandomForest	ADASYN	avg	0.937
+3	24	3	12	GaussianNB	RandomOverSampler	0	0.489	0.04
+3	24	3	12	GaussianNB	RandomOverSampler	1	0.505	0.042
+3	24	3	12	GaussianNB	RandomOverSampler	2	0.498	0.043
+3	24	3	12	GaussianNB	RandomOverSampler	avg	0.497
+3	24	3	12	GaussianNB	SMOTE	0	0.491	0.174
+3	24	3	12	GaussianNB	SMOTE	1	0.504	0.178
+3	24	3	12	GaussianNB	SMOTE	2	0.499	0.178
+3	24	3	12	GaussianNB	SMOTE	avg	0.498
+3	24	3	12	GaussianNB	DummySampler	0	0.491	0.012
+3	24	3	12	GaussianNB	DummySampler	1	0.505	0.012
+3	24	3	12	GaussianNB	DummySampler	2	0.498	0.015
+3	24	3	12	GaussianNB	DummySampler	avg	0.498
+3	24	3	12	GaussianNB	SMOTEENN	0	0.489	0.908
+3	24	3	12	GaussianNB	SMOTEENN	1	0.507	0.948
+3	24	3	12	GaussianNB	SMOTEENN	2	0.501	0.925
+3	24	3	12	GaussianNB	SMOTEENN	avg	0.499
+3	24	3	12	GaussianNB	SMOTETomek	0	0.493	1.555
+3	24	3	12	GaussianNB	SMOTETomek	1	0.505	1.444
+3	24	3	12	GaussianNB	SMOTETomek	2	0.498	1.443
+3	24	3	12	GaussianNB	SMOTETomek	avg	0.499
+3	24	3	12	GaussianNB	ADASYN	0	0.49	18.696
+3	24	3	12	GaussianNB	ADASYN	1	0.502	18.46
+3	24	3	12	GaussianNB	ADASYN	2	0.499	18.319
+3	24	3	12	GaussianNB	ADASYN	avg	0.497
+3	24	3	12	DecisionTree	RandomOverSampler	0	0.943	0.245
+3	24	3	12	DecisionTree	RandomOverSampler	1	0.917	0.237
+3	24	3	12	DecisionTree	RandomOverSampler	2	0.938	0.255
+3	24	3	12	DecisionTree	RandomOverSampler	avg	0.932
+3	24	3	12	DecisionTree	SMOTE	0	0.945	0.654
+3	24	3	12	DecisionTree	SMOTE	1	0.915	0.649
+3	24	3	12	DecisionTree	SMOTE	2	0.936	0.666
+3	24	3	12	DecisionTree	SMOTE	avg	0.932
+3	24	3	12	DecisionTree	DummySampler	0	0.944	0.118
+3	24	3	12	DecisionTree	DummySampler	1	0.916	0.115
+3	24	3	12	DecisionTree	DummySampler	2	0.936	0.122
+3	24	3	12	DecisionTree	DummySampler	avg	0.932
+3	24	3	12	DecisionTree	SMOTEENN	0	0.93	1.4
+3	24	3	12	DecisionTree	SMOTEENN	1	0.904	1.372
+3	24	3	12	DecisionTree	SMOTEENN	2	0.924	1.429
+3	24	3	12	DecisionTree	SMOTEENN	avg	0.919
+3	24	3	12	DecisionTree	SMOTETomek	0	0.944	1.923
+3	24	3	12	DecisionTree	SMOTETomek	1	0.915	1.906
+3	24	3	12	DecisionTree	SMOTETomek	2	0.936	1.891
+3	24	3	12	DecisionTree	SMOTETomek	avg	0.932
+3	24	3	12	DecisionTree	ADASYN	0	0.943	18.623
+3	24	3	12	DecisionTree	ADASYN	1	0.915	18.662
+3	24	3	12	DecisionTree	ADASYN	2	0.935	18.522
+3	24	3	12	DecisionTree	ADASYN	avg	0.931
+3	24	3	12	LogisticRegression	RandomOverSampler	0	0.495	0.076
+3	24	3	12	LogisticRegression	RandomOverSampler	1	0.497	0.085
+3	24	3	12	LogisticRegression	RandomOverSampler	2	0.49	0.077
+3	24	3	12	LogisticRegression	RandomOverSampler	avg	0.494
+3	24	3	12	LogisticRegression	SMOTE	0	0.495	0.217
+3	24	3	12	LogisticRegression	SMOTE	1	0.497	0.216
+3	24	3	12	LogisticRegression	SMOTE	2	0.49	0.217
+3	24	3	12	LogisticRegression	SMOTE	avg	0.494
+3	24	3	12	LogisticRegression	DummySampler	0	0.507	0.032
+3	24	3	12	LogisticRegression	DummySampler	1	0.503	0.037
+3	24	3	12	LogisticRegression	DummySampler	2	0.509	0.039
+3	24	3	12	LogisticRegression	DummySampler	avg	0.506
+3	24	3	12	LogisticRegression	SMOTEENN	0	0.495	0.944
+3	24	3	12	LogisticRegression	SMOTEENN	1	0.497	1.045
+3	24	3	12	LogisticRegression	SMOTEENN	2	0.49	1.007
+3	24	3	12	LogisticRegression	SMOTEENN	avg	0.494
+3	24	3	12	LogisticRegression	SMOTETomek	0	0.495	1.592
+3	24	3	12	LogisticRegression	SMOTETomek	1	0.497	1.6
+3	24	3	12	LogisticRegression	SMOTETomek	2	0.49	1.485
+3	24	3	12	LogisticRegression	SMOTETomek	avg	0.494
+3	24	3	12	LogisticRegression	ADASYN	0	0.493	18.781
+3	24	3	12	LogisticRegression	ADASYN	1	0.497	18.571
+3	24	3	12	LogisticRegression	ADASYN	2	0.491	18.412
+3	24	3	12	LogisticRegression	ADASYN	avg	0.494
+3	24	3	12	MLP	RandomOverSampler	0	0.489	0.847
+3	24	3	12	MLP	RandomOverSampler	1	0.492	1.16
+3	24	3	12	MLP	RandomOverSampler	2	0.529	1.937
+3	24	3	12	MLP	RandomOverSampler	avg	0.503
+3	24	3	12	MLP	SMOTE	0	0.407	1.304
+3	24	3	12	MLP	SMOTE	1	0.455	1.132
+3	24	3	12	MLP	SMOTE	2	0.547	0.816
+3	24	3	12	MLP	SMOTE	avg	0.47
+3	24	3	12	MLP	DummySampler	0	0.508	1.095
+3	24	3	12	MLP	DummySampler	1	0.461	0.766
+3	24	3	12	MLP	DummySampler	2	0.456	0.771
+3	24	3	12	MLP	DummySampler	avg	0.475
+3	24	3	12	MLP	SMOTEENN	0	0.488	2.178
+3	24	3	12	MLP	SMOTEENN	1	0.462	2.772
+3	24	3	12	MLP	SMOTEENN	2	0.521	2.89
+3	24	3	12	MLP	SMOTEENN	avg	0.49
+3	24	3	12	MLP	SMOTETomek	0	0.493	2.407
+3	24	3	12	MLP	SMOTETomek	1	0.455	3.22
+3	24	3	12	MLP	SMOTETomek	2	0.483	2.854
+3	24	3	12	MLP	SMOTETomek	avg	0.477
+3	24	3	12	MLP	ADASYN	0	0.478	19.389
+3	24	3	12	MLP	ADASYN	1	0.486	19.775
+3	24	3	12	MLP	ADASYN	2	0.497	19.312
+3	24	3	12	MLP	ADASYN	avg	0.487
+3	24	3	12	AdaBoost	RandomOverSampler	0	0.853	2.23
+3	24	3	12	AdaBoost	RandomOverSampler	1	0.832	2.217
+3	24	3	12	AdaBoost	RandomOverSampler	2	0.837	2.195
+3	24	3	12	AdaBoost	RandomOverSampler	avg	0.841
+3	24	3	12	AdaBoost	SMOTE	0	0.807	3.4
+3	24	3	12	AdaBoost	SMOTE	1	0.784	3.389
+3	24	3	12	AdaBoost	SMOTE	2	0.81	3.416
+3	24	3	12	AdaBoost	SMOTE	avg	0.801
+3	24	3	12	AdaBoost	DummySampler	0	0.853	1.057
+3	24	3	12	AdaBoost	DummySampler	1	0.835	1.063
+3	24	3	12	AdaBoost	DummySampler	2	0.839	1.034
+3	24	3	12	AdaBoost	DummySampler	avg	0.842
+3	24	3	12	AdaBoost	SMOTEENN	0	0.812	4.077
+3	24	3	12	AdaBoost	SMOTEENN	1	0.784	4.058
+3	24	3	12	AdaBoost	SMOTEENN	2	0.819	4.088
+3	24	3	12	AdaBoost	SMOTEENN	avg	0.805
+3	24	3	12	AdaBoost	SMOTETomek	0	0.81	4.673
+3	24	3	12	AdaBoost	SMOTETomek	1	0.782	4.686
+3	24	3	12	AdaBoost	SMOTETomek	2	0.815	4.672
+3	24	3	12	AdaBoost	SMOTETomek	avg	0.802
+3	24	3	12	AdaBoost	ADASYN	0	0.848	20.709
+3	24	3	12	AdaBoost	ADASYN	1	0.842	20.554
+3	24	3	12	AdaBoost	ADASYN	2	0.844	20.676
+3	24	3	12	AdaBoost	ADASYN	avg	0.845
+3	24	3	12	KNN	RandomOverSampler	0	0.927	0.201
+3	24	3	12	KNN	RandomOverSampler	1	0.911	0.203
+3	24	3	12	KNN	RandomOverSampler	2	0.928	0.232
+3	24	3	12	KNN	RandomOverSampler	avg	0.922
+3	24	3	12	KNN	SMOTE	0	0.924	0.348
+3	24	3	12	KNN	SMOTE	1	0.905	0.388
+3	24	3	12	KNN	SMOTE	2	0.914	0.412
+3	24	3	12	KNN	SMOTE	avg	0.914
+3	24	3	12	KNN	DummySampler	0	0.937	0.09
+3	24	3	12	KNN	DummySampler	1	0.904	0.098
+3	24	3	12	KNN	DummySampler	2	0.915	0.114
+3	24	3	12	KNN	DummySampler	avg	0.919
+3	24	3	12	KNN	SMOTEENN	0	0.928	1.087
+3	24	3	12	KNN	SMOTEENN	1	0.899	1.061
+3	24	3	12	KNN	SMOTEENN	2	0.909	1.071
+3	24	3	12	KNN	SMOTEENN	avg	0.912
+3	24	3	12	KNN	SMOTETomek	0	0.937	1.668
+3	24	3	12	KNN	SMOTETomek	1	0.912	1.675
+3	24	3	12	KNN	SMOTETomek	2	0.921	1.617
+3	24	3	12	KNN	SMOTETomek	avg	0.924
+3	24	3	12	KNN	ADASYN	0	0.93	18.738
+3	24	3	12	KNN	ADASYN	1	0.911	18.621
+3	24	3	12	KNN	ADASYN	2	0.926	18.541
+3	24	3	12	KNN	ADASYN	avg	0.923
+3	24	3	12	RandomForest	ADASYN	best_avg	0.937
