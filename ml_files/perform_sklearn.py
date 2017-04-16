@@ -76,24 +76,24 @@ class DummySampler(object):
 
 
 classifier_list = [
-#    ['GradientBoosting', GradientBoostingClassifier()],
-    ['RandomForest', RandomForestClassifier()]]
-# ['GaussianNB', GaussianNB()],
-# ['DecisionTree', DecisionTreeClassifier()],
-# ['LogisticRegression', LogisticRegression()],
-# ['MLP', MLPClassifier()],
-# ['SVC', SVC(probability=True)],
-# ['QDA', QuadraticDiscriminantAnalysis()],
-# ['AdaBoost', AdaBoostClassifier()]
-# ['KNN', KNeighborsClassifier()]
+    ['GradientBoosting', GradientBoostingClassifier()],
+    ['RandomForest', RandomForestClassifier()],
+    ['GaussianNB', GaussianNB()],
+    ['DecisionTree', DecisionTreeClassifier()],
+    ['LogisticRegression', LogisticRegression()],
+    ['MLP', MLPClassifier()],
+    ['SVC', SVC(probability=True)],
+    ['QDA', QuadraticDiscriminantAnalysis()],
+    ['AdaBoost', AdaBoostClassifier()],
+    ['KNN', KNeighborsClassifier()]]
 
 samplers_list = [
     ['SMOTE', SMOTE()],
-    ['RandomOverSampler', RandomOverSampler()]]
-# ['DummySampler', DummySampler()],
-# ['SMOTEENN', SMOTEENN()],
-# ['SMOTETomek', SMOTETomek()],
-# ['ADASYN', ADASYN()],
+    ['RandomOverSampler', RandomOverSampler()],
+    ['DummySampler', DummySampler()],
+    ['SMOTEENN', SMOTEENN()],
+    ['SMOTETomek', SMOTETomek()],
+    ['ADASYN', ADASYN()]]
 
 
 def compute_features_rfr(X, y, col_names):
@@ -533,7 +533,8 @@ def classify_good_bad(combined, system, numprocs):
     good_bad_series = pd.Series(good_bad_list)
 
     # Add the series to the dataframe as columns
-    a = a.assign(new_time=pd.Series(new_time_series))
+    a.reset_index(drop=True,inplace=True)
+    a = a.assign(new_time=pd.Series(new_time_series.values))
     a = a.assign(good_or_bad=pd.Series(good_bad_series))
     return a
 
@@ -579,12 +580,27 @@ def merge_properties_and_times(properties_data, timing_data):
 
 
 def createExperiments():
-    l = list()
-    l.append(Exp(training_sys= 0, training_nps= 1, testing_sys= 0, testing_nps= 1 ))
-    l.append(Exp(training_sys= 0, training_nps= 1, testing_sys= 0, testing_nps= 12 ))
-    l.append(Exp(training_sys= 0, training_nps= 12, testing_sys= 0, testing_nps= 1 ))
-    l.append(Exp(training_sys= 0, training_nps= 12, testing_sys= 0, testing_nps= 12 ))
-    return l
+    stampede = (1,4,8,12,16)
+    bridges = (1,4,8,12,16,20,24,28)
+    comet = (1,4,8,12,16,20,24)
+    janus = (1,2,4,6,8,10,12)
+    summit = (1,4,8,12,16,20,24)
+    systems = {'janus': 0, 'bridges': 1, 'comet': 2, 'summit': 3, 'stampede': 4}
+
+    expList = list()
+    #for i in summit:
+    #    for j in summit:
+    #        expList.append(Exp(training_sys= systems['summit'], training_nps= i,
+    #                           testing_sys= systems['summit'], testing_nps=j))
+    #expList.append(Exp(training_sys= systems['summit'], training_nps= 1,
+    #                   testing_sys= systems['summit'], testing_nps= 12))
+    #expList.append(Exp(training_sys= systems['summit'], training_nps= 1,
+    #                   testing_sys= systems['summit'], testing_nps= 1))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= 12,
+                       testing_sys= systems['summit'], testing_nps= 1))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= 12,
+                       testing_sys= systems['summit'], testing_nps= 12))
+    return expList
 
 
 class Exp:
@@ -625,7 +641,9 @@ def main():
     # Read in and process system timings
     time_files = ['../data/janus/janus_unprocessed_timings.csv',
                   '../data/bridges/bridges_unprocessed_timings.csv',
-                  '../data/comet/comet_unprocessed_timings.csv']
+                  '../data/comet/comet_unprocessed_timings.csv',
+                  '../data/summit/summit_unprocessed_timings.csv',
+                  '../data/stampede/stampede_unprocessed_timings.csv']
     combined_times = get_times(time_files)
 
     # Systems: {'janus': 0, 'bridges': 1, 'comet': 2, 'summit': 3, 'stampede': 4}
@@ -641,8 +659,7 @@ def main():
         testing_merged = merge_properties_and_times(properties, testing_classified)
 
         # Compute the prediction ROC
-        print(
-            "training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\troc-auc\ttime")
+        print("training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\troc-auc\ttime")
         compute_roc(training_merged, exp.training_sys, exp.training_nps,
                     testing_merged, exp.testing_sys, exp.testing_nps, graph=True)
         print("Total execution time: ", round(time.time() - start_time, 3))
