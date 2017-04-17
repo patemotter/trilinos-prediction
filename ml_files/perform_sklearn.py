@@ -74,27 +74,44 @@ class DummySampler(object):
     def fit_sample(self, X, y):
         return self.sample(X, y)
 
+# predictions['classifier_id'] = predictions.classifier.map({
+#     'GradientBoosting': 0,
+#     'RandomForest': 1,
+#     'GaussianNB': 2,
+#     'DecisionTree': 3,
+#     'LogisticRegression': 4,
+#     'MLP': 5,
+#     'AdaBoost': 6,
+#     'KNN': 7}).astype(int)
+#
+# predictions['sampler_id'] = predictions.sampler.map({
+#     'RandomOverSampler': 0,
+#     'SMOTE': 1,
+#     'DummySampler': 2,
+#     'SMOTEENN': 3,
+#     'SMOTETomek': 4,
+#     'ADASYN': 5}).astype(int)
 
 classifier_list = [
-    ['GradientBoosting', GradientBoostingClassifier()],
+    #['GradientBoosting', GradientBoostingClassifier()],
     ['RandomForest', RandomForestClassifier()],
-    ['GaussianNB', GaussianNB()],
-    ['DecisionTree', DecisionTreeClassifier()],
-    ['LogisticRegression', LogisticRegression()],
-    ['MLP', MLPClassifier()],
-    ['AdaBoost', AdaBoostClassifier()],
-    ['KNN', KNeighborsClassifier()]
+    #['GaussianNB', GaussianNB()],
+    #['DecisionTree', DecisionTreeClassifier()],
+    #['LogisticRegression', LogisticRegression()],
+    #['MLP', MLPClassifier()],
+    #['AdaBoost', AdaBoostClassifier()],
+    #['KNN', KNeighborsClassifier()]
     #    ['SVC', SVC(probability=True)],
     #    ['QDA', QuadraticDiscriminantAnalysis()],
 ]
 
 samplers_list = [
     ['RandomOverSampler', RandomOverSampler()],
-    ['SMOTE', SMOTE()],
-    ['DummySampler', DummySampler()],
-    ['SMOTEENN', SMOTEENN()],
-    ['SMOTETomek', SMOTETomek()],
-    ['ADASYN', ADASYN()]
+    #['SMOTE', SMOTE()],
+    #['DummySampler', DummySampler()],
+    #['SMOTEENN', SMOTEENN()],
+    #['SMOTETomek', SMOTETomek()],
+#    ['ADASYN', ADASYN()] prohibitively expensive on larger datasets (3k+ secs)
 ]
 
 def compute_features_rfr(X, y, col_names):
@@ -472,6 +489,7 @@ def remove_bad_properties(properties):
 def classify_good_bad(combined, system, numprocs):
     # process np first
     #    combined.to_csv('test1.csv')
+    a = pd.DataFrame()
     if type(numprocs) == str and numprocs == "all":
         a = combined
     elif type(numprocs) == int:
@@ -486,10 +504,8 @@ def classify_good_bad(combined, system, numprocs):
     elif type(system) == int:
         a = a[(a.system_id == system)]
     elif type(system) == list:
-        temp = pd.DataFrame()
         for num in system:
-            temp = temp.append(a[(a.system_id == num)], ignore_index=True)
-        a = temp
+            a = a.append(a[(a.system_id == num)], ignore_index=True)
 
     # Determine the best times for each matrix
     good_bad_list = []
@@ -560,7 +576,7 @@ def get_times(time_files):
 
 def get_classification(combined_times, testing_systems, testing_numprocs):
     start_time = time.time()
-    filename = 'classified_' + str(testing_systems) + '_' + str(testing_numprocs) + '.csv'
+    filename = './classifications/classified_' + str(testing_systems) + '_' + str(testing_numprocs) + '.csv'
     if not path.exists(filename):
         testing_classified = classify_good_bad(combined_times, testing_systems, testing_numprocs)
         testing_classified.to_csv(filename)
@@ -614,6 +630,15 @@ def createExperiments():
                        testing_sys= systems['summit'], testing_nps= 12))
     expList.append(Exp(training_sys= systems['summit'], training_nps= 24,
                        testing_sys= systems['summit'], testing_nps= 24))
+
+    # expList.append(Exp(training_sys= systems['summit'], training_nps= "all",
+    #                    testing_sys= systems['summit'], testing_nps= 1))
+    # expList.append(Exp(training_sys= systems['summit'], training_nps= "all",
+    #                    testing_sys= systems['summit'], testing_nps= 24))
+    # expList.append(Exp(training_sys= systems['summit'], training_nps= [4,8,12,16,20,24],
+    #                    testing_sys= systems['summit'], testing_nps= 1))
+    # expList.append(Exp(training_sys= systems['summit'], training_nps= [1,4,8,12,16,20],
+    #                    testing_sys= systems['summit'], testing_nps= 24))
     return expList
 
 
