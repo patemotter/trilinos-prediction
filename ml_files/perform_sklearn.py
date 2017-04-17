@@ -60,6 +60,12 @@ rng = np.random.RandomState()
 skf = StratifiedKFold(n_splits=3, random_state=rng)
 sss = StratifiedShuffleSplit(n_splits=3, random_state=rng)
 
+stampede = [1,4,8,12,16]
+bridges = [1,4,8,12,16,20,24,28]
+comet = [1,4,8,12,16,20,24]
+janus = [1,2,4,6,8,10,12]
+summit = [1,4,8,12,16,20,24]
+systems = {'janus': 0, 'bridges': 1, 'comet': 2, 'summit': 3, 'stampede': 4}
 
 class DummySampler(object):
     """An empty sampler to compare against other classifier and sampler combinations"""
@@ -488,13 +494,12 @@ def remove_bad_properties(properties):
 
 def classify_good_bad(combined, system, numprocs):
     # process np first
-    #    combined.to_csv('test1.csv')
     a = pd.DataFrame()
     if type(numprocs) == str and numprocs == "all":
         a = combined
     elif type(numprocs) == int:
         a = combined[(combined.numprocs == numprocs)]
-    elif type(numprocs) == list:
+    elif type(numprocs) == tuple:
         for num in numprocs:
             a = a.append(combined[(combined.numprocs == num)], ignore_index=True)
 
@@ -503,7 +508,7 @@ def classify_good_bad(combined, system, numprocs):
         a = a
     elif type(system) == int:
         a = a[(a.system_id == system)]
-    elif type(system) == list:
+    elif type(system) == tuple:
         for num in system:
             a = a.append(a[(a.system_id == num)], ignore_index=True)
 
@@ -518,15 +523,6 @@ def classify_good_bad(combined, system, numprocs):
         matrix_name = row['matrix']
 
         # Check for matrices which never converged
-        """
-        if matrix_name in best_times:
-            if 1 in best_times[matrix_name]:
-                matrix_min_time = best_times[matrix_name][1]  # 1 indicates converged
-            else:
-                matrix_min_time = np.inf
-        else:
-            matrix_min_time = np.inf
-        """
         try:
             matrix_min_time = best_times[matrix_name][1]  # 1 indicates converged
         except:
@@ -576,15 +572,25 @@ def get_times(time_files):
 
 def get_classification(combined_times, testing_systems, testing_numprocs):
     start_time = time.time()
-    filename = './classifications/classified_' + str(testing_systems) + '_' + str(testing_numprocs) + '.csv'
-    if not path.exists(filename):
-        testing_classified = classify_good_bad(combined_times, testing_systems, testing_numprocs)
-        testing_classified.to_csv(filename)
-        print("Saving classification to ", filename)
-        print("Classification time: ", round(time.time() - start_time, 3), '\n')
-    else:
-        print('Classification file exists, loading from ' + filename, '\n')
-        testing_classified = pd.read_csv(filename, header=0, index_col=0)
+    if type(testing_systems) is not list:
+        testing_systems = [testing_systems]
+    if type(testing_numprocs) is not list:
+        testing_numprocs = [testing_numprocs]
+
+    testing_classified = pd.DataFrame()
+    for sys in testing_systems:
+        for np in testing_numprocs:
+            filename = './classifications/classified_' + str(sys) + '_' + str(np) + '.csv'
+            if not path.exists(filename):
+                temp = classify_good_bad(combined_times, sys, np)
+                temp.to_csv(filename)
+                testing_classified = testing_classified.append(temp)
+                print("Saving classification to ", filename)
+                print("Classification time: ", round(time.time() - start_time, 3), '\n')
+            else:
+                print('Classification file exists, loading from ' + filename, '\n')
+                temp = pd.read_csv(filename, header=0, index_col=0)
+                testing_classified = testing_classified.append(temp)
     return testing_classified
 
 
@@ -597,12 +603,7 @@ def merge_properties_and_times(properties_data, timing_data):
 
 
 def createExperiments():
-    stampede = (1,4,8,12,16)
-    bridges = (1,4,8,12,16,20,24,28)
-    comet = (1,4,8,12,16,20,24)
-    janus = (1,2,4,6,8,10,12)
-    summit = (1,4,8,12,16,20,24)
-    systems = {'janus': 0, 'bridges': 1, 'comet': 2, 'summit': 3, 'stampede': 4}
+
 
     expList = list()
     #for i in summit:
@@ -617,28 +618,28 @@ def createExperiments():
     expList.append(Exp(training_sys= systems['summit'], training_nps= 1,
                        testing_sys= systems['summit'], testing_nps= 24))
 
-    expList.append(Exp(training_sys= systems['summit'], training_nps= 12,
-                       testing_sys= systems['summit'], testing_nps= 1))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= 12,
-                       testing_sys= systems['summit'], testing_nps= 12))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= 12,
-                       testing_sys= systems['summit'], testing_nps= 24))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= [12],
+                       testing_sys= systems['summit'], testing_nps= [1]))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= [12],
+                       testing_sys= systems['summit'], testing_nps= [12]))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= [12],
+                       testing_sys= systems['summit'], testing_nps= [24]))
 
-    expList.append(Exp(training_sys= systems['summit'], training_nps= 24,
-                       testing_sys= systems['summit'], testing_nps= 1))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= 24,
-                       testing_sys= systems['summit'], testing_nps= 12))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= 24,
-                       testing_sys= systems['summit'], testing_nps= 24))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= [24],
+                       testing_sys= systems['summit'], testing_nps= [1]))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= [24],
+                       testing_sys= systems['summit'], testing_nps= [12]))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= [24],
+                       testing_sys= systems['summit'], testing_nps= [24]))
 
-    # expList.append(Exp(training_sys= systems['summit'], training_nps= "all",
-    #                    testing_sys= systems['summit'], testing_nps= 1))
-    # expList.append(Exp(training_sys= systems['summit'], training_nps= "all",
-    #                    testing_sys= systems['summit'], testing_nps= 24))
-    # expList.append(Exp(training_sys= systems['summit'], training_nps= [4,8,12,16,20,24],
-    #                    testing_sys= systems['summit'], testing_nps= 1))
-    # expList.append(Exp(training_sys= systems['summit'], training_nps= [1,4,8,12,16,20],
-    #                    testing_sys= systems['summit'], testing_nps= 24))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= summit,
+                       testing_sys= systems['summit'], testing_nps= 1))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= summit,
+                       testing_sys= systems['summit'], testing_nps= 24))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= [4,8,12,16,20,24],
+                       testing_sys= systems['summit'], testing_nps= 1))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= [1,4,8,12,16,20],
+                       testing_sys= systems['summit'], testing_nps= 24))
     return expList
 
 
