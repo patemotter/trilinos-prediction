@@ -256,9 +256,9 @@ def compute_roc(a, training_systems, training_numprocs, b, testing_systems, test
     """Computes the roc and auc for each split in the two datasets.
     np_a is used as the training data, np_b is used as the testing data"""
     total_start_time = time.time()
-    output_filename = str(testing_systems) + '_' + str(training_numprocs) + '_' + str(
-        testing_systems) + '_' + str(
-        testing_numprocs) + '_roc-auc.csv'
+    output_filename = str(testing_systems) + '_' + str(training_numprocs) + '_' + \
+                      str(testing_systems) + '_' + str(testing_numprocs) + '_auroc.csv'
+    output_filename = output_filename.replace(' ','')
     output = open(output_filename, 'w')
 
     i_a = 0
@@ -300,7 +300,7 @@ def compute_roc(a, training_systems, training_numprocs, b, testing_systems, test
     best_classifier = ""
     best_sampler = ""
     best_avg = 0.0
-    output.write("training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\troc-auc\ttime\n")
+    output.write("training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\tauroc\ttime\n")
     for clf_name, clf in classifier_list:
         for smp_name, smp in samplers_list:
             total = 0
@@ -368,16 +368,16 @@ def compute_roc(a, training_systems, training_numprocs, b, testing_systems, test
                             str(testing_numprocs) + '_' + str(clf_name) + '_' +
                             str(smp_name) + '.svg', bbox_inches='tight')
                 plt.close()
-    print(str(training_systems), str(training_numprocs), str(testing_systems),
-          str(testing_numprocs), best_classifier,
-          best_sampler, "best_avg",
-          best_avg,
-          sep='\t')
-    output.write(
-        str(training_systems) + '\t' + str(training_numprocs) + '\t' + str(
-            testing_systems) + '\t' + str(
-            testing_numprocs) + '\t' + best_classifier + '\t' +
-        best_sampler + "\tbest_avg\t" + str(best_avg) + '\n')
+    # print(str(training_systems), str(training_numprocs), str(testing_systems),
+    #       str(testing_numprocs), best_classifier,
+    #       best_sampler, "best_avg",
+    #       best_avg,
+    #       sep='\t')
+    # output.write(
+    #     str(training_systems) + '\t' + str(training_numprocs) + '\t' + str(
+    #         testing_systems) + '\t' + str(
+    #         testing_numprocs) + '\t' + best_classifier + '\t' +
+    #     best_sampler + "\tbest_avg\t" + str(best_avg) + '\n')
     print("ROC time: ", round(time.time() - total_start_time, 3))
 
 
@@ -618,28 +618,34 @@ def createExperiments():
     expList.append(Exp(training_sys= systems['summit'], training_nps= 1,
                        testing_sys= systems['summit'], testing_nps= 24))
 
-    expList.append(Exp(training_sys= systems['summit'], training_nps= [12],
-                       testing_sys= systems['summit'], testing_nps= [1]))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= [12],
-                       testing_sys= systems['summit'], testing_nps= [12]))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= [12],
-                       testing_sys= systems['summit'], testing_nps= [24]))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= 12,
+                       testing_sys= systems['summit'], testing_nps= 1))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= 12,
+                       testing_sys= systems['summit'], testing_nps= 12))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= 12,
+                       testing_sys= systems['summit'], testing_nps= 24))
 
-    expList.append(Exp(training_sys= systems['summit'], training_nps= [24],
-                       testing_sys= systems['summit'], testing_nps= [1]))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= [24],
-                       testing_sys= systems['summit'], testing_nps= [12]))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= [24],
-                       testing_sys= systems['summit'], testing_nps= [24]))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= 24,
+                       testing_sys= systems['summit'], testing_nps= 1))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= 24,
+                       testing_sys= systems['summit'], testing_nps= 12))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= 24,
+                       testing_sys= systems['summit'], testing_nps= 24))
 
     expList.append(Exp(training_sys= systems['summit'], training_nps= summit,
                        testing_sys= systems['summit'], testing_nps= 1))
     expList.append(Exp(training_sys= systems['summit'], training_nps= summit,
+                       testing_sys= systems['summit'], testing_nps= 12))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= summit,
                        testing_sys= systems['summit'], testing_nps= 24))
+
     expList.append(Exp(training_sys= systems['summit'], training_nps= [4,8,12,16,20,24],
                        testing_sys= systems['summit'], testing_nps= 1))
+    expList.append(Exp(training_sys= systems['summit'], training_nps= [1,4,8,16,20,24],
+                       testing_sys= systems['summit'], testing_nps= 12))
     expList.append(Exp(training_sys= systems['summit'], training_nps= [1,4,8,12,16,20],
                        testing_sys= systems['summit'], testing_nps= 24))
+
     return expList
 
 
@@ -699,7 +705,7 @@ def main():
         testing_merged = merge_properties_and_times(properties, testing_classified)
 
         # Compute the prediction ROC
-        print("training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\troc-auc\ttime")
+        print("training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\tauroc\ttime")
         compute_roc(training_merged, exp.training_sys, exp.training_nps,
                     testing_merged, exp.testing_sys, exp.testing_nps, graph=True)
         print("Total execution time: ", round(time.time() - start_time, 3))
