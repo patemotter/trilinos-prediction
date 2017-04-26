@@ -14,6 +14,7 @@ import random
 import time
 import matplotlib.colors as colors
 
+from scipy import interp
 from imblearn.metrics import *
 from sklearn.model_selection import GridSearchCV
 from sklearn.naive_bayes import GaussianNB
@@ -51,7 +52,6 @@ from sklearn.feature_selection import VarianceThreshold, GenericUnivariateSelect
 from sklearn.neural_network import MLPClassifier
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 
-
 # Printing options
 np.set_printoptions(precision=3)
 rng = np.random.RandomState()
@@ -60,12 +60,13 @@ rng = np.random.RandomState()
 skf = StratifiedKFold(n_splits=3, random_state=rng)
 sss = StratifiedShuffleSplit(n_splits=3, random_state=rng)
 
-stampede = [1,4,8,12,16]
-bridges = [1,4,8,12,16,20,24,28]
-comet = [1,4,8,12,16,20,24]
-janus = [1,2,4,6,8,10,12]
-summit = [1,4,8,12,16,20,24]
+stampede = [1, 4, 8, 12, 16]
+bridges = [1, 4, 8, 12, 16, 20, 24, 28]
+comet = [1, 4, 8, 12, 16, 20, 24]
+janus = [1, 2, 4, 6, 8, 10, 12]
+summit = [1, 4, 8, 12, 16, 20, 24]
 systems = {'janus': 0, 'bridges': 1, 'comet': 2, 'summit': 3, 'stampede': 4}
+
 
 class DummySampler(object):
     """An empty sampler to compare against other classifier and sampler combinations"""
@@ -79,6 +80,7 @@ class DummySampler(object):
 
     def fit_sample(self, X, y):
         return self.sample(X, y)
+
 
 # predictions['classifier_id'] = predictions.classifier.map({
 #     'GradientBoosting': 0,
@@ -99,26 +101,27 @@ class DummySampler(object):
 #     'ADASYN': 5}).astype(int)
 
 classifier_list = [
-    #['GradientBoosting', GradientBoostingClassifier()],
+    # ['GradientBoosting', GradientBoostingClassifier()],
     ['RandomForest', RandomForestClassifier()],
-    #['GaussianNB', GaussianNB()],
-    #['DecisionTree', DecisionTreeClassifier()],
-    #['LogisticRegression', LogisticRegression()],
-    #['MLP', MLPClassifier()],
-    #['AdaBoost', AdaBoostClassifier()],
-    #['KNN', KNeighborsClassifier()]
+    # ['GaussianNB', GaussianNB()],
+    # ['DecisionTree', DecisionTreeClassifier()],
+    # ['LogisticRegression', LogisticRegression()],
+    # ['MLP', MLPClassifier()],
+    # ['AdaBoost', AdaBoostClassifier()],
+    # ['KNN', KNeighborsClassifier()]
     #    ['SVC', SVC(probability=True)],
     #    ['QDA', QuadraticDiscriminantAnalysis()],
 ]
 
 samplers_list = [
     ['RandomOverSampler', RandomOverSampler()],
-    #['SMOTE', SMOTE()],
-    #['DummySampler', DummySampler()],
-    #['SMOTEENN', SMOTEENN()],
-    #['SMOTETomek', SMOTETomek()],
-#    ['ADASYN', ADASYN()] prohibitively expensive on larger datasets (3k+ secs)
+    # ['SMOTE', SMOTE()],
+    # ['DummySampler', DummySampler()],
+    # ['SMOTEENN', SMOTEENN()],
+    # ['SMOTETomek', SMOTETomek()],
+    #    ['ADASYN', ADASYN()] prohibitively expensive on larger datasets (3k+ secs)
 ]
+
 
 def compute_features_rfr(X, y, col_names):
     """Ranks the columns in order of importance based on Random Forest Regression"""
@@ -258,7 +261,7 @@ def compute_roc(a, training_systems, training_numprocs, b, testing_systems, test
     total_start_time = time.time()
     output_filename = str(testing_systems) + '_' + str(training_numprocs) + '_' + \
                       str(testing_systems) + '_' + str(testing_numprocs) + '_auroc.csv'
-    output_filename = output_filename.replace(' ','')
+    output_filename = output_filename.replace(' ', '')
     output = open(output_filename, 'w')
 
     i_a = 0
@@ -300,9 +303,12 @@ def compute_roc(a, training_systems, training_numprocs, b, testing_systems, test
     best_classifier = ""
     best_sampler = ""
     best_avg = 0.0
-    output.write("training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\tauroc\ttime\n")
+    output.write(
+        "training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\tauroc\ttime\n")
     for clf_name, clf in classifier_list:
         for smp_name, smp in samplers_list:
+            mean_tpr = 0.0
+            mean_fpr = np.linspace(0, 1, 100)
             total = 0
             if graph:
                 plt.figure()
@@ -318,6 +324,8 @@ def compute_roc(a, training_systems, training_numprocs, b, testing_systems, test
 
                 # Compute ROC curve and ROC area for each class
                 fpr, tpr, _ = roc_curve(y_b_test[split], model_prediction_results)
+                mean_tpr += interp(mean_fpr, fpr, tpr)
+                mean_tpr[0] = 0.0
                 roc_auc = auc(fpr, tpr)
                 wall_time = time.time() - start_time
                 if graph:
@@ -546,7 +554,7 @@ def classify_good_bad(combined, system, numprocs):
     good_bad_series = pd.Series(good_bad_list)
 
     # Add the series to the dataframe as columns
-    a.reset_index(drop=True,inplace=True)
+    a.reset_index(drop=True, inplace=True)
     a = a.assign(new_time=pd.Series(new_time_series.values))
     a = a.assign(good_or_bad=pd.Series(good_bad_series))
     return a
@@ -602,51 +610,140 @@ def merge_properties_and_times(properties_data, timing_data):
     return merged
 
 
-def createExperiments():
+def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_systems, testing_numprocs,
+                         graph=False):
+    """Computes the roc and auc for each split in the two datasets.
+    np_a is used as the training data, np_b is used as the testing data"""
+    total_start_time = time.time()
+    output_filename = str(testing_systems) + '_' + str(training_numprocs) + '_' + \
+                      str(testing_systems) + '_' + str(testing_numprocs) + '_auroc.csv'
+    output_filename = output_filename.replace(' ', '')
+    output = open(output_filename, 'w')
 
+    i_a = 0
 
-    expList = list()
-    #for i in summit:
-    #    for j in summit:
-    #        expList.append(Exp(training_sys= systems['summit'], training_nps= i,
-    #                           testing_sys= systems['summit'], testing_nps=j))
+    # Training and testing data from a
+    X_a_train, X_a_test = [], []
+    y_a_train, y_a_test = [], []
+    X_b_train, X_b_test = [], []
+    y_b_train, y_b_test = [], []
 
-    expList.append(Exp(training_sys= systems['summit'], training_nps= 1,
-                       testing_sys= systems['summit'], testing_nps= 1))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= 1,
-                       testing_sys= systems['summit'], testing_nps= 12))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= 1,
-                       testing_sys= systems['summit'], testing_nps= 24))
+    # Set training data to everything but last col, test data is last col
+    a_col_list = list(a.columns)
+    if a_col_list[-1] != "good_or_bad":
+        raise ValueError('Last element in "a" is not good_or_bad')
+    X_a = a.iloc[:, :-2]
+    y_a = a.iloc[:, -1]
 
-    expList.append(Exp(training_sys= systems['summit'], training_nps= 12,
-                       testing_sys= systems['summit'], testing_nps= 1))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= 12,
-                       testing_sys= systems['summit'], testing_nps= 12))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= 12,
-                       testing_sys= systems['summit'], testing_nps= 24))
+    b_col_list = list(b.columns)
+    if b_col_list[-1] != "good_or_bad":
+        raise ValueError('Last element in "b" is not good_or_bad')
+    X_b = b.iloc[:, :-2]
+    y_b = b.iloc[:, -1]
 
-    expList.append(Exp(training_sys= systems['summit'], training_nps= 24,
-                       testing_sys= systems['summit'], testing_nps= 1))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= 24,
-                       testing_sys= systems['summit'], testing_nps= 12))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= 24,
-                       testing_sys= systems['summit'], testing_nps= 24))
+    # Create splits in data using stratified k-fold
+    for train_index, test_index in sss.split(X_a, y_a):
+        X_a_train.append(X_a.values[train_index])
+        X_a_test.append(X_a.values[test_index])
+        y_a_train.append(y_a.values[train_index])
+        y_a_test.append(y_a.values[test_index])
+        i_a += 1
 
-    expList.append(Exp(training_sys= systems['summit'], training_nps= summit,
-                       testing_sys= systems['summit'], testing_nps= 1))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= summit,
-                       testing_sys= systems['summit'], testing_nps= 12))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= summit,
-                       testing_sys= systems['summit'], testing_nps= 24))
+    for train_index, test_index in sss.split(X_b, y_b):
+        X_b_train.append(X_b.values[train_index])
+        X_b_test.append(X_b.values[test_index])
+        y_b_train.append(y_b.values[train_index])
+        y_b_test.append(y_b.values[test_index])
 
-    expList.append(Exp(training_sys= systems['summit'], training_nps= [4,8,12,16,20,24],
-                       testing_sys= systems['summit'], testing_nps= 1))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= [1,4,8,16,20,24],
-                       testing_sys= systems['summit'], testing_nps= 12))
-    expList.append(Exp(training_sys= systems['summit'], training_nps= [1,4,8,12,16,20],
-                       testing_sys= systems['summit'], testing_nps= 24))
+    # Permute over the classifiers, samplers, and splits of the data
+    best_classifier = ""
+    best_sampler = ""
+    best_avg = 0.0
+    output.write(
+        "training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\tauroc\ttime\n")
+    for clf_name, clf in classifier_list:
+        for smp_name, smp in samplers_list:
+            mean_tpr = 0.0
+            mean_fpr = np.linspace(0, 1, 100)
+            total = 0
+            pipeline = pl.make_pipeline(smp, clf)
 
-    return expList
+            for split in range(0, i_a):
+                start_time = time.time()
+
+                # Fit model to a's training and testing data
+                # Compute success of predicting b's testing data using the model
+                model = pipeline.fit(X_a_train[split], y_a_train[split])
+                model_prediction_results = model.predict_proba(X_b_test[split])[:, 1]
+
+                # Compute ROC curve and ROC area for each class
+                fpr, tpr, _ = roc_curve(y_b_test[split], model_prediction_results)
+                mean_tpr += interp(mean_fpr, fpr, tpr)
+                mean_tpr[0] = 0.0
+                roc_auc = auc(fpr, tpr)
+                wall_time = time.time() - start_time
+                # if graph:
+                #    plt.plot(fpr, tpr, label='ROC curve - %d (AUC = %0.3f)' % (split, roc_auc))
+                total += roc_auc
+                print(str(training_systems), str(training_numprocs), str(testing_systems),
+                      str(testing_numprocs),
+                      clf_name, smp_name,
+                      split, round(roc_auc, 3), round(wall_time, 3), sep='\t')
+                output.write(
+                    str(training_systems) + '\t' + str(training_numprocs) + '\t' + str(
+                        testing_systems) + '\t' + str(
+                        testing_numprocs) + '\t' +
+                    clf_name + '\t' + smp_name + '\t' + str(split) + '\t' + str(round(roc_auc, 3)) +
+                    '\t' + str(round(wall_time, 3)) + '\n')
+
+            avg = round(total / float(i_a), 3)
+            print(str(training_systems), str(training_numprocs), str(testing_systems),
+                  str(testing_numprocs), clf_name,
+                  smp_name, "avg", avg,
+                  sep='\t')
+            output.write(
+                str(training_systems) + '\t' + str(training_numprocs) + '\t' + str(
+                    testing_systems) + '\t' + str(
+                    testing_numprocs) + '\t' +
+                clf_name + '\t' + smp_name + '\t' + 'avg' + '\t' + str(avg) + '\n')
+
+            # Keep track of best results
+            if avg > best_avg:
+                best_avg = avg
+                best_sampler = smp_name
+                best_classifier = clf_name
+
+            # Create and save roc graph if desired
+            if graph:
+                mean_tpr /= float(i_a)
+                mean_tpr[-1] = 1.0
+                mean_auc = auc(mean_fpr, mean_tpr)
+                plt.plot(mean_fpr, mean_tpr,
+                         label='{}_{} AUC={:{prec}}'.format(str(training_numprocs), str(testing_numprocs), mean_auc,
+                                                            prec='.2'))
+                plt.plot([0, 1], [0, 1], 'k--')
+                plt.xlim([0.0, 1.0])
+                plt.ylim([0.0, 1.05])
+                plt.xlabel('False Positive Rate')
+                plt.ylabel('True Positive Rate')
+                # plt.title('ROC Curves of Different Training and Testing NPs\n')
+                plt.legend(loc="lower right")
+                # plt.savefig('../data/roc_curves/' + str(testing_systems) + '_' + str(
+                #    training_numprocs) + '_' + str(
+                #    testing_systems) + '_' +
+                #            str(testing_numprocs) + '_' + str(clf_name) + '_' +
+                #            str(smp_name) + '.svg', bbox_inches='tight')
+    # print(str(training_systems), str(training_numprocs), str(testing_systems),
+    #       str(testing_numprocs), best_classifier,
+    #       best_sampler, "best_avg",
+    #       best_avg,
+    #       sep='\t')
+    # output.write(
+    #     str(training_systems) + '\t' + str(training_numprocs) + '\t' + str(
+    #         testing_systems) + '\t' + str(
+    #         testing_numprocs) + '\t' + best_classifier + '\t' +
+    #     best_sampler + "\tbest_avg\t" + str(best_avg) + '\n')
+    print("ROC time: ", round(time.time() - total_start_time, 3))
 
 
 class Exp:
@@ -658,28 +755,124 @@ class Exp:
         self.testing_nps = testing_nps
 
 
+def createExperiments():
+    expList = []
+    expList.append([])
+    expList.append([])
+    expList.append([])
+    expList.append([])
+    expList.append([])
+    expList.append([])
+    expList.append([])
+
+    expList[0].append(Exp(training_sys=systems['summit'], training_nps=1,
+                          testing_sys=systems['summit'], testing_nps=1))
+    expList[0].append(Exp(training_sys=systems['summit'], training_nps=1,
+                          testing_sys=systems['summit'], testing_nps=4))
+    expList[0].append(Exp(training_sys=systems['summit'], training_nps=1,
+                          testing_sys=systems['summit'], testing_nps=8))
+    expList[0].append(Exp(training_sys=systems['summit'], training_nps=1,
+                          testing_sys=systems['summit'], testing_nps=12))
+    expList[0].append(Exp(training_sys=systems['summit'], training_nps=1,
+                          testing_sys=systems['summit'], testing_nps=16))
+    expList[0].append(Exp(training_sys=systems['summit'], training_nps=1,
+                          testing_sys=systems['summit'], testing_nps=20))
+    expList[0].append(Exp(training_sys=systems['summit'], training_nps=1,
+                          testing_sys=systems['summit'], testing_nps=24))
+
+    expList[1].append(Exp(training_sys=systems['summit'], training_nps=4,
+                          testing_sys=systems['summit'], testing_nps=1))
+    expList[1].append(Exp(training_sys=systems['summit'], training_nps=4,
+                          testing_sys=systems['summit'], testing_nps=4))
+    expList[1].append(Exp(training_sys=systems['summit'], training_nps=4,
+                          testing_sys=systems['summit'], testing_nps=8))
+    expList[1].append(Exp(training_sys=systems['summit'], training_nps=4,
+                          testing_sys=systems['summit'], testing_nps=12))
+    expList[1].append(Exp(training_sys=systems['summit'], training_nps=4,
+                          testing_sys=systems['summit'], testing_nps=16))
+    expList[1].append(Exp(training_sys=systems['summit'], training_nps=4,
+                          testing_sys=systems['summit'], testing_nps=20))
+    expList[1].append(Exp(training_sys=systems['summit'], training_nps=4,
+                          testing_sys=systems['summit'], testing_nps=24))
+
+    expList[2].append(Exp(training_sys=systems['summit'], training_nps=8,
+                          testing_sys=systems['summit'], testing_nps=1))
+    expList[2].append(Exp(training_sys=systems['summit'], training_nps=8,
+                          testing_sys=systems['summit'], testing_nps=4))
+    expList[2].append(Exp(training_sys=systems['summit'], training_nps=8,
+                          testing_sys=systems['summit'], testing_nps=8))
+    expList[2].append(Exp(training_sys=systems['summit'], training_nps=8,
+                          testing_sys=systems['summit'], testing_nps=12))
+    expList[2].append(Exp(training_sys=systems['summit'], training_nps=8,
+                          testing_sys=systems['summit'], testing_nps=16))
+    expList[2].append(Exp(training_sys=systems['summit'], training_nps=8,
+                          testing_sys=systems['summit'], testing_nps=20))
+    expList[2].append(Exp(training_sys=systems['summit'], training_nps=8,
+                          testing_sys=systems['summit'], testing_nps=24))
+
+    expList[3].append(Exp(training_sys=systems['summit'], training_nps=12,
+                          testing_sys=systems['summit'], testing_nps=1))
+    expList[3].append(Exp(training_sys=systems['summit'], training_nps=12,
+                          testing_sys=systems['summit'], testing_nps=4))
+    expList[3].append(Exp(training_sys=systems['summit'], training_nps=12,
+                          testing_sys=systems['summit'], testing_nps=8))
+    expList[3].append(Exp(training_sys=systems['summit'], training_nps=12,
+                          testing_sys=systems['summit'], testing_nps=12))
+    expList[3].append(Exp(training_sys=systems['summit'], training_nps=12,
+                          testing_sys=systems['summit'], testing_nps=16))
+    expList[3].append(Exp(training_sys=systems['summit'], training_nps=12,
+                          testing_sys=systems['summit'], testing_nps=20))
+    expList[3].append(Exp(training_sys=systems['summit'], training_nps=12,
+                          testing_sys=systems['summit'], testing_nps=24))
+
+    expList[4].append(Exp(training_sys=systems['summit'], training_nps=16,
+                          testing_sys=systems['summit'], testing_nps=1))
+    expList[4].append(Exp(training_sys=systems['summit'], training_nps=16,
+                          testing_sys=systems['summit'], testing_nps=4))
+    expList[4].append(Exp(training_sys=systems['summit'], training_nps=16,
+                          testing_sys=systems['summit'], testing_nps=8))
+    expList[4].append(Exp(training_sys=systems['summit'], training_nps=16,
+                          testing_sys=systems['summit'], testing_nps=12))
+    expList[4].append(Exp(training_sys=systems['summit'], training_nps=16,
+                          testing_sys=systems['summit'], testing_nps=16))
+    expList[4].append(Exp(training_sys=systems['summit'], training_nps=16,
+                          testing_sys=systems['summit'], testing_nps=20))
+    expList[4].append(Exp(training_sys=systems['summit'], training_nps=16,
+                          testing_sys=systems['summit'], testing_nps=24))
+
+    expList[5].append(Exp(training_sys=systems['summit'], training_nps=20,
+                          testing_sys=systems['summit'], testing_nps=1))
+    expList[5].append(Exp(training_sys=systems['summit'], training_nps=20,
+                          testing_sys=systems['summit'], testing_nps=4))
+    expList[5].append(Exp(training_sys=systems['summit'], training_nps=20,
+                          testing_sys=systems['summit'], testing_nps=8))
+    expList[5].append(Exp(training_sys=systems['summit'], training_nps=20,
+                          testing_sys=systems['summit'], testing_nps=12))
+    expList[5].append(Exp(training_sys=systems['summit'], training_nps=20,
+                          testing_sys=systems['summit'], testing_nps=16))
+    expList[5].append(Exp(training_sys=systems['summit'], training_nps=20,
+                          testing_sys=systems['summit'], testing_nps=20))
+    expList[5].append(Exp(training_sys=systems['summit'], training_nps=20,
+                          testing_sys=systems['summit'], testing_nps=24))
+
+    expList[6].append(Exp(training_sys=systems['summit'], training_nps=24,
+                          testing_sys=systems['summit'], testing_nps=1))
+    expList[6].append(Exp(training_sys=systems['summit'], training_nps=24,
+                          testing_sys=systems['summit'], testing_nps=4))
+    expList[6].append(Exp(training_sys=systems['summit'], training_nps=24,
+                          testing_sys=systems['summit'], testing_nps=8))
+    expList[6].append(Exp(training_sys=systems['summit'], training_nps=24,
+                          testing_sys=systems['summit'], testing_nps=12))
+    expList[6].append(Exp(training_sys=systems['summit'], training_nps=24,
+                          testing_sys=systems['summit'], testing_nps=16))
+    expList[6].append(Exp(training_sys=systems['summit'], training_nps=24,
+                          testing_sys=systems['summit'], testing_nps=20))
+    expList[6].append(Exp(training_sys=systems['summit'], training_nps=24,
+                          testing_sys=systems['summit'], testing_nps=24))
+    return expList
+
+
 def main():
-
-    """
-    training_systems = 0
-    training_numprocs = 1
-    training_classified = get_classification(combined_times, training_systems, training_numprocs)
-    training = merge_properties_and_times(properties, training_classified)
-    print(training.head())
-    clf = RandomForestClassifier(n_estimators=1000)
-    X = training.iloc[:, :-2]
-    y = training.iloc[:, -1]
-    clf.fit(X, y)
-    importances = clf.feature_importances_
-    std = np.std([tree.feature_importances_ for tree in clf.estimators_], axis=0)
-    indices = np.argsort(importances)[::-1]
-    print("Feature ranking:")
-    for f in range(X.shape[1]):
-        print("%d. feature %d %s (%f)" % (f + 1, indices[f], X.columns[f], importances[indices[f]]))
-
-    exit()
-    """
-
     # Read in and process properties
     start_time = time.time()
     properties = get_properties('../data/processed_properties.csv')
@@ -696,20 +889,24 @@ def main():
     # Create training data
     experiments = createExperiments()
 
-    for exp in experiments:
-        training_classified = get_classification(combined_times, exp.training_sys, exp.training_nps)
-        training_merged = merge_properties_and_times(properties, training_classified)
+    for fig in experiments:
+        plt.figure()
+        for exp in fig:
+            training_classified = get_classification(combined_times, exp.training_sys, exp.training_nps)
+            training_merged = merge_properties_and_times(properties, training_classified)
 
-        # Create testing data
-        testing_classified = get_classification(combined_times, exp.testing_sys, exp.testing_nps)
-        testing_merged = merge_properties_and_times(properties, testing_classified)
+            # Create testing data
+            testing_classified = get_classification(combined_times, exp.testing_sys, exp.testing_nps)
+            testing_merged = merge_properties_and_times(properties, testing_classified)
 
-        # Compute the prediction ROC
-        print("training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\tauroc\ttime")
-        compute_roc(training_merged, exp.training_sys, exp.training_nps,
-                    testing_merged, exp.testing_sys, exp.testing_nps, graph=True)
-        print("Total execution time: ", round(time.time() - start_time, 3))
+            # Compute the prediction ROC
+            print(
+                "training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\tauroc\ttime")
+            compute_multiple_roc(training_merged, exp.training_sys, exp.training_nps,
+                                 testing_merged, exp.testing_sys, exp.testing_nps, graph=True)
+            print("Total execution time: ", round(time.time() - start_time, 3))
 
+    plt.show()
     # cnf = confusion_matrix(y_true=y_test[split], y_pred=pipeline.predict(X_test[split]))
     # show_confusion_matrix(cnf)
 
