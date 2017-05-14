@@ -611,7 +611,7 @@ def merge_properties_and_times(properties_data, timing_data):
 
 
 def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_systems, testing_numprocs,
-                         graph=False):
+                         ls, graph=False):
     """Computes the roc and auc for each split in the two datasets.
     np_a is used as the training data, np_b is used as the testing data"""
     total_start_time = time.time()
@@ -656,6 +656,7 @@ def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_syst
         y_b_test.append(y_b.values[test_index])
 
     # Permute over the classifiers, samplers, and splits of the data
+
     best_classifier = ""
     best_sampler = ""
     best_avg = 0.0
@@ -715,19 +716,23 @@ def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_syst
 
             # Create and save roc graph if desired
             if graph:
+                plt.rcParams['lines.linewidth'] = 3
                 mean_tpr /= float(i_a)
                 mean_tpr[-1] = 1.0
                 mean_auc = auc(mean_fpr, mean_tpr)
-                plt.plot(mean_fpr, mean_tpr,
-                         label='{}_{} AUC={:{prec}}'.format(str(training_numprocs), str(testing_numprocs), mean_auc,
-                                                            prec='.2'))
+                if type(training_numprocs) is list:
+                    training_numprocs="all"
+                plt.plot(mean_fpr, mean_tpr, linestyle=ls,
+                         label='{}_{} AUC={:{prec}}'.format(str(training_numprocs).replace(' ', ''),
+                                                            str(testing_numprocs).replace(' ', ''),
+                                                            mean_auc, prec='.2'))
                 plt.plot([0, 1], [0, 1], 'k--')
                 plt.xlim([0.0, 1.0])
                 plt.ylim([0.0, 1.05])
-                plt.xlabel('False Positive Rate')
-                plt.ylabel('True Positive Rate')
-                # plt.title('ROC Curves of Different Training and Testing NPs\n')
-                plt.legend(loc="lower right")
+                plt.xlabel('False Positive Rate', fontsize=14)
+                plt.ylabel('True Positive Rate', fontsize=14)
+                plt.legend(loc="lower right", prop={'size':14})
+                plt.tick_params(axis='both', which='major', labelsize=12)
                 # plt.savefig('../data/roc_curves/' + str(testing_systems) + '_' + str(
                 #    training_numprocs) + '_' + str(
                 #    testing_systems) + '_' +
@@ -757,117 +762,53 @@ class Exp:
 
 def createExperiments():
     expList = []
-    expList.append([])
-    expList.append([])
-    expList.append([])
-    expList.append([])
-    expList.append([])
-    expList.append([])
-    expList.append([])
 
-    expList[0].append(Exp(training_sys=systems['summit'], training_nps=1,
+    expList.append([])
+    expList[0].append(Exp(training_sys=systems['summit'], training_nps=[1,4,8,12,16,20,24],
                           testing_sys=systems['summit'], testing_nps=1))
-    expList[0].append(Exp(training_sys=systems['summit'], training_nps=1,
+    expList[0].append(Exp(training_sys=systems['summit'], training_nps=[1,4,8,12,16,20,24],
                           testing_sys=systems['summit'], testing_nps=4))
-    expList[0].append(Exp(training_sys=systems['summit'], training_nps=1,
+    expList[0].append(Exp(training_sys=systems['summit'], training_nps=[1,4,8,12,16,20,24],
                           testing_sys=systems['summit'], testing_nps=8))
-    expList[0].append(Exp(training_sys=systems['summit'], training_nps=1,
+    expList[0].append(Exp(training_sys=systems['summit'], training_nps=[1,4,8,12,16,20,24],
                           testing_sys=systems['summit'], testing_nps=12))
-    expList[0].append(Exp(training_sys=systems['summit'], training_nps=1,
+    expList[0].append(Exp(training_sys=systems['summit'], training_nps=[1,4,8,12,16,20,24],
                           testing_sys=systems['summit'], testing_nps=16))
-    expList[0].append(Exp(training_sys=systems['summit'], training_nps=1,
+    expList[0].append(Exp(training_sys=systems['summit'], training_nps=[1,4,8,12,16,20,24],
                           testing_sys=systems['summit'], testing_nps=20))
-    expList[0].append(Exp(training_sys=systems['summit'], training_nps=1,
+    expList[0].append(Exp(training_sys=systems['summit'], training_nps=[1,4,8,12,16,20,24],
                           testing_sys=systems['summit'], testing_nps=24))
 
-    expList[1].append(Exp(training_sys=systems['summit'], training_nps=4,
+    expList.append([])
+    expList[1].append(Exp(training_sys=systems['summit'], training_nps=1,
                           testing_sys=systems['summit'], testing_nps=1))
-    expList[1].append(Exp(training_sys=systems['summit'], training_nps=4,
+    expList[1].append(Exp(training_sys=systems['summit'], training_nps=1,
                           testing_sys=systems['summit'], testing_nps=4))
-    expList[1].append(Exp(training_sys=systems['summit'], training_nps=4,
+    expList[1].append(Exp(training_sys=systems['summit'], training_nps=1,
                           testing_sys=systems['summit'], testing_nps=8))
-    expList[1].append(Exp(training_sys=systems['summit'], training_nps=4,
+    expList[1].append(Exp(training_sys=systems['summit'], training_nps=1,
                           testing_sys=systems['summit'], testing_nps=12))
-    expList[1].append(Exp(training_sys=systems['summit'], training_nps=4,
+    expList[1].append(Exp(training_sys=systems['summit'], training_nps=1,
                           testing_sys=systems['summit'], testing_nps=16))
-    expList[1].append(Exp(training_sys=systems['summit'], training_nps=4,
+    expList[1].append(Exp(training_sys=systems['summit'], training_nps=1,
                           testing_sys=systems['summit'], testing_nps=20))
-    expList[1].append(Exp(training_sys=systems['summit'], training_nps=4,
+    expList[1].append(Exp(training_sys=systems['summit'], training_nps=1,
                           testing_sys=systems['summit'], testing_nps=24))
 
-    expList[2].append(Exp(training_sys=systems['summit'], training_nps=8,
+    expList.append([])
+    expList[2].append(Exp(training_sys=systems['summit'], training_nps=24,
                           testing_sys=systems['summit'], testing_nps=1))
-    expList[2].append(Exp(training_sys=systems['summit'], training_nps=8,
+    expList[2].append(Exp(training_sys=systems['summit'], training_nps=24,
                           testing_sys=systems['summit'], testing_nps=4))
-    expList[2].append(Exp(training_sys=systems['summit'], training_nps=8,
+    expList[2].append(Exp(training_sys=systems['summit'], training_nps=24,
                           testing_sys=systems['summit'], testing_nps=8))
-    expList[2].append(Exp(training_sys=systems['summit'], training_nps=8,
+    expList[2].append(Exp(training_sys=systems['summit'], training_nps=24,
                           testing_sys=systems['summit'], testing_nps=12))
-    expList[2].append(Exp(training_sys=systems['summit'], training_nps=8,
+    expList[2].append(Exp(training_sys=systems['summit'], training_nps=24,
                           testing_sys=systems['summit'], testing_nps=16))
-    expList[2].append(Exp(training_sys=systems['summit'], training_nps=8,
+    expList[2].append(Exp(training_sys=systems['summit'], training_nps=24,
                           testing_sys=systems['summit'], testing_nps=20))
-    expList[2].append(Exp(training_sys=systems['summit'], training_nps=8,
-                          testing_sys=systems['summit'], testing_nps=24))
-
-    expList[3].append(Exp(training_sys=systems['summit'], training_nps=12,
-                          testing_sys=systems['summit'], testing_nps=1))
-    expList[3].append(Exp(training_sys=systems['summit'], training_nps=12,
-                          testing_sys=systems['summit'], testing_nps=4))
-    expList[3].append(Exp(training_sys=systems['summit'], training_nps=12,
-                          testing_sys=systems['summit'], testing_nps=8))
-    expList[3].append(Exp(training_sys=systems['summit'], training_nps=12,
-                          testing_sys=systems['summit'], testing_nps=12))
-    expList[3].append(Exp(training_sys=systems['summit'], training_nps=12,
-                          testing_sys=systems['summit'], testing_nps=16))
-    expList[3].append(Exp(training_sys=systems['summit'], training_nps=12,
-                          testing_sys=systems['summit'], testing_nps=20))
-    expList[3].append(Exp(training_sys=systems['summit'], training_nps=12,
-                          testing_sys=systems['summit'], testing_nps=24))
-
-    expList[4].append(Exp(training_sys=systems['summit'], training_nps=16,
-                          testing_sys=systems['summit'], testing_nps=1))
-    expList[4].append(Exp(training_sys=systems['summit'], training_nps=16,
-                          testing_sys=systems['summit'], testing_nps=4))
-    expList[4].append(Exp(training_sys=systems['summit'], training_nps=16,
-                          testing_sys=systems['summit'], testing_nps=8))
-    expList[4].append(Exp(training_sys=systems['summit'], training_nps=16,
-                          testing_sys=systems['summit'], testing_nps=12))
-    expList[4].append(Exp(training_sys=systems['summit'], training_nps=16,
-                          testing_sys=systems['summit'], testing_nps=16))
-    expList[4].append(Exp(training_sys=systems['summit'], training_nps=16,
-                          testing_sys=systems['summit'], testing_nps=20))
-    expList[4].append(Exp(training_sys=systems['summit'], training_nps=16,
-                          testing_sys=systems['summit'], testing_nps=24))
-
-    expList[5].append(Exp(training_sys=systems['summit'], training_nps=20,
-                          testing_sys=systems['summit'], testing_nps=1))
-    expList[5].append(Exp(training_sys=systems['summit'], training_nps=20,
-                          testing_sys=systems['summit'], testing_nps=4))
-    expList[5].append(Exp(training_sys=systems['summit'], training_nps=20,
-                          testing_sys=systems['summit'], testing_nps=8))
-    expList[5].append(Exp(training_sys=systems['summit'], training_nps=20,
-                          testing_sys=systems['summit'], testing_nps=12))
-    expList[5].append(Exp(training_sys=systems['summit'], training_nps=20,
-                          testing_sys=systems['summit'], testing_nps=16))
-    expList[5].append(Exp(training_sys=systems['summit'], training_nps=20,
-                          testing_sys=systems['summit'], testing_nps=20))
-    expList[5].append(Exp(training_sys=systems['summit'], training_nps=20,
-                          testing_sys=systems['summit'], testing_nps=24))
-
-    expList[6].append(Exp(training_sys=systems['summit'], training_nps=24,
-                          testing_sys=systems['summit'], testing_nps=1))
-    expList[6].append(Exp(training_sys=systems['summit'], training_nps=24,
-                          testing_sys=systems['summit'], testing_nps=4))
-    expList[6].append(Exp(training_sys=systems['summit'], training_nps=24,
-                          testing_sys=systems['summit'], testing_nps=8))
-    expList[6].append(Exp(training_sys=systems['summit'], training_nps=24,
-                          testing_sys=systems['summit'], testing_nps=12))
-    expList[6].append(Exp(training_sys=systems['summit'], training_nps=24,
-                          testing_sys=systems['summit'], testing_nps=16))
-    expList[6].append(Exp(training_sys=systems['summit'], training_nps=24,
-                          testing_sys=systems['summit'], testing_nps=20))
-    expList[6].append(Exp(training_sys=systems['summit'], training_nps=24,
+    expList[2].append(Exp(training_sys=systems['summit'], training_nps=24,
                           testing_sys=systems['summit'], testing_nps=24))
     return expList
 
@@ -888,9 +829,23 @@ def main():
     # Systems: {'janus': 0, 'bridges': 1, 'comet': 2, 'summit': 3, 'stampede': 4}
     # Create training data
     experiments = createExperiments()
-
+    linestyles = [
+        (0, ()),
+        (0, (3, 1, 1, 1)),
+        (0, (3, 5, 3, 5)),
+        (0, (5, 1, 10, 3)),
+        (0, (1, 1)),
+        (0, (5, 1)),
+        (0, (3, 5, 1, 5)),
+        (0, (5, 5)),
+        (0, (1, 5)),
+        (0, (2, 3, 4, 1))
+    ]
+    ls_iter = 0
+    plt.style.use('seaborn-paper')
     for fig in experiments:
         plt.figure()
+        ls_iter = 0
         for exp in fig:
             training_classified = get_classification(combined_times, exp.training_sys, exp.training_nps)
             training_merged = merge_properties_and_times(properties, training_classified)
@@ -903,7 +858,8 @@ def main():
             print(
                 "training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\tauroc\ttime")
             compute_multiple_roc(training_merged, exp.training_sys, exp.training_nps,
-                                 testing_merged, exp.testing_sys, exp.testing_nps, graph=True)
+                                 testing_merged, exp.testing_sys, exp.testing_nps, linestyles[ls_iter], graph=True)
+            ls_iter += 1
             print("Total execution time: ", round(time.time() - start_time, 3))
 
     plt.show()
