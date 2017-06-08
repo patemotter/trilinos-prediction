@@ -1,0 +1,26 @@
+training_systems	training_numprocs	testing_systems	testing_numprocs	classifier	sampler	split	roc-auc	time
+3	[1, 4, 8, 12, 16, 20]	3	24	RandomForest	RandomOverSampler	0	0.748	5.958
+3	[1, 4, 8, 12, 16, 20]	3	24	RandomForest	RandomOverSampler	1	0.802	5.903
+3	[1, 4, 8, 12, 16, 20]	3	24	RandomForest	RandomOverSampler	2	0.762	6.237
+3	[1, 4, 8, 12, 16, 20]	3	24	RandomForest	RandomOverSampler	avg	0.771
+3	[1, 4, 8, 12, 16, 20]	3	24	RandomForest	SMOTE	0	0.753	8.72
+3	[1, 4, 8, 12, 16, 20]	3	24	RandomForest	SMOTE	1	0.822	9.104
+3	[1, 4, 8, 12, 16, 20]	3	24	RandomForest	SMOTE	2	0.768	8.846
+3	[1, 4, 8, 12, 16, 20]	3	24	RandomForest	SMOTE	avg	0.781
+3	[1, 4, 8, 12, 16, 20]	3	24	DecisionTree	RandomOverSampler	0	0.746	2.395
+3	[1, 4, 8, 12, 16, 20]	3	24	DecisionTree	RandomOverSampler	1	0.797	2.307
+3	[1, 4, 8, 12, 16, 20]	3	24	DecisionTree	RandomOverSampler	2	0.76	2.307
+3	[1, 4, 8, 12, 16, 20]	3	24	DecisionTree	RandomOverSampler	avg	0.768
+3	[1, 4, 8, 12, 16, 20]	3	24	DecisionTree	SMOTE	0	0.746	4.904
+3	[1, 4, 8, 12, 16, 20]	3	24	DecisionTree	SMOTE	1	0.797	4.853
+3	[1, 4, 8, 12, 16, 20]	3	24	DecisionTree	SMOTE	2	0.761	4.899
+3	[1, 4, 8, 12, 16, 20]	3	24	DecisionTree	SMOTE	avg	0.768
+3	[1, 4, 8, 12, 16, 20]	3	24	KNN	RandomOverSampler	0	0.732	4.513
+3	[1, 4, 8, 12, 16, 20]	3	24	KNN	RandomOverSampler	1	0.785	4.313
+3	[1, 4, 8, 12, 16, 20]	3	24	KNN	RandomOverSampler	2	0.747	4.16
+3	[1, 4, 8, 12, 16, 20]	3	24	KNN	RandomOverSampler	avg	0.755
+3	[1, 4, 8, 12, 16, 20]	3	24	KNN	SMOTE	0	0.736	5.293
+3	[1, 4, 8, 12, 16, 20]	3	24	KNN	SMOTE	1	0.789	5.56
+3	[1, 4, 8, 12, 16, 20]	3	24	KNN	SMOTE	2	0.755	5.174
+3	[1, 4, 8, 12, 16, 20]	3	24	KNN	SMOTE	avg	0.76
+3	[1, 4, 8, 12, 16, 20]	3	24	RandomForest	SMOTE	best_avg	0.781

@@ -1,0 +1,26 @@
+training_systems	training_numprocs	testing_systems	testing_numprocs	classifier	sampler	split	roc-auc	time
+3	all	3	1	RandomForest	RandomOverSampler	0	0.616	7.542
+3	all	3	1	RandomForest	RandomOverSampler	1	0.623	7.362
+3	all	3	1	RandomForest	RandomOverSampler	2	0.631	7.232
+3	all	3	1	RandomForest	RandomOverSampler	avg	0.623
+3	all	3	1	RandomForest	SMOTE	0	0.618	10.173
+3	all	3	1	RandomForest	SMOTE	1	0.626	10.469
+3	all	3	1	RandomForest	SMOTE	2	0.632	10.292
+3	all	3	1	RandomForest	SMOTE	avg	0.625
+3	all	3	1	DecisionTree	RandomOverSampler	0	0.618	2.854
+3	all	3	1	DecisionTree	RandomOverSampler	1	0.625	2.889
+3	all	3	1	DecisionTree	RandomOverSampler	2	0.629	2.914
+3	all	3	1	DecisionTree	RandomOverSampler	avg	0.624
+3	all	3	1	DecisionTree	SMOTE	0	0.616	5.874
+3	all	3	1	DecisionTree	SMOTE	1	0.624	5.696
+3	all	3	1	DecisionTree	SMOTE	2	0.63	5.728
+3	all	3	1	DecisionTree	SMOTE	avg	0.624
+3	all	3	1	KNN	RandomOverSampler	0	0.611	6.619
+3	all	3	1	KNN	RandomOverSampler	1	0.615	5.603
+3	all	3	1	KNN	RandomOverSampler	2	0.608	5.345
+3	all	3	1	KNN	RandomOverSampler	avg	0.611
+3	all	3	1	KNN	SMOTE	0	0.615	7.514
+3	all	3	1	KNN	SMOTE	1	0.619	6.65
+3	all	3	1	KNN	SMOTE	2	0.625	6.874
+3	all	3	1	KNN	SMOTE	avg	0.62
+3	all	3	1	RandomForest	SMOTE	best_avg	0.625
