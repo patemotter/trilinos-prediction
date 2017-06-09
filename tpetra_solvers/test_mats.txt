@@ -1,6 +1,0 @@
-bcsstk08_spd.mtx, 0
-demo.mtx, 0
-filter2D_sym.mtx, 0
-rotor2_unsym.mtx, 0
-small.mtx, 0
-

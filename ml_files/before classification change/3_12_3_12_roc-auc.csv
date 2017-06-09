@@ -1,6 +1,0 @@
-training_systems	training_numprocs	testing_systems	testing_numprocs	classifier	sampler	split	roc-auc	time
-3	12	3	12	RandomForest	RandomOverSampler	0	0.957	0.513
-3	12	3	12	RandomForest	RandomOverSampler	1	0.968	0.505
-3	12	3	12	RandomForest	RandomOverSampler	2	0.958	0.504
-3	12	3	12	RandomForest	RandomOverSampler	avg	0.961
-3	12	3	12	RandomForest	RandomOverSampler	best_avg	0.961
