@@ -12,13 +12,7 @@ import numpy as np
 
 # Read in the timings from each csv file, aliases for cols
 timings = list()
-timings.append(pd.read_csv('../data/stampede/stampede_np1_omp1_results.csv', header=0))
-timings.append(pd.read_csv('../data/stampede/stampede_np4_omp1_results.csv', header=0))
-timings.append(pd.read_csv('../data/stampede/stampede_np8_omp1_results.csv', header=0))
-timings.append(pd.read_csv('../data/stampede/stampede_np12_omp1_results.csv', header=0))
-timings.append(pd.read_csv('../data/stampede/stampede_np16_omp1_results.csv', header=0))
-timings.append(pd.read_csv('../data/stampede/stampede_np12_omp1_results.csv', header=0))
-timings.append(pd.read_csv('../data/stampede/stampede_np16_omp1_results.csv', header=0))
+timings.append(pd.read_csv('..//stampede/stampede_np1_omp1_results.csv', header=0))
 
 # Make a list of all the individual np dataframes and combine them
 all_timing_data = pd.concat(timings, ignore_index=True)
