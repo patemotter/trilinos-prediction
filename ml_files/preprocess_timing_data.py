@@ -1,6 +1,6 @@
-# Written using Anaconda with Python 3.5
-# Pate Motter
-# 1-19-17
+#   This code is designed to read in the timing information from solver/prec + matrix.
+#       The system name as well as the solver/prec are replaced with numerical IDs.
+#       We then find the best
 
 # Input:
 #   Timings files should be csv w/ no space
@@ -9,10 +9,16 @@
 
 import pandas as pd
 import numpy as np
+import os
+cwd = os.getcwd()
 
 # Read in the timings from each csv file, aliases for cols
 timings = list()
-timings.append(pd.read_csv('..//stampede/stampede_np1_omp1_results.csv', header=0))
+print(cwd)
+timings.append(pd.read_csv('../system_runtimes/bridges/bridges_np28_omp1_timings.csv', header=0))
+#timings.append(pd.read_csv('../system_runtimes/comet/comet_np28_omp1_timings.csv', header=0))
+#timings.append(pd.read_csv('../system_runtimes/stampede/stampede_np16_omp1_timings.csv', header=0))
+#timings.append(pd.read_csv('../system_runtimes/summit/summit_np28_omp1_timings.csv', header=0))
 
 # Make a list of all the individual np dataframes and combine them
 all_timing_data = pd.concat(timings, ignore_index=True)
@@ -81,7 +87,7 @@ all_timing_data = all_timing_data.assign(new_time=pd.Series(new_time_series))
 all_timing_data = all_timing_data.assign(matrix_id=pd.Series(name_hash_series))
 
 # Select which columns to keep and output to file
-all_timing_data.to_csv('stampede_unprocessed_timings.csv')
+all_timing_data.to_csv('combined_np28_timings.csv')
 #cleaned_timing_data = all_timing_data[['system_id', 'numprocs', 'matrix', 'matrix_id', 'solver_id', 'prec_id',
 #                                      'status_id', 'new_time', 'good_or_bad']]
 #cleaned_timing_data.to_csv('janus_processed_timings.csv')
