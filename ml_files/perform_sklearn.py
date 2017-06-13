@@ -190,6 +190,8 @@ def train_and_test(combined, training_numprocs, testing_numprocs):
     # Set training data to everything but last col, test data is last col
     X_a = a.iloc[:, :-2]
     y_a = a.iloc[:, -1]
+
+
     # Create splits in data using stratified k-fold
     for train_index, test_index in skf.split(X_a, y_a):
         X_a_train.append(X_a.values[train_index])
@@ -678,8 +680,15 @@ def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_syst
 
                 # Fit model to a's training and testing data
                 # Compute success of predicting b's testing data using the model
+                # cnf = confusion_matrix(y_true=y_test[split], y_pred=pipeline.predict(X_test[split]))
+                # show_confusion_matrix(cnf)
                 model = pipeline.fit(X_a_train[split], y_a_train[split])
                 model_prediction_results = model.predict_proba(X_b_test[split])[:, 1]
+                #cnf = confusion_matrix(y_true=y_a_train[split], y_pred=pipeline.predict(X_a_train[split])[:,1]
+
+                test_output = model.predict(X_b_test[split])
+                cnf = confusion_matrix(y_b_test[split], test_output)
+                show_confusion_matrix(cnf)
 
                 # Compute ROC curve and ROC area for each class
                 fpr, tpr, _ = roc_curve(y_b_test[split], model_prediction_results)
@@ -873,8 +882,7 @@ def main():
             print("Total execution time: ", round(time.time() - start_time, 3))
 
     plt.show()
-    # cnf = confusion_matrix(y_true=y_test[split], y_pred=pipeline.predict(X_test[split]))
-    # show_confusion_matrix(cnf)
+
 
 
 if __name__ == "__main__": main()
