@@ -58,3 +58,5 @@ ml_files/\.vscode/
 tpetra_solvers/tpetra_solvers\.cbp
 
 tpetra_solvers/tpetra_solvers
+
+classifications/
