@@ -1,0 +1,5 @@
+training_systems	training_numprocs	testing_systems	testing_numprocs	classifier	sampler	split	auroc	time
+[3, 0]	[12]	[3, 0]	[12]	RandomForest	RandomOverSampler	0	0.966	0.619
+[3, 0]	[12]	[3, 0]	[12]	RandomForest	RandomOverSampler	1	0.955	0.623
+[3, 0]	[12]	[3, 0]	[12]	RandomForest	RandomOverSampler	2	0.946	0.55
+[3, 0]	[12]	[3, 0]	[12]	RandomForest	RandomOverSampler	avg	0.955

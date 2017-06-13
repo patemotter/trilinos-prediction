@@ -64,7 +64,11 @@ bridges = [1, 4, 8, 12, 16, 20, 24, 28]
 comet = [1, 4, 8, 12, 16, 20, 24]
 janus = [1, 2, 4, 6, 8, 10, 12]
 summit = [1, 4, 8, 12, 16, 20, 24]
-systems = {'janus': 0, 'bridges': 1, 'comet': 2, 'summit': 3, 'stampede': 4}
+JANUS_ID = 0
+BRIDGES_ID = 1
+COMET_ID = 2
+SUMMIT_ID = 3
+STAMPEDE_ID = 4
 
 
 class DummySampler(object):
@@ -505,7 +509,7 @@ def classify_good_bad(combined, system, numprocs):
     if type(numprocs) == str and numprocs == "all":
         a = combined
     elif type(numprocs) == int:
-        a = combined[(combined.numprocs == numprocs)]
+        a = combined[(combined.np == numprocs)]
     elif type(numprocs) == tuple:
         for num in numprocs:
             a = a.append(combined[(combined.numprocs == num)], ignore_index=True)
@@ -588,24 +592,27 @@ def get_classification(combined_times, testing_systems, testing_numprocs):
     for sys in testing_systems:
         for np in testing_numprocs:
             filename = './classifications/classified_' + str(sys) + '_' + str(np) + '.csv'
+            temp = classify_good_bad(combined_times, sys, np)
+            testing_classified = testing_classified.append(temp)
+            """
             if not path.exists(filename):
-                temp = classify_good_bad(combined_times, sys, np)
                 temp.to_csv(filename)
-                testing_classified = testing_classified.append(temp)
                 print("Saving classification to ", filename)
                 print("Classification time: ", round(time.time() - start_time, 3), '\n')
             else:
                 print('Classification file exists, loading from ' + filename, '\n')
                 temp = pd.read_csv(filename, header=0, index_col=0)
                 testing_classified = testing_classified.append(temp)
+            """
     return testing_classified
 
 
-def merge_properties_and_times(properties_data, timing_data):
+def merge_properties_and_times(properties_data, timing_data, system_data):
     merged = pd.merge(properties_data, timing_data, on='matrix_id')
+    merged = pd.merge(system_data, merged, on='system_id')
     merged = merged.dropna()
     merged = merged.drop(
-        labels=['matrix_y', 'matrix_x', 'status_id', 'time', 'new_time', 'matrix_id'], axis=1)
+        labels=['system', 'matrix_y', 'matrix_x', 'status_id', 'time', 'new_time', 'matrix_id'], axis=1)
     return merged
 
 
@@ -763,69 +770,25 @@ def createExperiments():
     expList = []
 
     expList.append([])
-    expList[0].append(Exp(training_sys=systems['summit'], training_nps=[1,4,8,12,16,20,24],
-                          testing_sys=systems['summit'], testing_nps=1))
-    expList[0].append(Exp(training_sys=systems['summit'], training_nps=[1,4,8,12,16,20,24],
-                          testing_sys=systems['summit'], testing_nps=4))
-    expList[0].append(Exp(training_sys=systems['summit'], training_nps=[1,4,8,12,16,20,24],
-                          testing_sys=systems['summit'], testing_nps=8))
-    expList[0].append(Exp(training_sys=systems['summit'], training_nps=[1,4,8,12,16,20,24],
-                          testing_sys=systems['summit'], testing_nps=12))
-    expList[0].append(Exp(training_sys=systems['summit'], training_nps=[1,4,8,12,16,20,24],
-                          testing_sys=systems['summit'], testing_nps=16))
-    expList[0].append(Exp(training_sys=systems['summit'], training_nps=[1,4,8,12,16,20,24],
-                          testing_sys=systems['summit'], testing_nps=20))
-    expList[0].append(Exp(training_sys=systems['summit'], training_nps=[1,4,8,12,16,20,24],
-                          testing_sys=systems['summit'], testing_nps=24))
+    expList[0].append(Exp(training_sys=[SUMMIT_ID, JANUS_ID], training_nps=[12],
+                          testing_sys=[SUMMIT_ID, JANUS_ID], testing_nps=[12]))
 
-    expList.append([])
-    expList[1].append(Exp(training_sys=systems['summit'], training_nps=1,
-                          testing_sys=systems['summit'], testing_nps=1))
-    expList[1].append(Exp(training_sys=systems['summit'], training_nps=1,
-                          testing_sys=systems['summit'], testing_nps=4))
-    expList[1].append(Exp(training_sys=systems['summit'], training_nps=1,
-                          testing_sys=systems['summit'], testing_nps=8))
-    expList[1].append(Exp(training_sys=systems['summit'], training_nps=1,
-                          testing_sys=systems['summit'], testing_nps=12))
-    expList[1].append(Exp(training_sys=systems['summit'], training_nps=1,
-                          testing_sys=systems['summit'], testing_nps=16))
-    expList[1].append(Exp(training_sys=systems['summit'], training_nps=1,
-                          testing_sys=systems['summit'], testing_nps=20))
-    expList[1].append(Exp(training_sys=systems['summit'], training_nps=1,
-                          testing_sys=systems['summit'], testing_nps=24))
-
-    expList.append([])
-    expList[2].append(Exp(training_sys=systems['summit'], training_nps=24,
-                          testing_sys=systems['summit'], testing_nps=1))
-    expList[2].append(Exp(training_sys=systems['summit'], training_nps=24,
-                          testing_sys=systems['summit'], testing_nps=4))
-    expList[2].append(Exp(training_sys=systems['summit'], training_nps=24,
-                          testing_sys=systems['summit'], testing_nps=8))
-    expList[2].append(Exp(training_sys=systems['summit'], training_nps=24,
-                          testing_sys=systems['summit'], testing_nps=12))
-    expList[2].append(Exp(training_sys=systems['summit'], training_nps=24,
-                          testing_sys=systems['summit'], testing_nps=16))
-    expList[2].append(Exp(training_sys=systems['summit'], training_nps=24,
-                          testing_sys=systems['summit'], testing_nps=20))
-    expList[2].append(Exp(training_sys=systems['summit'], training_nps=24,
-                          testing_sys=systems['summit'], testing_nps=24))
     return expList
 
 
 def main():
     # Read in and process properties
     start_time = time.time()
-    properties = get_properties('../data/processed_properties.csv')
+    properties = get_properties('../matrix_properties/processed_properties.csv')
+
+    systems_info = pd.read_csv('../systems_info/systems_info.csv')
+    systems_info.system_id = systems_info.system_id.astype(int)
 
     # Read in and process system timings
-    time_files = ['../data/janus/janus_unprocessed_timings.csv',
-                  '../data/bridges/bridges_unprocessed_timings.csv',
-                  '../data/comet/comet_unprocessed_timings.csv',
-                  '../data/summit/summit_unprocessed_timings.csv',
-                  '../data/stampede/stampede_unprocessed_timings.csv']
+    time_files = ['../processed_timings/np_specific/combined_np12_timings.csv']
     combined_times = get_times(time_files)
 
-    # Systems: {'janus': 0, 'bridges': 1, 'comet': 2, 'summit': 3, 'stampede': 4}
+    # Systems: {'janus': 0, 'bridges': 1, 'comet': 2, 'summit': 3, 'stampede': 4, 'laptop': 5}
     # Create training data
     experiments = createExperiments()
     linestyles = [
@@ -847,15 +810,23 @@ def main():
         ls_iter = 0
         for exp in fig:
             training_classified = get_classification(combined_times, exp.training_sys, exp.training_nps)
-            training_merged = merge_properties_and_times(properties, training_classified)
+            training_merged = merge_properties_and_times(properties, training_classified, systems_info)
 
             # Create testing data
             testing_classified = get_classification(combined_times, exp.testing_sys, exp.testing_nps)
-            testing_merged = merge_properties_and_times(properties, testing_classified)
+            testing_merged = merge_properties_and_times(properties, testing_classified, systems_info)
 
             # Compute the prediction ROC
             print(
-                "training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\tauroc\ttime")
+                "training_systems\t"
+                "training_numprocs\t"
+                "testing_systems\t"
+                "testing_numprocs\t"
+                "classifier\t"
+                "sampler\t"
+                "split\t"
+                "auroc\t"
+                "time")
             compute_multiple_roc(training_merged, exp.training_sys, exp.training_nps,
                                  testing_merged, exp.testing_sys, exp.testing_nps, linestyles[ls_iter], graph=True)
             ls_iter += 1
