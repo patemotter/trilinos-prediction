@@ -409,6 +409,17 @@ def show_confusion_matrix(C, class_labels=['-1', '1']):
     NN = tn + fp  # Num negative examples
     N = NP + NN
 
+    print('True Neg (TN): %d\t(Num Neg (NN): %d)' % (tn, NN))
+    print('True Pos (TP): %d\t(Num Pos (NP): %d)' % (tp, NP))
+    print('False Neg (FN): %d' % fn)
+    print('False Pos (FP): %d' % fp)
+    print('True Pos Rate: %.2f (TP / (TP+FN))' % (tp / (tp + fn + 0.)))
+    print('False Pos Rate: %.2f (FP / (FP+TN))' % (fp / (fp + tn + 0.)))
+    print('Pos Predictive Val: %.2f (TP / (TP+FP))' % (tp / (tp + fp + 0.)))
+    print('Neg Predictive Value: %.2f (TN / (TN+FN))' % (tn / (tn + fn + 0.)))
+    print('Accuracy: %.2f (TP+TN) / (N)' % ((tp + tn + 0.) / N))
+
+    """
     fig = plt.figure(figsize=(8, 8))
     ax = fig.add_subplot(111)
     ax.imshow(C, interpolation='nearest', cmap=plt.cm.gray)
@@ -493,6 +504,7 @@ def show_confusion_matrix(C, class_labels=['-1', '1']):
             bbox=dict(fc='w', boxstyle='round,pad=1'))
 
     plt.tight_layout()
+    """
 
 
 def remove_bad_properties(properties):
@@ -684,6 +696,7 @@ def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_syst
                 # show_confusion_matrix(cnf)
                 model = pipeline.fit(X_a_train[split], y_a_train[split])
                 model_prediction_results = model.predict_proba(X_b_test[split])[:, 1]
+
                 #cnf = confusion_matrix(y_true=y_a_train[split], y_pred=pipeline.predict(X_a_train[split])[:,1]
 
                 test_output = model.predict(X_b_test[split])
@@ -777,45 +790,10 @@ def createExperiments():
     expList = []
 
     expList.append([])
-    expList[0].append(Exp(training_sys=[SUMMIT_ID], training_nps=[12],
-                          testing_sys=[STAMPEDE_ID], testing_nps=[12]))
-    expList[0].append(Exp(training_sys=[SUMMIT_ID], training_nps=[12],
-                          testing_sys=[COMET_ID], testing_nps=[12]))
-    expList[0].append(Exp(training_sys=[SUMMIT_ID], training_nps=[12],
-                          testing_sys=[SUMMIT_ID], testing_nps=[12]))
-    expList[0].append(Exp(training_sys=[SUMMIT_ID], training_nps=[12],
-                          testing_sys=[BRIDGES_ID], testing_nps=[12]))
-
-    expList.append([])
-    expList[1].append(Exp(training_sys=[STAMPEDE_ID], training_nps=[12],
-                          testing_sys=[STAMPEDE_ID], testing_nps=[12]))
-    expList[1].append(Exp(training_sys=[STAMPEDE_ID], training_nps=[12],
-                          testing_sys=[COMET_ID], testing_nps=[12]))
-    expList[1].append(Exp(training_sys=[STAMPEDE_ID], training_nps=[12],
-                          testing_sys=[SUMMIT_ID], testing_nps=[12]))
-    expList[1].append(Exp(training_sys=[STAMPEDE_ID], training_nps=[12],
-                          testing_sys=[BRIDGES_ID], testing_nps=[12]))
-
-    expList.append([])
-    expList[2].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1],
-                          testing_sys=[STAMPEDE_ID], testing_nps=[1]))
-    expList[2].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1],
-                          testing_sys=[COMET_ID], testing_nps=[1]))
-    expList[2].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1],
-                          testing_sys=[SUMMIT_ID], testing_nps=[1]))
-    expList[2].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1],
-                          testing_sys=[BRIDGES_ID], testing_nps=[1]))
-
-    expList.append([])
-    expList[3].append(Exp(training_sys=[STAMPEDE_ID], training_nps=[1],
-                          testing_sys=[STAMPEDE_ID], testing_nps=[1]))
-    expList[3].append(Exp(training_sys=[STAMPEDE_ID], training_nps=[1],
-                          testing_sys=[COMET_ID], testing_nps=[1]))
-    expList[3].append(Exp(training_sys=[STAMPEDE_ID], training_nps=[1],
-                          testing_sys=[SUMMIT_ID], testing_nps=[1]))
-    expList[3].append(Exp(training_sys=[STAMPEDE_ID], training_nps=[1],
-                          testing_sys=[BRIDGES_ID], testing_nps=[1]))
-
+    expList[0].append(Exp(training_sys=[SUMMIT_ID],
+                          training_nps=[12],
+                          testing_sys=[STAMPEDE_ID],
+                          testing_nps=[12]))
     return expList
 
 
