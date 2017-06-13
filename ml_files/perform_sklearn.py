@@ -591,19 +591,17 @@ def get_classification(combined_times, testing_systems, testing_numprocs):
     testing_classified = pd.DataFrame()
     for sys in testing_systems:
         for np in testing_numprocs:
-            filename = './classifications/classified_' + str(sys) + '_' + str(np) + '.csv'
-            temp = classify_good_bad(combined_times, sys, np)
-            testing_classified = testing_classified.append(temp)
-            """
+            filename = '../classifications/classified_' + str(sys) + '_' + str(np) + '.csv'
             if not path.exists(filename):
-                temp.to_csv(filename)
                 print("Saving classification to ", filename)
+                temp = classify_good_bad(combined_times, sys, np)
+                testing_classified = testing_classified.append(temp)
+                temp.to_csv(filename)
                 print("Classification time: ", round(time.time() - start_time, 3), '\n')
             else:
                 print('Classification file exists, loading from ' + filename, '\n')
                 temp = pd.read_csv(filename, header=0, index_col=0)
                 testing_classified = testing_classified.append(temp)
-            """
     return testing_classified
 
 
@@ -726,11 +724,11 @@ def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_syst
                 mean_tpr /= float(i_a)
                 mean_tpr[-1] = 1.0
                 mean_auc = auc(mean_fpr, mean_tpr)
-                if type(training_numprocs) is list:
-                    training_numprocs="all"
+                training_systems.sort()
+                testing_systems.sort()
                 plt.plot(mean_fpr, mean_tpr, linestyle=ls,
-                         label='{}_{} AUC={:{prec}}'.format(str(training_numprocs).replace(' ', ''),
-                                                            str(testing_numprocs).replace(' ', ''),
+                         label='{}_{} AUC={:{prec}}'.format(str(training_systems).replace(' ', ''),
+                                                            str(testing_systems).replace(' ', ''),
                                                             mean_auc, prec='.2'))
                 plt.plot([0, 1], [0, 1], 'k--')
                 plt.xlim([0.0, 1.0])
@@ -770,8 +768,44 @@ def createExperiments():
     expList = []
 
     expList.append([])
-    expList[0].append(Exp(training_sys=[SUMMIT_ID, JANUS_ID], training_nps=[12],
-                          testing_sys=[SUMMIT_ID, JANUS_ID], testing_nps=[12]))
+    expList[0].append(Exp(training_sys=[SUMMIT_ID], training_nps=[12],
+                          testing_sys=[STAMPEDE_ID], testing_nps=[12]))
+    expList[0].append(Exp(training_sys=[SUMMIT_ID], training_nps=[12],
+                          testing_sys=[COMET_ID], testing_nps=[12]))
+    expList[0].append(Exp(training_sys=[SUMMIT_ID], training_nps=[12],
+                          testing_sys=[SUMMIT_ID], testing_nps=[12]))
+    expList[0].append(Exp(training_sys=[SUMMIT_ID], training_nps=[12],
+                          testing_sys=[BRIDGES_ID], testing_nps=[12]))
+
+    expList.append([])
+    expList[1].append(Exp(training_sys=[STAMPEDE_ID], training_nps=[12],
+                          testing_sys=[STAMPEDE_ID], testing_nps=[12]))
+    expList[1].append(Exp(training_sys=[STAMPEDE_ID], training_nps=[12],
+                          testing_sys=[COMET_ID], testing_nps=[12]))
+    expList[1].append(Exp(training_sys=[STAMPEDE_ID], training_nps=[12],
+                          testing_sys=[SUMMIT_ID], testing_nps=[12]))
+    expList[1].append(Exp(training_sys=[STAMPEDE_ID], training_nps=[12],
+                          testing_sys=[BRIDGES_ID], testing_nps=[12]))
+
+    expList.append([])
+    expList[2].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1],
+                          testing_sys=[STAMPEDE_ID], testing_nps=[1]))
+    expList[2].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1],
+                          testing_sys=[COMET_ID], testing_nps=[1]))
+    expList[2].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1],
+                          testing_sys=[SUMMIT_ID], testing_nps=[1]))
+    expList[2].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1],
+                          testing_sys=[BRIDGES_ID], testing_nps=[1]))
+
+    expList.append([])
+    expList[3].append(Exp(training_sys=[STAMPEDE_ID], training_nps=[1],
+                          testing_sys=[STAMPEDE_ID], testing_nps=[1]))
+    expList[3].append(Exp(training_sys=[STAMPEDE_ID], training_nps=[1],
+                          testing_sys=[COMET_ID], testing_nps=[1]))
+    expList[3].append(Exp(training_sys=[STAMPEDE_ID], training_nps=[1],
+                          testing_sys=[SUMMIT_ID], testing_nps=[1]))
+    expList[3].append(Exp(training_sys=[STAMPEDE_ID], training_nps=[1],
+                          testing_sys=[BRIDGES_ID], testing_nps=[1]))
 
     return expList
 
@@ -785,7 +819,13 @@ def main():
     systems_info.system_id = systems_info.system_id.astype(int)
 
     # Read in and process system timings
-    time_files = ['../processed_timings/np_specific/combined_np12_timings.csv']
+    time_files = ['../processed_timings/np_specific/combined_np1_timings.csv',
+                  '../processed_timings/np_specific/combined_np4_timings.csv',
+                  '../processed_timings/np_specific/combined_np8_timings.csv',
+                  '../processed_timings/np_specific/combined_np12_timings.csv',
+                  '../processed_timings/np_specific/combined_np16_timings.csv',
+                  '../processed_timings/np_specific/combined_np20_timings.csv',
+                  '../processed_timings/np_specific/combined_np24_timings.csv']
     combined_times = get_times(time_files)
 
     # Systems: {'janus': 0, 'bridges': 1, 'comet': 2, 'summit': 3, 'stampede': 4, 'laptop': 5}
