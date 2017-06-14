@@ -631,12 +631,15 @@ def classify_and_merge(properties_data, timing_data, system_data, specific_nps, 
     # Reduce info to just those nps and systems we are wanting to look at
     good_bad_list = []
     new_time_list = []
+    specific_nps.sort()
+    specific_systems.sort()
     timing_subset = timing_data[timing_data['np'].isin(specific_nps)]
     timing_subset = timing_subset[timing_subset['system_id'].isin(specific_systems)]
     grouped = timing_subset.groupby(['matrix', 'status_id'])
     best_times = grouped['time'].aggregate(np.min)
 
     filename = '../classifications/classified_' + str(specific_systems) + '_' + str(specific_nps) + '.csv'
+    filename = filename.replace(' ', '')
     if path.exists(filename):
         print('Classification file exists, loading from ' + filename, '\n')
         timing_subset = pd.read_csv(filename, header=0, index_col=0)
@@ -850,12 +853,39 @@ class Exp:
 
 def createExperiments():
     expList = []
+    i = 0
 
     expList.append([])
-    expList[0].append(Exp(training_sys=[SUMMIT_ID, COMET_ID],
-                          training_nps=[12],
-                          testing_sys=[STAMPEDE_ID, BRIDGES_ID],
-                          testing_nps=[12]))
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[12],
+                          testing_sys=[STAMPEDE_ID], testing_nps=[12]))
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[12],
+                          testing_sys=[COMET_ID], testing_nps=[12]))
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[12],
+                          testing_sys=[BRIDGES_ID], testing_nps=[12]))
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[12],
+                          testing_sys=[SUMMIT_ID], testing_nps=[12]))
+
+    i+=1
+    expList.append([])
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1],
+                          testing_sys=[STAMPEDE_ID], testing_nps=[1]))
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1],
+                          testing_sys=[COMET_ID], testing_nps=[1]))
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1],
+                          testing_sys=[BRIDGES_ID], testing_nps=[1]))
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1],
+                          testing_sys=[SUMMIT_ID], testing_nps=[1]))
+
+    i+=1
+    expList.append([])
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[4],
+                          testing_sys=[STAMPEDE_ID], testing_nps=[4]))
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[4],
+                          testing_sys=[COMET_ID], testing_nps=[4]))
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[4],
+                          testing_sys=[BRIDGES_ID], testing_nps=[4]))
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[4],
+                          testing_sys=[SUMMIT_ID], testing_nps=[4]))
     return expList
 
 
@@ -898,14 +928,16 @@ def main():
         plt.figure()
         ls_iter = 0
         for exp in fig:
-            #training_classified = get_classification(combined_times, exp.training_sys, exp.training_nps)
-            #training_merged = merge_properties_and_times(properties, training_classified, systems_info)
-            training_merged = classify_and_merge(properties, combined_times, systems_info, exp.training_nps, exp.training_sys)
-
-
-            # Create testing data
-            testing_classified = get_classification(combined_times, exp.testing_sys, exp.testing_nps)
-            testing_merged = merge_properties_and_times(properties, testing_classified, systems_info)
+            training_merged = classify_and_merge(properties,
+                                                 combined_times,
+                                                 systems_info,
+                                                 exp.training_nps,
+                                                 exp.training_sys)
+            testing_merged = classify_and_merge(properties,
+                                                combined_times,
+                                                systems_info,
+                                                exp.testing_nps,
+                                                exp.testing_sys)
 
             # Compute the prediction ROC
             print(
