@@ -627,6 +627,68 @@ def merge_properties_and_times(properties_data, timing_data, system_data):
         labels=['system', 'matrix_y', 'matrix_x', 'status_id', 'time', 'new_time', 'matrix_id'], axis=1)
     return merged
 
+def classify_and_merge(properties_data, timing_data, system_data, specific_nps, specific_systems):
+    # Reduce info to just those nps and systems we are wanting to look at
+    good_bad_list = []
+    new_time_list = []
+    timing_subset = timing_data[timing_data['np'].isin(specific_nps)]
+    timing_subset = timing_subset[timing_subset['system_id'].isin(specific_systems)]
+    grouped = timing_subset.groupby(['matrix', 'status_id'])
+    best_times = grouped['time'].aggregate(np.min)
+
+    filename = '../classifications/classified_' + str(specific_systems) + '_' + str(specific_nps) + '.csv'
+    if path.exists(filename):
+        print('Classification file exists, loading from ' + filename, '\n')
+        timing_subset = pd.read_csv(filename, header=0, index_col=0)
+    else:
+        print("Saving classification to ", filename)
+        for index, row in timing_subset.iterrows():
+            current_matrix_time = row['time']
+            matrix_name = row['matrix']
+
+            # Check for matrices which never converged
+            try:
+                matrix_min_time = best_times[matrix_name][1]  # 1 indicates converged
+            except:
+                matrix_min_time = np.inf
+
+            # Error or unconverged runs = max float time
+            if row['status_id'] != 1 or matrix_min_time == np.inf:
+                good_bad_list.append(-1)
+                new_time_list.append(np.inf)
+            # Good = anything within 25% of the fastest run for that matrix
+            elif current_matrix_time <= 1.25 * matrix_min_time:
+                good_bad_list.append(1)
+                new_time_list.append(current_matrix_time)
+            # Bad = anything else outside of that range but still converged
+            else:
+                good_bad_list.append(-1)
+                new_time_list.append(current_matrix_time)
+
+        # Create Pandas series from the lists which used to contain strings
+        new_time_series = pd.Series(new_time_list)
+        good_bad_series = pd.Series(good_bad_list)
+
+        # Add the series to the dataframe as columns
+        timing_subset.reset_index(drop=True, inplace=True)
+        timing_subset = timing_subset.assign(new_time=pd.Series(new_time_series.values))
+        timing_subset = timing_subset.assign(good_or_bad=pd.Series(good_bad_series))
+        timing_subset.to_csv(filename)
+
+    ## Merge the resulting data
+    merged = pd.merge(properties_data, timing_subset, on='matrix_id')
+    merged = pd.merge(system_data, merged, on='system_id')
+    merged = merged.dropna()
+    merged = merged.drop(
+        labels=['system', 'matrix_y', 'matrix_x', 'status_id', 'time', 'new_time', 'matrix_id'], axis=1)
+    return merged
+
+    # Merge timing data with matrix properties and the system specs
+
+    return timing_subset
+
+
+
 
 def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_systems, testing_numprocs,
                          ls, graph=False):
@@ -790,9 +852,9 @@ def createExperiments():
     expList = []
 
     expList.append([])
-    expList[0].append(Exp(training_sys=[SUMMIT_ID],
+    expList[0].append(Exp(training_sys=[SUMMIT_ID, COMET_ID],
                           training_nps=[12],
-                          testing_sys=[STAMPEDE_ID],
+                          testing_sys=[STAMPEDE_ID, BRIDGES_ID],
                           testing_nps=[12]))
     return expList
 
@@ -836,8 +898,10 @@ def main():
         plt.figure()
         ls_iter = 0
         for exp in fig:
-            training_classified = get_classification(combined_times, exp.training_sys, exp.training_nps)
-            training_merged = merge_properties_and_times(properties, training_classified, systems_info)
+            #training_classified = get_classification(combined_times, exp.training_sys, exp.training_nps)
+            #training_merged = merge_properties_and_times(properties, training_classified, systems_info)
+            training_merged = classify_and_merge(properties, combined_times, systems_info, exp.training_nps, exp.training_sys)
+
 
             # Create testing data
             testing_classified = get_classification(combined_times, exp.testing_sys, exp.testing_nps)
