@@ -70,6 +70,13 @@ COMET_ID = 2
 SUMMIT_ID = 3
 STAMPEDE_ID = 4
 
+system_nps = {}
+system_nps[JANUS_ID] = janus
+system_nps[BRIDGES_ID] = bridges
+system_nps[COMET_ID] = comet
+system_nps[SUMMIT_ID] = summit
+system_nps[STAMPEDE_ID] = stampede
+
 
 class DummySampler(object):
     """An empty sampler to compare against other classifier and sampler combinations"""
@@ -605,17 +612,19 @@ def get_classification(combined_times, testing_systems, testing_numprocs):
     testing_classified = pd.DataFrame()
     for sys in testing_systems:
         for np in testing_numprocs:
-            filename = '../classifications/classified_' + str(sys) + '_' + str(np) + '.csv'
-            if not path.exists(filename):
-                print("Saving classification to ", filename)
-                temp = classify_good_bad(combined_times, sys, np)
-                testing_classified = testing_classified.append(temp)
-                temp.to_csv(filename)
-                print("Classification time: ", round(time.time() - start_time, 3), '\n')
-            else:
-                print('Classification file exists, loading from ' + filename, '\n')
-                temp = pd.read_csv(filename, header=0, index_col=0)
-                testing_classified = testing_classified.append(temp)
+            # Check if the np and/or sys even exist
+            if (np in system_nps[sys]):
+                filename = '../classifications/classified_' + str(sys) + '_' + str(np) + '.csv'
+                if not path.exists(filename):
+                    print("Saving classification to ", filename)
+                    temp = classify_good_bad(combined_times, sys, np)
+                    testing_classified = testing_classified.append(temp)
+                    temp.to_csv(filename)
+                    print("Classification time: ", round(time.time() - start_time, 3), '\n')
+                else:
+                    print('Classification file exists, loading from ' + filename, '\n')
+                    temp = pd.read_csv(filename, header=0, index_col=0)
+                    testing_classified = testing_classified.append(temp)
     return testing_classified
 
 
@@ -790,10 +799,10 @@ def createExperiments():
     expList = []
 
     expList.append([])
-    expList[0].append(Exp(training_sys=[SUMMIT_ID],
-                          training_nps=[12],
+    expList[0].append(Exp(training_sys=[SUMMIT_ID, STAMPEDE_ID, COMET_ID,BRIDGES_ID],
+                          training_nps=[1,4,8,12,16,20,24],
                           testing_sys=[STAMPEDE_ID],
-                          testing_nps=[12]))
+                          testing_nps=[4]))
     return expList
 
 
