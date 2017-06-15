@@ -67,8 +67,8 @@ summit = [1, 4, 8, 12, 16, 20, 24]
 JANUS_ID = 0
 BRIDGES_ID = 1
 COMET_ID = 2
-SUMMIT_ID = 3
-STAMPEDE_ID = 4
+STAMPEDE_ID = 3
+SUMMIT_ID = 4
 
 system_nps = {}
 system_nps[JANUS_ID] = janus
@@ -76,6 +76,20 @@ system_nps[BRIDGES_ID] = bridges
 system_nps[COMET_ID] = comet
 system_nps[SUMMIT_ID] = summit
 system_nps[STAMPEDE_ID] = stampede
+
+# For roc curves
+linestyles = [
+    (0, ()),
+    (0, (3, 1, 1, 1)),
+    (0, (3, 5, 3, 5)),
+    (0, (5, 1, 10, 3)),
+    (0, (1, 1)),
+    (0, (5, 1)),
+    (0, (3, 5, 1, 5)),
+    (0, (5, 5)),
+    (0, (1, 5)),
+    (0, (2, 3, 4, 1))
+]
 
 
 class DummySampler(object):
@@ -866,11 +880,19 @@ def createExperiments():
     all_np = [1,4,8,12,16,20,24,28]
     i = 0
 
-    expList.append([])
-    expList[i].append(Exp(training_sys=all_systems,
-                          training_nps=all_np,
-                          testing_sys=all_systems,
-                          testing_nps=all_np))
+    cur_np = 12
+    for j in range(1,5):
+        print(j)
+        expList.append([])
+        expList[i].append(Exp(training_sys=[j], training_nps=[cur_np],
+                              testing_sys=[BRIDGES_ID], testing_nps=[cur_np]))
+        expList[i].append(Exp(training_sys=[j], training_nps=[cur_np],
+                              testing_sys=[COMET_ID], testing_nps=[cur_np]))
+        expList[i].append(Exp(training_sys=[j], training_nps=[cur_np],
+                              testing_sys=[STAMPEDE_ID], testing_nps=[cur_np]))
+        expList[i].append(Exp(training_sys=[j], training_nps=[cur_np],
+                              testing_sys=[SUMMIT_ID], testing_nps=[cur_np]))
+        i+=1
     return expList
 
 
@@ -896,19 +918,6 @@ def main():
     # Systems: {'janus': 0, 'bridges': 1, 'comet': 2, 'summit': 3, 'stampede': 4, 'laptop': 5}
     # Create training data
     experiments = createExperiments()
-    linestyles = [
-        (0, ()),
-        (0, (3, 1, 1, 1)),
-        (0, (3, 5, 3, 5)),
-        (0, (5, 1, 10, 3)),
-        (0, (1, 1)),
-        (0, (5, 1)),
-        (0, (3, 5, 1, 5)),
-        (0, (5, 5)),
-        (0, (1, 5)),
-        (0, (2, 3, 4, 1))
-    ]
-    ls_iter = 0
     plt.style.use('seaborn-paper')
     for fig in experiments:
         plt.figure()
@@ -924,19 +933,6 @@ def main():
                                                     exp.testing_nps)
             testing_merged = merge_properties_and_times(properties, testing_classified,
                                                         systems_info)
-
-            """
-            training_merged = classify_and_merge(properties,
-                                                 combined_times,
-                                                 systems_info,
-                                                 exp.training_nps,
-                                                 exp.training_sys)
-            testing_merged = classify_and_merge(properties,
-                                                combined_times,
-                                                systems_info,
-                                                exp.testing_nps,
-                                                exp.testing_sys)
-            """
 
             # Compute the prediction ROC
             print(
