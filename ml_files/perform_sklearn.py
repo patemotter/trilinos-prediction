@@ -862,13 +862,15 @@ class Exp:
 
 def createExperiments():
     expList = []
+    all_systems = [SUMMIT_ID, BRIDGES_ID, COMET_ID, STAMPEDE_ID]
+    all_np = [1,4,8,12,16,20,24,28]
     i = 0
 
     expList.append([])
-    expList[0].append(Exp(training_sys=[SUMMIT_ID, STAMPEDE_ID, COMET_ID,BRIDGES_ID],
-                          training_nps=[1,4,8,12,16,20,24],
-                          testing_sys=[STAMPEDE_ID],
-                          testing_nps=[4]))
+    expList[i].append(Exp(training_sys=all_systems,
+                          training_nps=all_np,
+                          testing_sys=all_systems,
+                          testing_nps=all_np))
     return expList
 
 
@@ -887,7 +889,8 @@ def main():
                   '../processed_timings/np_specific/combined_np12_timings.csv',
                   '../processed_timings/np_specific/combined_np16_timings.csv',
                   '../processed_timings/np_specific/combined_np20_timings.csv',
-                  '../processed_timings/np_specific/combined_np24_timings.csv']
+                  '../processed_timings/np_specific/combined_np24_timings.csv',
+                  '../processed_timings/np_specific/combined_np28_timings.csv']
     combined_times = get_times(time_files)
 
     # Systems: {'janus': 0, 'bridges': 1, 'comet': 2, 'summit': 3, 'stampede': 4, 'laptop': 5}
@@ -911,6 +914,18 @@ def main():
         plt.figure()
         ls_iter = 0
         for exp in fig:
+            training_classified = get_classification(combined_times, exp.training_sys,
+                                                     exp.training_nps)
+            training_merged = merge_properties_and_times(properties, training_classified,
+                                                         systems_info)
+
+            # Create testing data
+            testing_classified = get_classification(combined_times, exp.testing_sys,
+                                                    exp.testing_nps)
+            testing_merged = merge_properties_and_times(properties, testing_classified,
+                                                        systems_info)
+
+            """
             training_merged = classify_and_merge(properties,
                                                  combined_times,
                                                  systems_info,
@@ -921,6 +936,7 @@ def main():
                                                 systems_info,
                                                 exp.testing_nps,
                                                 exp.testing_sys)
+            """
 
             # Compute the prediction ROC
             print(
@@ -934,7 +950,8 @@ def main():
                 "auroc\t"
                 "time")
             compute_multiple_roc(training_merged, exp.training_sys, exp.training_nps,
-                                 testing_merged, exp.testing_sys, exp.testing_nps, linestyles[ls_iter], graph=True)
+                                 testing_merged, exp.testing_sys, exp.testing_nps,
+                                 linestyles[ls_iter], graph=True)
             ls_iter += 1
             print("Total execution time: ", round(time.time() - start_time, 3))
 
