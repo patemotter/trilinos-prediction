@@ -37,8 +37,6 @@ CMakeScripts
 Makefile
 install_manifest.txt
 
-*.csv#
-
 tpetra_properties/\.ipynb_checkpoints/
 
 \.ipynb_checkpoints/

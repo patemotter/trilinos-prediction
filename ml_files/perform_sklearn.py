@@ -600,7 +600,7 @@ def classify_good_bad(combined, system, numprocs):
 
 def get_properties(properties_filename):
     properties = pd.read_csv(properties_filename, header=0, index_col=0)
-    properties = remove_bad_properties(properties)
+    #properties = remove_bad_properties(properties)
     return properties
 
 
@@ -880,6 +880,10 @@ def createExperiments():
     all_np = [1,4,8,12,16,20,24,28]
     i = 0
 
+    expList.append([])
+    expList[i].append(Exp(training_sys=all_systems, training_nps=all_np,
+                          testing_sys=all_systems, testing_nps=all_np))
+    """
     cur_np = 12
     for j in range(1,5):
         print(j)
@@ -893,6 +897,7 @@ def createExperiments():
         expList[i].append(Exp(training_sys=[j], training_nps=[cur_np],
                               testing_sys=[SUMMIT_ID], testing_nps=[cur_np]))
         i+=1
+    """
     return expList
 
 
@@ -927,6 +932,8 @@ def main():
                                                      exp.training_nps)
             training_merged = merge_properties_and_times(properties, training_classified,
                                                          systems_info)
+
+            training_merged.to_csv('../classifications/merged_with_all_features.csv')
 
             # Create testing data
             testing_classified = get_classification(combined_times, exp.testing_sys,
