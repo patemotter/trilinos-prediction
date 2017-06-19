@@ -67,8 +67,8 @@ summit = [1, 4, 8, 12, 16, 20, 24]
 JANUS_ID = 0
 BRIDGES_ID = 1
 COMET_ID = 2
-STAMPEDE_ID = 3
-SUMMIT_ID = 4
+SUMMIT_ID = 3
+STAMPEDE_ID = 4
 
 system_nps = {}
 system_nps[JANUS_ID] = janus
@@ -876,7 +876,7 @@ class Exp:
 
 def createExperiments():
     expList = []
-    all_systems = [SUMMIT_ID, BRIDGES_ID, COMET_ID, STAMPEDE_ID]
+    all_systems = [1,2,3,4]
     all_np = [1,4,8,12,16,20,24,28]
     i = 0
 
@@ -932,8 +932,6 @@ def main():
                                                      exp.training_nps)
             training_merged = merge_properties_and_times(properties, training_classified,
                                                          systems_info)
-
-            training_merged.to_csv('../classifications/merged_with_all_features.csv')
 
             # Create testing data
             testing_classified = get_classification(combined_times, exp.testing_sys,
