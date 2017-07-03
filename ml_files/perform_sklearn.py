@@ -64,11 +64,13 @@ bridges = [1, 4, 8, 12, 16, 20, 24, 28]
 comet = [1, 4, 8, 12, 16, 20, 24]
 janus = [1, 2, 4, 6, 8, 10, 12]
 summit = [1, 4, 8, 12, 16, 20, 24]
+laptop = [1, 2, 4]
 JANUS_ID = 0
 BRIDGES_ID = 1
 COMET_ID = 2
 SUMMIT_ID = 3
 STAMPEDE_ID = 4
+LAPTOP_ID = 5
 
 system_nps = {}
 system_nps[JANUS_ID] = janus
@@ -76,6 +78,7 @@ system_nps[BRIDGES_ID] = bridges
 system_nps[COMET_ID] = comet
 system_nps[SUMMIT_ID] = summit
 system_nps[STAMPEDE_ID] = stampede
+system_nps[LAPTOP_ID] = laptop
 
 # For roc curves
 linestyles = [
@@ -876,13 +879,13 @@ class Exp:
 
 def createExperiments():
     expList = []
-    all_systems = [1,2,3,4]
+    all_systems = [1,2,3,4,5]
     all_np = [1,4,8,12,16,20,24,28]
     i = 0
 
     expList.append([])
-    expList[i].append(Exp(training_sys=all_systems, training_nps=all_np,
-                          testing_sys=all_systems, testing_nps=all_np))
+    expList[i].append(Exp(training_sys=[5], training_nps=[1],
+                          testing_sys=[5], testing_nps=[1]))
     """
     cur_np = 12
     for j in range(1,5):
@@ -910,14 +913,11 @@ def main():
     systems_info.system_id = systems_info.system_id.astype(int)
 
     # Read in and process system timings
-    time_files = ['../processed_timings/np_specific/combined_np1_timings.csv',
-                  '../processed_timings/np_specific/combined_np4_timings.csv',
-                  '../processed_timings/np_specific/combined_np8_timings.csv',
-                  '../processed_timings/np_specific/combined_np12_timings.csv',
-                  '../processed_timings/np_specific/combined_np16_timings.csv',
-                  '../processed_timings/np_specific/combined_np20_timings.csv',
-                  '../processed_timings/np_specific/combined_np24_timings.csv',
-                  '../processed_timings/np_specific/combined_np28_timings.csv']
+    time_files = ['../processed_timings/system_specific/bridges_all_np_timings_processed.csv',
+                  '../processed_timings/system_specific/comet_all_np_timings_processed.csv',
+                  '../processed_timings/system_specific/laptop_all_np_timings_processed.csv',
+                  '../processed_timings/system_specific/summit_all_np_timings_processed.csv',
+                  '../processed_timings/system_specific/stampede_all_np_timings_processed.csv']
     combined_times = get_times(time_files)
 
     # Systems: {'janus': 0, 'bridges': 1, 'comet': 2, 'summit': 3, 'stampede': 4, 'laptop': 5}
