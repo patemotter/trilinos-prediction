@@ -418,7 +418,7 @@ def compute_roc(a, training_systems, training_numprocs, b, testing_systems, test
     print("ROC time: ", round(time.time() - total_start_time, 3))
 
 
-def show_confusion_matrix(C, class_labels=['-1', '1']):
+def show_confusion_matrix(C, training_systems, training_numprocs, testing_systems, testing_numprocs, class_labels=['-1','1']):
     """Draws confusion matrix with associated metrics"""
 
     assert C.shape == (2, 2), "Confusion matrix should be from binary classification only."
@@ -433,6 +433,24 @@ def show_confusion_matrix(C, class_labels=['-1', '1']):
     NN = tn + fp  # Num negative examples
     N = NP + NN
 
+    confusion_matrix_output = open('cnf_output.csv', 'a')
+    #print('TrueNeg\tNumNeg\tTruePos\tNumPos\tFalseNeg\tFalsePos\tTruePosRate\tFalsePosRate\tPosPredVal\tNegPredVal\tAccuracy')
+    nps_and_systems = str(testing_systems) + '\t' + str(training_numprocs) + '\t' + \
+                      str(testing_systems) + '\t' + str(testing_numprocs)
+
+    cnf_numbers =('%d\t%d\t%d\t%d\t%d\t%d\t'
+          '%.2f\t%.2f\t%.2f\t%.2f\t%.2f' %
+          (tn,NN,tp,NP,fn,fp,
+          tp / (tp + fn + 0.),
+          fp / (fp + tn + 0.),
+          tp / (tp + fp + 0.),
+          tn / (tn + fn + 0.),
+          (tp + tn + 0.) / N))
+    nps_and_systems = nps_and_systems.replace('[','')
+    nps_and_systems = nps_and_systems.replace(']','')
+    confusion_matrix_output.write(nps_and_systems + '\t' + cnf_numbers + '\n')
+
+    """
     print('True Neg (TN): %d\t(Num Neg (NN): %d)' % (tn, NN))
     print('True Pos (TP): %d\t(Num Pos (NP): %d)' % (tp, NP))
     print('False Neg (FN): %d' % fn)
@@ -443,7 +461,6 @@ def show_confusion_matrix(C, class_labels=['-1', '1']):
     print('Neg Predictive Value: %.2f (TN / (TN+FN))' % (tn / (tn + fn + 0.)))
     print('Accuracy: %.2f (TP+TN) / (N)' % ((tp + tn + 0.) / N))
 
-    """
     fig = plt.figure(figsize=(8, 8))
     ax = fig.add_subplot(111)
     ax.imshow(C, interpolation='nearest', cmap=plt.cm.gray)
@@ -792,7 +809,7 @@ def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_syst
 
                 test_output = model.predict(X_b_test[split])
                 cnf = confusion_matrix(y_b_test[split], test_output)
-                show_confusion_matrix(cnf)
+                show_confusion_matrix(cnf, training_systems, training_numprocs, testing_systems, testing_numprocs)
 
                 # Compute ROC curve and ROC area for each class
                 fpr, tpr, _ = roc_curve(y_b_test[split], model_prediction_results)
@@ -807,12 +824,14 @@ def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_syst
                       str(testing_numprocs),
                       clf_name, smp_name,
                       split, round(roc_auc, 3), round(wall_time, 3), sep='\t')
+                """
                 output.write(
                     str(training_systems) + '\t' + str(training_numprocs) + '\t' + str(
                         testing_systems) + '\t' + str(
                         testing_numprocs) + '\t' +
                     clf_name + '\t' + smp_name + '\t' + str(split) + '\t' + str(round(roc_auc, 3)) +
                     '\t' + str(round(wall_time, 3)) + '\n')
+                """
 
             avg = round(total / float(i_a), 3)
             print(str(training_systems), str(training_numprocs), str(testing_systems),
@@ -840,8 +859,8 @@ def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_syst
                 training_systems.sort()
                 testing_systems.sort()
                 plt.plot(mean_fpr, mean_tpr, linestyle=ls,
-                         label='{}_{} AUC={:{prec}}'.format(str(training_numprocs).replace(' ', ''),
-                                                            str(testing_numprocs).replace(' ', ''),
+                         label='{}_{} AUC={:{prec}}'.format(str(training_systems).replace(' ', ''),
+                                                            str(testing_systems).replace(' ', ''),
                                                             mean_auc, prec='.2'))
                 plt.plot([0, 1], [0, 1], 'k--')
                 plt.xlim([0.0, 1.0])
@@ -883,7 +902,7 @@ def createExperiments():
     all_np = [1,4,8,12,16,20,24,28]
     i = 0
     expList.append([])
-
+    """
     # For single core experiments
     expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1,12,24],
                           testing_sys=[SUMMIT_ID], testing_nps=[1]))
@@ -916,7 +935,7 @@ def createExperiments():
         expList[i].append(Exp(training_sys=[j], training_nps=[cur_np],
                               testing_sys=[LAPTOP_ID], testing_nps=[cur_np]))
         i+=1
-    """
+
     return expList
 
 
