@@ -726,7 +726,7 @@ def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_syst
     total_start_time = time.time()
     output_filename = str(testing_systems) + '_' + str(training_numprocs) + '_' + \
                       str(testing_systems) + '_' + str(testing_numprocs) + '_auroc.csv'
-    output_filename = output_filename.replace(' ', '')
+    output_filename = output_filename.replace(' ','')
     output = open(output_filename, 'w')
 
     i_a = 0
@@ -840,8 +840,8 @@ def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_syst
                 training_systems.sort()
                 testing_systems.sort()
                 plt.plot(mean_fpr, mean_tpr, linestyle=ls,
-                         label='{}_{} AUC={:{prec}}'.format(str(training_systems).replace(' ', ''),
-                                                            str(testing_systems).replace(' ', ''),
+                         label='{}_{} AUC={:{prec}}'.format(str(training_numprocs).replace(' ', ''),
+                                                            str(testing_numprocs).replace(' ', ''),
                                                             mean_auc, prec='.2'))
                 plt.plot([0, 1], [0, 1], 'k--')
                 plt.xlim([0.0, 1.0])
@@ -882,13 +882,27 @@ def createExperiments():
     all_systems = [1,2,3,4,5]
     all_np = [1,4,8,12,16,20,24,28]
     i = 0
-
     expList.append([])
-    expList[i].append(Exp(training_sys=[5], training_nps=[1],
-                          testing_sys=[5], testing_nps=[1]))
+
+    # For single core experiments
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1,12,24],
+                          testing_sys=[SUMMIT_ID], testing_nps=[1]))
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1,12,24],
+                          testing_sys=[SUMMIT_ID], testing_nps=[4]))
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1,12,24],
+                          testing_sys=[SUMMIT_ID], testing_nps=[8]))
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1,12,24],
+                          testing_sys=[SUMMIT_ID], testing_nps=[12]))
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1,12,24],
+                          testing_sys=[SUMMIT_ID], testing_nps=[16]))
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1,12,24],
+                          testing_sys=[SUMMIT_ID], testing_nps=[20]))
+    expList[i].append(Exp(training_sys=[SUMMIT_ID], training_nps=[1,12,24],
+                          testing_sys=[SUMMIT_ID], testing_nps=[24]))
+
     """
-    cur_np = 12
-    for j in range(1,5):
+    cur_np = 4
+    for j in range(1,6):
         print(j)
         expList.append([])
         expList[i].append(Exp(training_sys=[j], training_nps=[cur_np],
@@ -896,9 +910,11 @@ def createExperiments():
         expList[i].append(Exp(training_sys=[j], training_nps=[cur_np],
                               testing_sys=[COMET_ID], testing_nps=[cur_np]))
         expList[i].append(Exp(training_sys=[j], training_nps=[cur_np],
+                              testing_sys=[SUMMIT_ID], testing_nps=[cur_np]))
+        expList[i].append(Exp(training_sys=[j], training_nps=[cur_np],
                               testing_sys=[STAMPEDE_ID], testing_nps=[cur_np]))
         expList[i].append(Exp(training_sys=[j], training_nps=[cur_np],
-                              testing_sys=[SUMMIT_ID], testing_nps=[cur_np]))
+                              testing_sys=[LAPTOP_ID], testing_nps=[cur_np]))
         i+=1
     """
     return expList
