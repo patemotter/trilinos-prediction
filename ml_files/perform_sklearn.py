@@ -97,7 +97,7 @@ def show_confusion_matrix(C, training_systems, training_numprocs, testing_system
 
     confusion_matrix_output = open('cnf_output.csv', 'a')
     # print('TrueNeg\tNumNeg\tTruePos\tNumPos\tFalseNeg\tFalsePos\tTruePosRate\tFalsePosRate\tPosPredVal\tNegPredVal\tAccuracy')
-    nps_and_systems = str(testing_systems) + '\t' + str(training_numprocs) + '\t' + \
+    nps_and_systems = str(training_systems) + '\t' + str(training_numprocs) + '\t' + \
                       str(testing_systems) + '\t' + str(testing_numprocs)
 
     cnf_numbers = ('%d\t%d\t%d\t%d\t%d\t%d\t'
@@ -111,6 +111,7 @@ def show_confusion_matrix(C, training_systems, training_numprocs, testing_system
     nps_and_systems = nps_and_systems.replace('[', '')
     nps_and_systems = nps_and_systems.replace(']', '')
     confusion_matrix_output.write(nps_and_systems + '\t' + cnf_numbers + '\n')
+    # print(nps_and_systems + '\t' + cnf_numbers + '\n')
 
 
 def classify_good_bad(combined, system, numprocs):
@@ -290,10 +291,10 @@ def classify_and_merge(properties_data, timing_data, system_data, specific_nps, 
 def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_systems, testing_numprocs,
                          ls, graph=False):
     total_start_time = time.time()
-    output_filename = str(testing_systems) + '_' + str(training_numprocs) + '_' + \
-                      str(testing_systems) + '_' + str(testing_numprocs) + '_auroc.csv'
-    output_filename = output_filename.replace(' ', '')
-    output = open(output_filename, 'w')
+    # output_filename = str(testing_systems) + '_' + str(training_numprocs) + '_' + \
+    #                   str(testing_systems) + '_' + str(testing_numprocs) + '_auroc.csv'
+    # output_filename = output_filename.replace(' ', '')
+    output = open('auroc_output.csv', 'a')
 
     i_a = 0
 
@@ -335,8 +336,7 @@ def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_syst
     best_classifier = ""
     best_sampler = ""
     best_avg = 0.0
-    output.write(
-        "training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\tauroc\ttime\n")
+    # output.write("training_systems\ttraining_numprocs\ttesting_systems\ttesting_numprocs\tclassifier\tsampler\tsplit\tauroc\ttime\n")
     for clf_name, clf in classifier_list:
         for smp_name, smp in samplers_list:
             mean_tpr = 0.0
@@ -349,12 +349,8 @@ def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_syst
 
                 # Fit model to a's training and testing data
                 # Compute success of predicting b's testing data using the model
-                # cnf = confusion_matrix(y_true=y_test[split], y_pred=pipeline.predict(X_test[split]))
-                # show_confusion_matrix(cnf)
                 model = pipeline.fit(X_a_train[split], y_a_train[split])
                 model_prediction_results = model.predict_proba(X_b_test[split])[:, 1]
-
-                # cnf = confusion_matrix(y_true=y_a_train[split], y_pred=pipeline.predict(X_a_train[split])[:,1]
 
                 test_output = model.predict(X_b_test[split])
                 cnf = confusion_matrix(y_b_test[split], test_output)
@@ -373,14 +369,13 @@ def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_syst
                       str(testing_numprocs),
                       clf_name, smp_name,
                       split, round(roc_auc, 3), round(wall_time, 3), sep='\t')
-                """
                 output.write(
                     str(training_systems) + '\t' + str(training_numprocs) + '\t' + str(
                         testing_systems) + '\t' + str(
                         testing_numprocs) + '\t' +
                     clf_name + '\t' + smp_name + '\t' + str(split) + '\t' + str(round(roc_auc, 3)) +
                     '\t' + str(round(wall_time, 3)) + '\n')
-                """
+
 
             avg = round(total / float(i_a), 3)
             print(str(training_systems), str(training_numprocs), str(testing_systems),
@@ -424,6 +419,7 @@ def compute_multiple_roc(a, training_systems, training_numprocs, b, testing_syst
                 #            str(testing_numprocs) + '_' + str(clf_name) + '_' +
                 #            str(smp_name) + '.svg', bbox_inches='tight')
     print("\t%.2f\n" % (time.time() - total_start_time))
+    output.write("\t%.2f\n" % (time.time() - total_start_time))
 
 
 class Experiment:
