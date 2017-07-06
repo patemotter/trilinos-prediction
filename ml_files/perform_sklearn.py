@@ -225,7 +225,6 @@ def merge_properties_and_times(properties_data, timing_data, system_data):
         labels=['system', 'matrix_y', 'matrix_x', 'status_id', 'time', 'new_time', 'matrix_id'], axis=1)
     return merged
 
-
 def classify_and_merge(properties_data, timing_data, system_data, specific_nps, specific_systems):
     # Reduce info to just those nps and systems we are wanting to look at
     good_bad_list = []
@@ -237,6 +236,7 @@ def classify_and_merge(properties_data, timing_data, system_data, specific_nps, 
     grouped = timing_subset.groupby(['matrix', 'status_id'])
     best_times = grouped['time'].aggregate(np.min)
 
+    # If an existing classification file exists then just load it instead of repeating work
     filename = '../classifications/classified_' + str(specific_systems) + '_' + str(specific_nps) + '.csv'
     filename = filename.replace(' ', '')
     if path.exists(filename):
@@ -248,7 +248,7 @@ def classify_and_merge(properties_data, timing_data, system_data, specific_nps, 
             current_matrix_time = row['time']
             matrix_name = row['matrix']
 
-            # Check for matrices which never converged
+            # Check for matrices which never converged or ended in error and set to inf
             try:
                 matrix_min_time = best_times[matrix_name][1]  # 1 indicates converged
             except:
@@ -267,7 +267,7 @@ def classify_and_merge(properties_data, timing_data, system_data, specific_nps, 
                 good_bad_list.append(-1)
                 new_time_list.append(current_matrix_time)
 
-        # Create Pandas series from the lists which used to contain strings
+        # Create Pandas series from the resulting lists
         new_time_series = pd.Series(new_time_list)
         good_bad_series = pd.Series(good_bad_list)
 
@@ -277,7 +277,7 @@ def classify_and_merge(properties_data, timing_data, system_data, specific_nps, 
         timing_subset = timing_subset.assign(good_or_bad=pd.Series(good_bad_series))
         timing_subset.to_csv(filename)
 
-    ## Merge the resulting data
+    # Merge the resulting data back together to reflect the new classification
     merged = pd.merge(properties_data, timing_subset, on='matrix_id')
     merged = pd.merge(system_data, merged, on='system_id')
 
@@ -437,6 +437,8 @@ def createExperiments():
     all_np = [1, 4, 8, 12, 16, 20, 24, 28]
     i = 0
     expList.append([])
+    expList[i].append(Experiment(training_sys=[1,3], training_nps=[1,4],
+                                 testing_sys=[2,4], testing_nps=[8,12]))
 
     # For single system, multiple core count experiments
     """
@@ -444,7 +446,6 @@ def createExperiments():
     for cur_np in system_nps[cur_sys]:
         expList[i].append(Experiment(training_sys=[cur_sys], training_nps=[1,12,24],
                               testing_sys=[cur_sys], testing_nps=[cur_np]))
-    """
 
     # For fixed core counts, multi-system experiments
     cur_np = 4
@@ -462,6 +463,7 @@ def createExperiments():
                                      testing_sys=[LAPTOP_ID], testing_nps=[cur_np]))
         i += 1
 
+    """
     return expList
 
 
