@@ -200,13 +200,13 @@ def get_classification(combined_times, testing_systems, testing_numprocs):
 
     testing_classified = pd.DataFrame()
     for sys in testing_systems:
-        for np in testing_numprocs:
+        for numproc in testing_numprocs:
             # Check if the np and/or sys even exist
-            if np in system_nps[sys]:
-                filename = '../classifications/classified_' + str(sys) + '_' + str(np) + '.csv'
+            if numproc in system_nps[sys]:
+                filename = '../classifications/classified_' + str(sys) + '_' + str(numproc) + '.csv'
                 if not path.exists(filename):
                     print("Saving classification to ", filename)
-                    temp = classify_good_bad(combined_times, sys, np)
+                    temp = classify_good_bad(combined_times, sys, numproc)
                     testing_classified = testing_classified.append(temp)
                     temp.to_csv(filename)
                     print("Classification time: ", round(time.time() - start_time, 3), '\n')
@@ -512,7 +512,7 @@ def main():
                 "time")
             compute_multiple_roc(training_merged, exp.training_sys, exp.training_nps,
                                  testing_merged, exp.testing_sys, exp.testing_nps,
-                                 linestyles[ls_iter], graph=True)
+                                 linestyles[ls_iter], graph=False)
             ls_iter += 1
             print("Total execution time: ", round(time.time() - start_time, 3))
 
